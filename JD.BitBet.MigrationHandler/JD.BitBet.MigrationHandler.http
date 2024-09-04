@@ -1,0 +1,6 @@
+@JD.BitBet.MigrationHandler_HostAddress = http://localhost:5036
+
+GET {{JD.BitBet.MigrationHandler_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
