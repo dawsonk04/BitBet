@@ -2,7 +2,7 @@
 {
     public partial class tblTransaction
     {
-        public Guid TransactionId { get; set; }
+        public Guid Id { get; set; }
         public Guid WalletId { get; set; }
         public string? TransactionType { get; set; }
         public Double Amount { get; set; }
