@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace JD.BitBet.PL
+namespace JD.BitBet.PL.Entities
 {
     internal class tblUser
     {
