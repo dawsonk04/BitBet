@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace JD.BitBet.PL.Entities
 {
-    public class tblUser
+    public class tblUser : IEntity
     {
         public Guid Id { get; set; }
         public Guid WalletId { get; set; }
