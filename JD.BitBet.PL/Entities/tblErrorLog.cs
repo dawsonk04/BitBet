@@ -2,7 +2,7 @@
 {
     public partial class tblErrorLog
     {
-        public Guid ErrorId { get; set; }
+        public Guid Id { get; set; }
         public Guid UserId { get; set; }
         public string? ErrorType { get; set; }
         public string? ErrorMessage { get; set; }
