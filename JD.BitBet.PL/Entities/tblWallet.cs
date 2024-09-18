@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace JD.BitBet.PL.Entities
 {
-    public class tblGame
+    public class tblWallet
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }   
+        public string ?WalletAddress { get; set; }
         public Guid UserId { get; set; }
-        public Guid HandId { get; set; }
-        public double GameResult { get; set; }
+        public double Balance { get; set; }
     }
 }
