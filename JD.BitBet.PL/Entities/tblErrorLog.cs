@@ -1,6 +1,8 @@
-﻿namespace JD.BitBet.PL
+﻿using JD.BitBet.PL.Entities;
+
+namespace JD.BitBet.PL
 {
-    public partial class tblErrorLog
+    public partial class tblErrorLog : IEntity
     {
         public Guid Id { get; set; }
         public Guid UserId { get; set; }

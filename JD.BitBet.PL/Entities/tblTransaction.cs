@@ -1,6 +1,8 @@
-﻿namespace JD.BitBet.PL
+﻿using JD.BitBet.PL.Entities;
+
+namespace JD.BitBet.PL
 {
-    public partial class tblTransaction
+    public partial class tblTransaction : IEntity
     {
         public Guid Id { get; set; }
         public Guid WalletId { get; set; }
