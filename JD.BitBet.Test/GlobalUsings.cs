@@ -1,1 +1,10 @@
 global using Microsoft.VisualStudio.TestTools.UnitTesting;
+global using Microsoft.EntityFrameworkCore.Storage;
+global using JD.BitBet.PL.Data;
+global using JD.BitBet.PL.Entities;
+global using System;
+global using System.Linq;
+global using Microsoft.Extensions.Configuration;
+global using Microsoft.EntityFrameworkCore;
+global using System.IO;
+global using System.Collections.Generic;

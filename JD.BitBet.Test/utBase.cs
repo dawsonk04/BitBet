@@ -1,8 +1,4 @@
-﻿using JD.BitBet.PL.Data;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Storage;
-using Microsoft.Extensions.Configuration;
-
+﻿
 namespace JD.BitBet.PL.Test
 {
     [TestClass]
