@@ -20,7 +20,7 @@ namespace JD.BitBet.PL.Test
             {
                 Id = Guid.NewGuid(),
                 WalletAddress = "testingaddress",
-                UserId = Guid.NewGuid(),
+                UserId = base.LoadTest().FirstOrDefault().UserId,
                 Balance = 0.55,
             });
 

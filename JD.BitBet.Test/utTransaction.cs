@@ -6,7 +6,7 @@
         [TestMethod]
         public void LoadTest()
         {
-            int expected = 2;
+            int expected = 4;
             var Users = base.LoadTest();
             Assert.AreEqual(expected, Users.Count());
         }
@@ -17,7 +17,7 @@
             int rowsAffected = InsertTest(new tblTransaction
             {
                 Id = Guid.NewGuid(),
-                WalletId = Guid.NewGuid(),
+                WalletId = base.LoadTest().FirstOrDefault().WalletId,
                 TransactionType = "Deposit",
                 Amount = 10,
                 TransactionDate = DateTime.Now,

@@ -17,7 +17,7 @@
             int rowsAffected = InsertTest(new tblErrorLog
             {
                 Id = Guid.NewGuid(),
-                UserId = Guid.NewGuid(),
+                UserId = base.LoadTest().FirstOrDefault().UserId,
                 ErrorType = "error",
                 ErrorMessage = "error",
                 ErrorDateTime = DateTime.Now
