@@ -12,5 +12,7 @@ namespace JD.BitBet.PL.Entities
         public string ?WalletAddress { get; set; }
         public Guid UserId { get; set; }
         public double Balance { get; set; }
+        public virtual ICollection<tblTransaction> Transactions { get; set; }
+        public virtual tblUser User { get; set; }
     }
 }

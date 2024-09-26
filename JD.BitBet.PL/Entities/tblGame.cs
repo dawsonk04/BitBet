@@ -10,8 +10,9 @@ namespace JD.BitBet.PL.Entities
     {
         public Guid Id { get; set; }
         public Guid UserId { get; set; }
-        public Guid HandId { get; set; }
         public double GameResult { get; set; }
+        public virtual ICollection<tblHand> Hands { get; set; }
+        public virtual tblUser User { get; set; }
 
     }
 }

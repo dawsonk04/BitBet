@@ -9,5 +9,6 @@ namespace JD.BitBet.PL
         public string? ErrorType { get; set; }
         public string? ErrorMessage { get; set; }
         public DateTime ErrorDateTime { get; set; }
+        public virtual tblUser User { get; set; }
     }
 }

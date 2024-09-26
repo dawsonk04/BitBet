@@ -9,5 +9,6 @@ namespace JD.BitBet.PL
         public string? TransactionType { get; set; }
         public double Amount { get; set; }
         public DateTime TransactionDate { get; set; }
+        public virtual tblWallet Wallet { get; set; }
     }
 }
