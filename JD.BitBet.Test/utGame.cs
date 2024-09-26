@@ -3,7 +3,7 @@
 namespace JD.BitBet.PL.Test
 {
     [TestClass]
-    public class utUser : utBase<tblUser>
+    public class utGame : utBase<tblGame>
     {
         [TestMethod]
         public void LoadTest()
@@ -16,13 +16,11 @@ namespace JD.BitBet.PL.Test
         [TestMethod]
         public void InsertTest()
         {
-            int rowsAffected = InsertTest(new tblUser
+            int rowsAffected = InsertTest(new tblGame
             {
                 Id = Guid.NewGuid(),
-                Email = "john@gmail.com",
-                Password = "password",
-                CreateDate = DateTime.Now
-
+                UserId = Guid.NewGuid(),
+                GameResult = 20
             });
 
             Assert.AreEqual(1, rowsAffected);
@@ -31,11 +29,10 @@ namespace JD.BitBet.PL.Test
         [TestMethod]
         public void UpdateTest()
         {
-            tblUser row = base.LoadTest().FirstOrDefault();
+            tblGame row = base.LoadTest().FirstOrDefault();
             if (row != null)
             {
-                row.Email = "dawson@gmail.com";
-                row.Password = "test123";
+                row.GameResult = 20;
                 int rowsAffected = UpdateTest(row);
                 Assert.AreEqual(1, rowsAffected);
             }
@@ -45,7 +42,7 @@ namespace JD.BitBet.PL.Test
         [TestMethod]
         public void DeleteTest()
         {
-            tblUser row = base.LoadTest().FirstOrDefault(x => x.Email == "Other");
+            tblGame row = base.LoadTest().FirstOrDefault(x => x.GameResult == 20);
             if (row != null)
             {
                 int rowsAffected = DeleteTest(row);
@@ -55,5 +52,4 @@ namespace JD.BitBet.PL.Test
         }
     }
 }
-
 

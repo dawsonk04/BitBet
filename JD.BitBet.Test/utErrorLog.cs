@@ -1,9 +1,7 @@
-﻿using JD.BitBet.PL.Entities;
-
-namespace JD.BitBet.PL.Test
+﻿namespace JD.BitBet.PL.Test
 {
     [TestClass]
-    public class utUser : utBase<tblUser>
+    public class utErrorLog : utBase<tblErrorLog>
     {
         [TestMethod]
         public void LoadTest()
@@ -16,13 +14,13 @@ namespace JD.BitBet.PL.Test
         [TestMethod]
         public void InsertTest()
         {
-            int rowsAffected = InsertTest(new tblUser
+            int rowsAffected = InsertTest(new tblErrorLog
             {
                 Id = Guid.NewGuid(),
-                Email = "john@gmail.com",
-                Password = "password",
-                CreateDate = DateTime.Now
-
+                UserId = Guid.NewGuid(),
+                ErrorType = "error",
+                ErrorMessage = "error",
+                ErrorDateTime = DateTime.Now
             });
 
             Assert.AreEqual(1, rowsAffected);
@@ -31,11 +29,10 @@ namespace JD.BitBet.PL.Test
         [TestMethod]
         public void UpdateTest()
         {
-            tblUser row = base.LoadTest().FirstOrDefault();
+            tblErrorLog row = base.LoadTest().FirstOrDefault();
             if (row != null)
             {
-                row.Email = "dawson@gmail.com";
-                row.Password = "test123";
+                row.ErrorMessage = "another error";
                 int rowsAffected = UpdateTest(row);
                 Assert.AreEqual(1, rowsAffected);
             }
@@ -45,7 +42,7 @@ namespace JD.BitBet.PL.Test
         [TestMethod]
         public void DeleteTest()
         {
-            tblUser row = base.LoadTest().FirstOrDefault(x => x.Email == "Other");
+            tblErrorLog row = base.LoadTest().FirstOrDefault(x => x.ErrorMessage == "Other");
             if (row != null)
             {
                 int rowsAffected = DeleteTest(row);
@@ -55,5 +52,4 @@ namespace JD.BitBet.PL.Test
         }
     }
 }
-
 

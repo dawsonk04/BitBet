@@ -1,9 +1,7 @@
-﻿using JD.BitBet.PL.Entities;
-
-namespace JD.BitBet.PL.Test
+﻿namespace JD.BitBet.PL.Test
 {
     [TestClass]
-    public class utUser : utBase<tblUser>
+    public class utTransaction : utBase<tblTransaction>
     {
         [TestMethod]
         public void LoadTest()
@@ -16,13 +14,13 @@ namespace JD.BitBet.PL.Test
         [TestMethod]
         public void InsertTest()
         {
-            int rowsAffected = InsertTest(new tblUser
+            int rowsAffected = InsertTest(new tblTransaction
             {
                 Id = Guid.NewGuid(),
-                Email = "john@gmail.com",
-                Password = "password",
-                CreateDate = DateTime.Now
-
+                WalletId = Guid.NewGuid(),
+                TransactionType = "Deposit",
+                Amount = 10,
+                TransactionDate = DateTime.Now,
             });
 
             Assert.AreEqual(1, rowsAffected);
@@ -31,11 +29,10 @@ namespace JD.BitBet.PL.Test
         [TestMethod]
         public void UpdateTest()
         {
-            tblUser row = base.LoadTest().FirstOrDefault();
+            tblTransaction row = base.LoadTest().FirstOrDefault();
             if (row != null)
             {
-                row.Email = "dawson@gmail.com";
-                row.Password = "test123";
+                row.Amount = 20;
                 int rowsAffected = UpdateTest(row);
                 Assert.AreEqual(1, rowsAffected);
             }
@@ -45,7 +42,7 @@ namespace JD.BitBet.PL.Test
         [TestMethod]
         public void DeleteTest()
         {
-            tblUser row = base.LoadTest().FirstOrDefault(x => x.Email == "Other");
+            tblTransaction row = base.LoadTest().FirstOrDefault(x => x.Amount == 20);
             if (row != null)
             {
                 int rowsAffected = DeleteTest(row);
@@ -55,5 +52,3 @@ namespace JD.BitBet.PL.Test
         }
     }
 }
-
-
