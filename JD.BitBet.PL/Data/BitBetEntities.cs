@@ -40,12 +40,12 @@ namespace JD.BitBet.PL.Data
         {
             base.OnModelCreating(modelBuilder);
 
-            CreateErrors(modelBuilder);
-            CreateGames(modelBuilder);
-            CreateHands(modelBuilder);
-            CreateTransactions(modelBuilder);
             CreateUsers(modelBuilder);
             CreateWallets(modelBuilder);
+            CreateTransactions(modelBuilder);
+            CreateGames(modelBuilder);
+            CreateHands(modelBuilder);
+            CreateErrors(modelBuilder);
 
         }
 
@@ -98,9 +98,9 @@ namespace JD.BitBet.PL.Data
             }
             modelBuilder.Entity<tblUser>(entity =>
             {
-                entity.HasKey(e => e.Id).HasName("Pk__tblTransaction_Id");
+                entity.HasKey(e => e.Id).HasName("Pk__tblUser_Id");
 
-                entity.ToTable("tblTransaction");
+                entity.ToTable("tblUser");
 
                 entity.Property(e => e.Id).ValueGeneratedNever();
                 entity.Property(e => e.Email)
