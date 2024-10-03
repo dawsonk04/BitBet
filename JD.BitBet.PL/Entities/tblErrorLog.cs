@@ -12,3 +12,4 @@ namespace JD.BitBet.PL
         public virtual tblUser User { get; set; }
     }
 }
+ 
