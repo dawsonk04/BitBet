@@ -6,4 +6,9 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\JD.BitBet.BL.Models\JD.BitBet.BL.Models.csproj" />
+    <ProjectReference Include="..\JD.BitBet.PL\JD.BitBet.PL.csproj" />
+  </ItemGroup>
+
 </Project>

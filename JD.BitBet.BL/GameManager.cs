@@ -1,7 +1,6 @@
 ﻿namespace JD.BitBet.BL
 {
-    public class Class1
+    public class GameManager
     {
-
     }
 }
