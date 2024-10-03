@@ -1,4 +1,5 @@
-﻿using JD.BitBet.UI.Extensions;
+﻿using JD.BitBet.BL.Models;
+using JD.BitBet.UI.Extensions;
 
 namespace JD.BitBet.UI.Models
 {
