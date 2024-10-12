@@ -3,7 +3,7 @@ using JD.BitBet.BL.Models;
 using Microsoft.EntityFrameworkCore.Storage;
 using System.IO;
 
-namespace JBS.DVDCentral.BL
+namespace JD.BitBet.BL
 {
     public class GameManager : GenericManager<tblGame>
     {

@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.Configuration;
 
-namespace JBS.BitBet.BL.Test
+namespace JD.BitBet.BL.Test
 {
     [TestClass]
     public class utBase
