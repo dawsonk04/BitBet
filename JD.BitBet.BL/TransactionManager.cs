@@ -49,8 +49,22 @@ namespace JD.BitBet.BL
             }
         }
 
+        public async Task<List<Models.Transaction>> LoadAsync()
+        {
+            try
+            {
+                List<Models.Transaction> rows = new List<Models.Transaction>();
 
-        // Will have to include another method in here for LoadingTransactions?-
+                (await base.LoadAsync()).ForEach(e => rows.Add(Map<tblTransaction, Models.Transaction>(e)));
+
+                return rows;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
 
     }
 }

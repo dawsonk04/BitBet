@@ -1,6 +1,4 @@
 using JBS.BitBet.BL.Test;
-using JBS.DVDCentral.BL;
-using System.IO;
 
 namespace JD.BitBet.BL.Test
 {
@@ -20,7 +18,7 @@ namespace JD.BitBet.BL.Test
             int id = 0;
             Game game = new Game
             {
-               GameResult = 20.00,
+                GameResult = 20.00,
             };
 
             Guid results = await new GameManager(options).InsertAsync(game, true);
@@ -31,7 +29,7 @@ namespace JD.BitBet.BL.Test
         public async Task UpdateTest()
         {
             Game director = (await new GameManager(options).LoadAsync()).FirstOrDefault(); ;
-            
+
             Assert.IsTrue(new GameManager(options).UpdateAsync(director, true).Result > 0);
         }
 
