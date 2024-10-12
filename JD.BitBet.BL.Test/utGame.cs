@@ -1,5 +1,3 @@
-using JBS.BitBet.BL.Test;
-
 namespace JD.BitBet.BL.Test
 {
     [TestClass]
@@ -42,8 +40,8 @@ namespace JD.BitBet.BL.Test
         [TestMethod]
         public async Task LoadByIdTest()
         {
-            Game director = (await new GameManager(options).LoadAsync()).FirstOrDefault();
-            Assert.AreEqual((await new GameManager(options).LoadByIdAsync(director.Id)).Id, director.Id);
+            Game Game = (await new GameManager(options).LoadAsync()).FirstOrDefault();
+            Assert.AreEqual((await new GameManager(options).LoadByIdAsync(Game.Id)).Id, Game.Id);
 
         }
     }
