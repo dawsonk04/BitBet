@@ -3,19 +3,19 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.8.34511.84
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JD.BitBet.UI", "JD.BitBet.UI\JD.BitBet.UI.csproj", "{FAAADFD8-ADF6-42AE-A272-C60677E119F4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "JD.BitBet.UI", "JD.BitBet.UI\JD.BitBet.UI.csproj", "{FAAADFD8-ADF6-42AE-A272-C60677E119F4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JD.BitBet.PL", "JD.BitBet.PL\JD.BitBet.PL.csproj", "{174BF428-C1A2-4AE8-9DC1-21C861FFD717}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "JD.BitBet.PL", "JD.BitBet.PL\JD.BitBet.PL.csproj", "{174BF428-C1A2-4AE8-9DC1-21C861FFD717}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JD.BitBet.BL", "JD.BitBet.BL\JD.BitBet.BL.csproj", "{85F47AA8-33C6-4A74-9063-20E9BB60B966}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "JD.BitBet.BL", "JD.BitBet.BL\JD.BitBet.BL.csproj", "{85F47AA8-33C6-4A74-9063-20E9BB60B966}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JD.BitBet.BL.Models", "JD.BitBet.BL.Models\JD.BitBet.BL.Models.csproj", "{755D62DD-1489-4C85-92EF-BD913A847C77}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "JD.BitBet.BL.Models", "JD.BitBet.BL.Models\JD.BitBet.BL.Models.csproj", "{755D62DD-1489-4C85-92EF-BD913A847C77}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JD.BitBet.PL.Test", "JD.BitBet.Test\JD.BitBet.PL.Test.csproj", "{D9B22DD8-D0D2-4A19-996B-7AF312B7F8AB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "JD.BitBet.PL.Test", "JD.BitBet.Test\JD.BitBet.PL.Test.csproj", "{D9B22DD8-D0D2-4A19-996B-7AF312B7F8AB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JD.BitBet.BL.Test", "JD.BitBet.BL.Test\JD.BitBet.BL.Test.csproj", "{65721B5E-3162-4BF9-B514-2CE3D0955068}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "JD.BitBet.BL.Test", "JD.BitBet.BL.Test\JD.BitBet.BL.Test.csproj", "{65721B5E-3162-4BF9-B514-2CE3D0955068}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JD.BitBet.MigrationHandler", "JD.BitBet.MigrationHandler\JD.BitBet.MigrationHandler.csproj", "{16D28244-E2F2-4705-AF8B-BD8F38977088}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "JD.BitBet.MigrationHandler", "JD.BitBet.MigrationHandler\JD.BitBet.MigrationHandler.csproj", "{16D28244-E2F2-4705-AF8B-BD8F38977088}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
