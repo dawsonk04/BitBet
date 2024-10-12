@@ -17,10 +17,8 @@ namespace JBS.DVDCentral.BL
             try
             {
                 tblGame row = Map<Game, tblGame>(game);
-                return await base.InsertAsync(row,
-                    e => e.GameResult == game.GameResult &&
-                    e.UserId == game.UserId &&
-                    rollback);
+                return await base.InsertAsync(row,  
+                    e => e.UserId == game.UserId , rollback);
             }
             catch (Exception ex)
             {

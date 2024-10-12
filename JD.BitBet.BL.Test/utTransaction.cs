@@ -1,11 +1,8 @@
 namespace JD.BitBet.BL.Test
 {
     [TestClass]
-    public class UnitTest1
+    public class UtGame
     {
-        [TestMethod]
-        public void TestMethod1()
-        {
-        }
+        
     }
 }
