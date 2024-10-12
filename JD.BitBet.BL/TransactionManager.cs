@@ -50,7 +50,7 @@ namespace JD.BitBet.BL
         }
 
 
-        // Will have to include another method in here for LoadingTransactions? 
+        // Will have to include another method in here for LoadingTransactions?-
 
     }
 }
