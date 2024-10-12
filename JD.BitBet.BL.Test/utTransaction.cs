@@ -1,3 +1,5 @@
+using JD.BitBet.BL.Models;
+
 namespace JD.BitBet.BL.Test
 {
     [TestClass]
@@ -18,10 +20,10 @@ namespace JD.BitBet.BL.Test
             Transaction transaction = new Transaction
             {
                 Id = Guid.NewGuid(),
-                WalletId = ,
-                TransactionType = "Test",
-                Amount = 1,
                 TransactionDate = DateTime.Now,
+                TransactionType = "test",
+                Amount = 120,
+                WalletId = (await new WalletManager(options).LoadAsync()).FirstOrDefault().Id
             };
             Guid result = await new TransactionManager(options).InsertAsync(transaction, true);
             Assert.AreNotEqual(result, Guid.Empty);

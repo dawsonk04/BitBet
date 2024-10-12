@@ -13,10 +13,11 @@ namespace JD.BitBet.BL.Test
         [TestMethod]
         public async Task InsertTest()
         {
-            int id = 0;
             Game game = new Game
             {
+                Id =Guid.NewGuid(),
                 GameResult = 20.00,
+                UserId = (await new UserManager(options).LoadAsync()).FirstOrDefault().Id
             };
 
             Guid results = await new GameManager(options).InsertAsync(game, true);
@@ -34,8 +35,8 @@ namespace JD.BitBet.BL.Test
         [TestMethod]
         public async Task DeleteTest()
         {
-            Game director = (await new GameManager(options).LoadAsync()).FirstOrDefault();
-            Assert.IsTrue(new GameManager(options).DeleteAsync(director.Id, true).Result > 0);
+            Game game = (await new GameManager(options).LoadAsync()).FirstOrDefault();
+            Assert.IsTrue(new GameManager(options).DeleteAsync(game.Id, true).Result > 0);
         }
         [TestMethod]
         public async Task LoadByIdTest()
