@@ -1,6 +1,4 @@
-﻿using JD.BitBet.PL;
-
-namespace JD.BitBet.BL
+﻿namespace JD.BitBet.BL
 {
     public class TransactionManager : GenericManager<tblTransaction>
     {

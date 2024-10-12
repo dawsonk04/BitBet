@@ -205,7 +205,6 @@ namespace JD.BitBet.BL
 
                             dc.tblUser.Update(upDateRow);
 
-                            // Commit the changes and get the number of rows affected
                             results = dc.SaveChanges();
 
                             if (rollback) transaction.Rollback();
