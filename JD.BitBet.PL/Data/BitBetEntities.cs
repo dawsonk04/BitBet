@@ -1,10 +1,5 @@
 ﻿using JD.BitBet.PL.Entities;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace JD.BitBet.PL.Data
 {
@@ -80,7 +75,7 @@ namespace JD.BitBet.PL.Data
                 WalletAddress = "0xE2dC61497FDD26F9ea285172A41F0b25373f22df",
                 UserId = userId[0],
                 Balance = 0.0
-            }); 
+            });
             modelBuilder.Entity<tblWallet>().HasData(new tblWallet
             {
                 Id = walletId[1],
@@ -124,7 +119,7 @@ namespace JD.BitBet.PL.Data
             modelBuilder.Entity<tblUser>().HasData(new tblUser
             {
                 Id = userId[1],
-                Email = "jstrange2@gmail.com",
+                Email = "jbstrange2@gmail.com",
                 Password = GetHash("password"),
                 CreateDate = DateTime.Now,
             });
@@ -188,7 +183,6 @@ namespace JD.BitBet.PL.Data
                 Amount = 2,
             });
         }
-
         private void CreateHands(ModelBuilder modelBuilder)
         {
             for (int i = 0; i < handId.Length; i++)
@@ -212,7 +206,7 @@ namespace JD.BitBet.PL.Data
                     .WithMany(p => p.Hands)
                     .HasForeignKey(d => d.GameId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_tblHand_UserId");
+                    .HasConstraintName("FK_tblHand_GameId");
             });
             modelBuilder.Entity<tblHand>().HasData(new tblHand
             {
@@ -255,7 +249,7 @@ namespace JD.BitBet.PL.Data
             modelBuilder.Entity<tblGame>().HasData(new tblGame
             {
                 Id = gameId[0],
-                GameResult = 200.00, 
+                GameResult = 200.00,
                 UserId = userId[0],
             });
             modelBuilder.Entity<tblGame>().HasData(new tblGame
@@ -295,7 +289,7 @@ namespace JD.BitBet.PL.Data
             {
                 Id = errorLogId[0],
                 UserId = userId[0],
-                ErrorType= "Login Exception",
+                ErrorType = "Login Exception",
                 ErrorMessage = "Test",
                 ErrorDateTime = DateTime.Now,
             });

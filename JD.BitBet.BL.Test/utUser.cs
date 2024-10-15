@@ -23,7 +23,7 @@ namespace JD.BitBet.BL.Test
         [TestMethod]
         public async Task InsertTest()
         {
-            User user = new User { Email = "jbstrange2@gmail.com", Password = "password", CreateDate = DateTime.Now};
+            User user = new User { Email = "jstrange2@gmail.com", Password = "password", CreateDate = DateTime.Now};
             Guid result = await new UserManager(options).InsertAsync(user, true);
             Assert.AreNotEqual(result, Guid.Empty);
         }
@@ -31,7 +31,7 @@ namespace JD.BitBet.BL.Test
         [TestMethod]
         public async Task LoginSuccess()
         {
-            User user = new User { Email = "jbstrange2@gmail.com", Password = "password"};
+            User user = new User { Email = "jstrange2@gmail.com", Password = "password"};
             bool result = await new UserManager(options).LoginAsync(user);
             Assert.IsTrue(result);
         }

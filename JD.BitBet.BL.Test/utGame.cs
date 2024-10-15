@@ -6,9 +6,9 @@ namespace JD.BitBet.BL.Test
         [TestMethod]
         public async Task LoadTest()
         {
-            List<Game> directors = await new GameManager(options).LoadAsync();
-            int expected = 0;
-            Assert.AreEqual(2, directors.Count);
+            List<Game> games = await new GameManager(options).LoadAsync();
+            int expected = 2;
+            Assert.AreEqual(expected, games.Count);
         }
         [TestMethod]
         public async Task InsertTest()
@@ -27,9 +27,9 @@ namespace JD.BitBet.BL.Test
         [TestMethod]
         public async Task UpdateTest()
         {
-            Game director = (await new GameManager(options).LoadAsync()).FirstOrDefault(); ;
+            Game game = (await new GameManager(options).LoadAsync()).FirstOrDefault(); ;
 
-            Assert.IsTrue(new GameManager(options).UpdateAsync(director, true).Result > 0);
+            Assert.IsTrue(new GameManager(options).UpdateAsync(game, true).Result > 0);
         }
 
         [TestMethod]
@@ -41,8 +41,8 @@ namespace JD.BitBet.BL.Test
         [TestMethod]
         public async Task LoadByIdTest()
         {
-            Game Game = (await new GameManager(options).LoadAsync()).FirstOrDefault();
-            Assert.AreEqual((await new GameManager(options).LoadByIdAsync(Game.Id)).Id, Game.Id);
+            Game game = (await new GameManager(options).LoadAsync()).FirstOrDefault();
+            Assert.AreEqual((await new GameManager(options).LoadByIdAsync(game.Id)).Id, game.Id);
 
         }
     }
