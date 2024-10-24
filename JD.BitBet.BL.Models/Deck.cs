@@ -6,7 +6,7 @@ namespace JD.BitBet.BL.Models
     {
         private List<Card> _cards;
 
-        public Deck()
+        public void InitalizeDeck()
         {
             _cards = new List<Card>();
             foreach (Suit suit in Enum.GetValues(typeof(Suit)))
@@ -32,6 +32,9 @@ namespace JD.BitBet.BL.Models
         }
         public Card Deal()
         {
+            if (_cards.Count == 0)
+                throw new InvalidOperationException("No cards in deck");
+
             Card card = _cards.First();
             _cards.RemoveAt(0);
             return card;

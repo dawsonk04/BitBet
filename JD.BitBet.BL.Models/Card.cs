@@ -13,6 +13,16 @@ namespace JD.BitBet.BL.Models
             Suit = suit;
         }
 
+        public int GetValue()
+        {
+            return (int)Rank;
+        }
+
+        public bool IsAce()
+        {
+            return Rank == Rank.Ace;
+        }
+
         public override string ToString()
         {
             return $"{Rank} of {Suit}";
