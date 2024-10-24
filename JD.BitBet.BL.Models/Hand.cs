@@ -16,10 +16,17 @@ namespace JD.BitBet.BL.Models
         {
             _cards = new List<Card>();
         }
+
+        public void AddCard(Card card)
+        {
+            _cards.Add(card);
+        }
+
         public void Clear()
         {
             _cards.Clear();
         }
+
         public int GetHandValue()
         {
             int value = 0;
@@ -34,11 +41,13 @@ namespace JD.BitBet.BL.Models
                 }
             }
 
+            // Adjust Ace values if hand exceeds 21
             while (value > 21 && aceCount > 0)
             {
                 value -= 10;
                 aceCount--;
             }
+
             return value;
         }
 
@@ -46,6 +55,7 @@ namespace JD.BitBet.BL.Models
         {
             return GetHandValue() > 21;
         }
-
     }
 }
+
+

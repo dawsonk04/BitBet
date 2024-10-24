@@ -27,6 +27,10 @@
             Spades
         }
 
+        public enum PlayerAction
+        {
+            Hit, Stand, Double
+        }
 
     }
 }
