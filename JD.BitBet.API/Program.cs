@@ -21,6 +21,26 @@ public class Program
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
 
+        builder.Services.AddSwaggerGen(c =>
+        {
+            c.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
+            {
+                Title = "BitBet API",
+                Version = "v1",
+                Contact = new Microsoft.OpenApi.Models.OpenApiContact
+                {
+                    Name = "John & Dawson",
+                    Email = "test@fvtc.edu",
+                    Url = new Uri("https://www.fvtc.edu")
+                }
+            });
+
+            //var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+            //var xmlpath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+            //c.IncludeXmlComments(xmlpath);
+
+        });
+
         builder.Services.AddDbContextPool<BitBetEntities>(options =>
         {
             options.UseSqlServer(builder.Configuration.GetConnectionString("BitBetConnection"));
