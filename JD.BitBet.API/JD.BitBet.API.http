@@ -1,0 +1,6 @@
+@JD.BitBet.API_HostAddress = http://localhost:5117
+
+GET {{JD.BitBet.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
