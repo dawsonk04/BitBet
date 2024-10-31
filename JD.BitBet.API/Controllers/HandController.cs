@@ -6,6 +6,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace JD.BitBet.API.Controllers
 {
+    [Route("api/[controller]")]
+    [ApiController]
     public class HandController : GenericController<Hand, HandManager, BitBetEntities>
     {
         public HandController(ILogger<HandController> logger, DbContextOptions<BitBetEntities> options) : base(logger, options) { }
