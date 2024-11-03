@@ -15,7 +15,10 @@ namespace JD.BitBet.API.Controllers
             this.logger = logger;
             this.manager = (U)Activator.CreateInstance(typeof(U), logger, options);
         }
-
+        /// <summary>
+        /// get entities of particular type
+        /// </summary>
+        /// <returns>List of T</returns>
         [HttpGet]
         public async Task<ActionResult<IEnumerable<T>>> Get()
         {
@@ -28,6 +31,11 @@ namespace JD.BitBet.API.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
+        /// <summary>
+        /// get entity for a particular type
+        /// </summary>
+        /// <param name="id">id for entity</param>
+        /// <returns></returns>
         [HttpGet("{id}")]
         public async Task<ActionResult<T>> Get(Guid id)
         {
@@ -40,6 +48,12 @@ namespace JD.BitBet.API.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
+        /// <summary>
+        /// insert a new entity
+        /// </summary>
+        /// <param name="entity">new entity</param>
+        /// <param name="rollback"></param>
+        /// <returns></returns>
         [HttpPost("{rollback?}")]
         public async Task<ActionResult> Post([FromBody] T entity, bool rollback = false)
         {
@@ -53,6 +67,13 @@ namespace JD.BitBet.API.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
+        /// <summary>
+        /// update a particular entity
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="entity"></param>
+        /// <param name="rollback"></param>
+        /// <returns></returns>
         [HttpPut("{id}/{rollback?}")]
         public async Task<ActionResult> Put(Guid id, [FromBody] T entity, bool rollback = false)
         {
@@ -69,6 +90,12 @@ namespace JD.BitBet.API.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
+        /// <summary>
+        /// delete a particular entity
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="rollback"></param>
+        /// <returns></returns>
         [HttpDelete("{id}/{rollback?}")]
         public async Task<ActionResult> Delete(Guid id, bool rollback = false)
         {
