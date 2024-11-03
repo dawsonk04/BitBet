@@ -1,3 +1,4 @@
+using JD.Utility;
 using Microsoft.Extensions.Options;
 
 namespace JD.BitBet.BL.Test
@@ -5,6 +6,15 @@ namespace JD.BitBet.BL.Test
     [TestClass]
     public class utHand : utBase
     {
+        [TestMethod]
+        public async Task ExportDataTest()
+        {
+            var entities = await new HandManager(options).LoadAsync().ConfigureAwait(false);
+            string[] columns = { "BetAmount", "Result"  };
+            var data = HandManager.ConvertData(entities, columns);
+            Excel.Export("hand.xlsx", data);
+        }
+
         [TestMethod]
         public async Task LoadTest()
         {
@@ -14,7 +24,6 @@ namespace JD.BitBet.BL.Test
         }
 
         [TestMethod]
-
         public async Task InsertTest()
         {
             Hand hand = new Hand
