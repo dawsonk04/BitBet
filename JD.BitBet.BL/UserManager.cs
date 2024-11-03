@@ -74,7 +74,7 @@ namespace JD.BitBet.BL
                                 }
                                 else
                                 {
-                                    throw new LoginFailureException("Cannot log in with these credentials.  Your IP address has been saved.");
+                                    throw new LoginFailureException("Cannot log in with these credentials.");
                                 }
                             }
                             else

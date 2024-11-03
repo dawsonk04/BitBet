@@ -1,3 +1,4 @@
+using JD.Utility;
 using Microsoft.Extensions.Options;
 
 namespace JD.BitBet.BL.Test
@@ -13,8 +14,8 @@ namespace JD.BitBet.BL.Test
             Assert.AreEqual(expected, wallets.Count);
         }
 
-        [TestMethod]
 
+        [TestMethod]
         public async Task InsertTest()
         {
             Wallet wallet = new Wallet

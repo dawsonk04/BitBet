@@ -1,8 +1,19 @@
+using JD.Utility;
+
 namespace JD.BitBet.BL.Test
 {
     [TestClass]
     public class utGame : utBase
     {
+        [TestMethod]
+        public async Task ExportDataTest()
+        {
+            var entities = await new GameManager(options).LoadAsync().ConfigureAwait(false);
+            string[] columns = { "GameResult" };
+            var data = GameManager.ConvertData(entities, columns);
+            Excel.Export("game.xlsx", data);
+        }
+
         [TestMethod]
         public async Task LoadTest()
         {

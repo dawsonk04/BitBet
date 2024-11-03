@@ -1,10 +1,21 @@
 using JD.BitBet.BL.Models;
+using JD.Utility;
 
 namespace JD.BitBet.BL.Test
 {
     [TestClass]
     public class utTransaction : utBase
     {
+        [TestMethod]
+        public async Task ExportDataTest()
+        {
+            var entities = await new TransactionManager(options).LoadAsync().ConfigureAwait(false);
+            string[] columns = { "TransactionType", "Amount","TransactionDate" };
+            var data = TransactionManager.ConvertData(entities, columns);
+            Excel.Export("transaction.xlsx", data);
+        }
+
+
         [TestMethod]
         public async Task LoadTest()
         {

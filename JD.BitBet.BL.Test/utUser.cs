@@ -1,3 +1,4 @@
+using JD.Utility;
 using Microsoft.Extensions.Options;
 
 namespace JD.BitBet.BL.Test
@@ -5,11 +6,20 @@ namespace JD.BitBet.BL.Test
     [TestClass]
     public class utUser : utBase
     {
+        [TestMethod]
+        public async Task ExportDataTest()
+        {
+            var entities = await new UserManager(options).LoadAsync().ConfigureAwait(false);
+            string[] columns = { "Email", "CreateDate" };
+            var data = UserManager.ConvertData(entities, columns);
+            Excel.Export("user.xlsx", data);
+        }
 
         [TestInitialize]
         public async Task Initialize()
         {
             await new UserManager(options).Seed();
+            transaction = dc.Database.BeginTransaction();
         }
 
 
@@ -31,7 +41,7 @@ namespace JD.BitBet.BL.Test
         [TestMethod]
         public async Task LoginSuccess()
         {
-            User user = new User { Email = "jstrange2@gmail.com", Password = "password"};
+            User user = new User { Email = "jbstrange2@gmail.com", Password = "password", };
             bool result = await new UserManager(options).LoginAsync(user);
             Assert.IsTrue(result);
         }
@@ -41,9 +51,9 @@ namespace JD.BitBet.BL.Test
         {
             try
             {
-                User user = new User { Email = "Bill", Password = "xxzxx", CreateDate = DateTime.Now };
+                User user = new User { Email = "jbstrange2@gmail.com", Password = "xxzxx", CreateDate = DateTime.Now };
                 bool result = await new UserManager(options).LoginAsync(user);
-                Assert.Fail();
+                Assert.IsFalse(result);
             }
             catch (LoginFailureException)
             {

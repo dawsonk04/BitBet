@@ -147,7 +147,7 @@ namespace JD.BitBet.PL.Data
                 entity.HasOne(e => e.Wallet)
                     .WithMany(p => p.Transactions)
                     .HasForeignKey(d => d.WalletId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("FK_tblTransaction_WalletId");
             });
             modelBuilder.Entity<tblTransaction>().HasData(new tblTransaction
@@ -205,7 +205,7 @@ namespace JD.BitBet.PL.Data
                 entity.HasOne(e => e.Game)
                     .WithMany(p => p.Hands)
                     .HasForeignKey(d => d.GameId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("FK_tblHand_GameId");
             });
             modelBuilder.Entity<tblHand>().HasData(new tblHand
@@ -243,7 +243,7 @@ namespace JD.BitBet.PL.Data
                 entity.HasOne(e => e.User)
                     .WithMany(p => p.Games)
                     .HasForeignKey(d => d.UserId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("FK_tblGame_UserId");
             });
             modelBuilder.Entity<tblGame>().HasData(new tblGame
