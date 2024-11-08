@@ -158,7 +158,7 @@ namespace JD.BitBet.BL
             }
             else if(result == GameResult.PlayerBlackjack)
             {
-                //Add Muiltiplier for winnings
+                //Todo: Add Muiltiplier for winnings
                 result = GameResult.PlayerWins;
             }
             else
@@ -177,6 +177,7 @@ namespace JD.BitBet.BL
                 {
                     result = GameResult.PlayerWins;
                 }
+                //Both players stand
                 else
                 {
                     if(dealerValue > playerValue)
