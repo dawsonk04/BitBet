@@ -9,7 +9,7 @@ namespace JD.BitBet.BL
 {
     public class PlayerManager
     {
-        private List<Card> _playerHand;
+        public static List<Card> _playerHand;
         private Card card;
         private Deck _deck;
         private const int BlackjackValue = 21;
@@ -19,13 +19,6 @@ namespace JD.BitBet.BL
         {
             _deck = deck;
             _playerHand = new List<Card>();
-        }
-        public void StartNewGame()
-        {
-            _playerHand.Clear();
-            _deck.Shuffle();
-            _playerHand.Add(_deck.Deal());
-            _playerHand.Add(_deck.Deal());
         }
         public void setPlayerHand(List<Card> hand)
         {

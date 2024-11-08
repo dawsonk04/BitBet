@@ -8,8 +8,7 @@ namespace JD.BitBet.BL
 {
     public class GameManager : GenericManager<tblGame>
     {
-        private DealerManager _dealerHand;
-
+        public static Deck _deck;
         private const string NOTFOUND_MESSAGE = "Row does not exist";
         public GameManager(DbContextOptions<BitBetEntities> options, ILogger logger) : base(options, logger) { }
         public GameManager(DbContextOptions<BitBetEntities> options) : base(options) { }
@@ -72,6 +71,16 @@ namespace JD.BitBet.BL
                 throw;
             }
         }
+        public void StartNewGame()
+        {
+            PlayerManager._playerHand.Clear();
+            DealerManager._dealerHand.Clear();
+            _deck.Shuffle();
+            PlayerManager._playerHand.Add(_deck.Deal());
+            PlayerManager._playerHand.Add(_deck.Deal());
+            DealerManager._dealerHand.Add(_deck.Deal());
+            DealerManager._dealerHand.Add(_deck.Deal());
+        }
         public static int CalculateHandValue(List<Card> hand)
         {
             int value = 0;
@@ -105,14 +114,48 @@ namespace JD.BitBet.BL
             DealerWins,
             Push
         }
-        public GameResult CompleteGame(List<Cards> dealerHand, List<Cards> playerHand)
+        public GameResult CompleteGame(List<Card> dealerHand, List<Card> playerHand)
         {
+            dealerHand = DealerManager._dealerHand;
+            playerHand = PlayerManager._playerHand;
+            int dealerValue = CalculateHandValue(dealerHand);
+            int playerValue = CalculateHandValue(playerHand);
+            int BlackjackValue = 21;
+            GameResult result;
 
+            while (playerValue < 17)
+            {
+                playerHand.Add(_deck.Deal());
+            }
 
+            if (playerValue == BlackjackValue)
+                result = GameResult.PlayerBlackjack;
+            if (playerValue > BlackjackValue)
+                result = GameResult.PlayerBust;
+            else
+                result = GameResult.PlayerStand;
 
-
-
-
+            if (result == GameResult.PlayerBust)
+            {
+                return GameResult.DealerWins;
+            }
+            else if(result == GameResult.PlayerBlackjack)
+            {
+                return GameResult.PlayerWins;
+            }
+            else
+            {
+                while (dealerValue < 17)
+                {
+                    playerHand.Add(_deck.Deal());
+                }
+                if (dealerValue == BlackjackValue)
+                    result = GameResult.PlayerBlackjack;
+                if (dealerValue > BlackjackValue)
+                    result = GameResult.PlayerBust;
+                else
+                    result = GameResult.PlayerStand;
+            }
 
 
             return GameResult.InProgress;
