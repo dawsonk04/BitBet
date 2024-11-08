@@ -2,11 +2,14 @@
 using JD.BitBet.BL.Models;
 using Microsoft.EntityFrameworkCore.Storage;
 using System.IO;
+using static JD.BitBet.BL.Models.Cards;
 
 namespace JD.BitBet.BL
 {
     public class GameManager : GenericManager<tblGame>
     {
+        private DealerManager _dealerHand;
+
         private const string NOTFOUND_MESSAGE = "Row does not exist";
         public GameManager(DbContextOptions<BitBetEntities> options, ILogger logger) : base(options, logger) { }
         public GameManager(DbContextOptions<BitBetEntities> options) : base(options) { }
@@ -68,6 +71,51 @@ namespace JD.BitBet.BL
 
                 throw;
             }
+        }
+        public static int CalculateHandValue(List<Card> hand)
+        {
+            int value = 0;
+            int aceCount = 0;
+
+            foreach (var card in hand)
+            {
+                if (card.Rank == Rank.Ace)
+                    aceCount++;
+                value += (int)card.Rank;
+            }
+
+            while (value > 21 && aceCount > 0)
+            {
+                value -= 10;
+                aceCount--;
+            }
+
+            return value;
+        }
+        public enum GameResult
+        {
+            InProgress,
+            PlayerBlackjack,
+            PlayerBust,
+            PlayerWins,
+            PlayerStand,
+            DealerStand,
+            DealerBlackJack,
+            DealerBust,
+            DealerWins,
+            Push
+        }
+        public GameResult CompleteGame(List<Cards> dealerHand, List<Cards> playerHand)
+        {
+
+
+
+
+
+
+
+
+            return GameResult.InProgress;
         }
     }
 }

@@ -32,54 +32,21 @@ namespace JD.BitBet.BL
         {
             _dealerHand = hand;
         }
-        public GameResult CompleteDealerTurn()
+        public GameManager.GameResult CompleteDealerTurn()
         {
-            while (CalculateHandValue(_dealerHand) < 17)
+            while (GameManager.CalculateHandValue(_dealerHand) < 17)
             {
                 _dealerHand.Add(_deck.Deal());
             }
 
-            int dealerValue = CalculateHandValue(_dealerHand);
+            int dealerValue = GameManager.CalculateHandValue(_dealerHand);
 
             if (dealerValue == BlackjackValue)
-                return GameResult.DealerBlackJack;
+                return GameManager.GameResult.DealerBlackJack;
             if (dealerValue > BlackjackValue)
-                return GameResult.DealerBust;
+                return GameManager.GameResult.DealerBust;
             else
-                return GameResult.DealerStand;
-        }
-
-        public enum GameResult
-        {
-            InProgress,
-            PlayerBlackjack,
-            DealerStand,
-            DealerBlackJack,
-            PlayerBust,
-            DealerBust,
-            PlayerWins,
-            DealerWins,
-            Push
-        }
-        public int CalculateHandValue(List<Card> hand)
-        {
-            int value = 0;
-            int aceCount = 0;
-
-            foreach (var card in hand)
-            {
-                if (card.Rank == Rank.Ace)
-                    aceCount++;
-                value += (int)card.Rank;
-            }
-
-            while (value > 21 && aceCount > 0)
-            {
-                value -= 10;
-                aceCount--;
-            }
-
-            return value;
+                return GameManager.GameResult.DealerStand;
         }
     }
 }
