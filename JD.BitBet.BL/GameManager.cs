@@ -116,49 +116,80 @@ namespace JD.BitBet.BL
         }
         public GameResult CompleteGame(List<Card> dealerHand, List<Card> playerHand)
         {
+            StartNewGame();
             dealerHand = DealerManager._dealerHand;
             playerHand = PlayerManager._playerHand;
             int dealerValue = CalculateHandValue(dealerHand);
-            int playerValue = CalculateHandValue(playerHand);
             int BlackjackValue = 21;
             GameResult result;
+            int playerValue = CalculateHandValue(playerHand);
 
-            while (playerValue < 17)
+            //Player Plays
+            //Todo: remove when UI is implemented
+            if (dealerValue != BlackjackValue)
             {
-                playerHand.Add(_deck.Deal());
+                while (playerValue < 17)
+                {
+                    playerHand.Add(_deck.Deal());
+                    playerValue = CalculateHandValue(playerHand);
+                }
+                if (playerValue == BlackjackValue)
+                {
+                    result = GameResult.PlayerBlackjack;
+                }
+                if (playerValue > BlackjackValue)
+                {
+                    result = GameResult.PlayerBust;
+                }
+                else
+                {
+                    result = GameResult.PlayerStand;
+                }
+            }
+            else
+            {
+                result = GameResult.DealerWins;
             }
 
-            if (playerValue == BlackjackValue)
-                result = GameResult.PlayerBlackjack;
-            if (playerValue > BlackjackValue)
-                result = GameResult.PlayerBust;
-            else
-                result = GameResult.PlayerStand;
-
+            //Check To see if dealer plays
             if (result == GameResult.PlayerBust)
             {
-                return GameResult.DealerWins;
+                result = GameResult.DealerWins;
             }
             else if(result == GameResult.PlayerBlackjack)
             {
-                return GameResult.PlayerWins;
+                //Add Muiltiplier for winnings
+                result = GameResult.PlayerWins;
             }
             else
             {
+                //Dealer Plays
                 while (dealerValue < 17)
                 {
                     playerHand.Add(_deck.Deal());
+                    dealerValue = CalculateHandValue(dealerHand);
                 }
                 if (dealerValue == BlackjackValue)
-                    result = GameResult.PlayerBlackjack;
+                {
+                    result = GameResult.DealerWins;
+                }
                 if (dealerValue > BlackjackValue)
-                    result = GameResult.PlayerBust;
+                {
+                    result = GameResult.PlayerWins;
+                }
                 else
-                    result = GameResult.PlayerStand;
+                {
+                    if(dealerValue > playerValue)
+                    {
+                        result = GameResult.DealerWins;
+                    }
+                    else
+                    {
+                        result = GameResult.PlayerWins;
+                    }
+                }
             }
-
-
-            return GameResult.InProgress;
+            return result;
         }
     }
 }
