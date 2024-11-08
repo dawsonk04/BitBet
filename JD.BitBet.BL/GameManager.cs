@@ -1,7 +1,4 @@
-﻿using JD.BitBet.BL;
-using JD.BitBet.BL.Models;
-using Microsoft.EntityFrameworkCore.Storage;
-using System.IO;
+﻿using JD.BitBet.BL.Models;
 using static JD.BitBet.BL.Models.Cards;
 
 namespace JD.BitBet.BL
@@ -19,8 +16,8 @@ namespace JD.BitBet.BL
             try
             {
                 tblGame row = Map<Game, tblGame>(game);
-                return await base.InsertAsync(row,  
-                    e => e.GameResult == game.GameResult , rollback);
+                return await base.InsertAsync(row,
+                    e => e.GameResult == game.GameResult, rollback);
             }
             catch (Exception ex)
             {
@@ -114,9 +111,10 @@ namespace JD.BitBet.BL
             DealerWins,
             Push
         }
-        public GameResult CompleteGame(List<Card> dealerHand, List<Card> playerHand)
+        public GameResult CompleteGame()
         {
-            StartNewGame();
+            List<Card> dealerHand;
+            List<Card> playerHand;
             dealerHand = DealerManager._dealerHand;
             playerHand = PlayerManager._playerHand;
             int dealerValue = CalculateHandValue(dealerHand);
@@ -148,7 +146,14 @@ namespace JD.BitBet.BL
             }
             else
             {
-                result = GameResult.DealerWins;
+                if (playerValue == BlackjackValue)
+                {
+                    result = GameResult.Push;
+                }
+                else
+                {
+                    result = GameResult.DealerWins;
+                }
             }
 
             //Check To see if dealer plays
@@ -156,7 +161,7 @@ namespace JD.BitBet.BL
             {
                 result = GameResult.DealerWins;
             }
-            else if(result == GameResult.PlayerBlackjack)
+            else if (result == GameResult.PlayerBlackjack)
             {
                 //Add Muiltiplier for winnings
                 result = GameResult.PlayerWins;
@@ -179,7 +184,7 @@ namespace JD.BitBet.BL
                 }
                 else
                 {
-                    if(dealerValue > playerValue)
+                    if (dealerValue > playerValue)
                     {
                         result = GameResult.DealerWins;
                     }
