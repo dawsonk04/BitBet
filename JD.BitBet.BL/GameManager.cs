@@ -5,6 +5,8 @@ namespace JD.BitBet.BL
 {
     public class GameManager : GenericManager<tblGame>
     {
+        public static List<Card> _playerHand { get; set; }
+        public static List<Card> _dealerHand {get; set; }   
         public static Deck _deck;
         private const string NOTFOUND_MESSAGE = "Row does not exist";
         public GameManager(DbContextOptions<BitBetEntities> options, ILogger logger) : base(options, logger) { }
@@ -68,15 +70,16 @@ namespace JD.BitBet.BL
                 throw;
             }
         }
-        public void StartNewGame()
+        public static void StartNewGame()
         {
-            PlayerManager._playerHand.Clear();
-            DealerManager._dealerHand.Clear();
+            _deck = new Deck();
+            _playerHand = new List<Card>();
+            _dealerHand = new List<Card>();
             _deck.Shuffle();
-            PlayerManager._playerHand.Add(_deck.Deal());
-            PlayerManager._playerHand.Add(_deck.Deal());
-            DealerManager._dealerHand.Add(_deck.Deal());
-            DealerManager._dealerHand.Add(_deck.Deal());
+            _playerHand.Add(_deck.Deal());
+            _playerHand.Add(_deck.Deal());
+            _dealerHand.Add(_deck.Deal());
+            _dealerHand.Add(_deck.Deal());
         }
         public static int CalculateHandValue(List<Card> hand)
         {
@@ -111,16 +114,12 @@ namespace JD.BitBet.BL
             DealerWins,
             Push
         }
-        public GameResult CompleteGame()
-        {
-            List<Card> dealerHand;
-            List<Card> playerHand;
-            dealerHand = DealerManager._dealerHand;
-            playerHand = PlayerManager._playerHand;
-            int dealerValue = CalculateHandValue(dealerHand);
+        public static GameResult CompleteGame()
+        {     
             int BlackjackValue = 21;
             GameResult result;
-            int playerValue = CalculateHandValue(playerHand);
+            int dealerValue = CalculateHandValue(_dealerHand);
+            int playerValue = CalculateHandValue(_playerHand);
 
             //Player Plays
             //Todo: remove when UI is implemented
@@ -128,14 +127,14 @@ namespace JD.BitBet.BL
             {
                 while (playerValue < 17)
                 {
-                    playerHand.Add(_deck.Deal());
-                    playerValue = CalculateHandValue(playerHand);
+                    _playerHand.Add(_deck.Deal());
+                    playerValue = CalculateHandValue(_playerHand);
                 }
                 if (playerValue == BlackjackValue)
                 {
                     result = GameResult.PlayerBlackjack;
                 }
-                if (playerValue > BlackjackValue)
+                else if (playerValue > BlackjackValue)
                 {
                     result = GameResult.PlayerBust;
                 }
@@ -171,8 +170,8 @@ namespace JD.BitBet.BL
                 //Dealer Plays
                 while (dealerValue < 17)
                 {
-                    playerHand.Add(_deck.Deal());
-                    dealerValue = CalculateHandValue(dealerHand);
+                    _dealerHand.Add(_deck.Deal());
+                    dealerValue = CalculateHandValue(_dealerHand);
                 }
                 if (dealerValue == BlackjackValue)
                 {
@@ -189,12 +188,18 @@ namespace JD.BitBet.BL
                     {
                         result = GameResult.DealerWins;
                     }
+                    else if(dealerValue == playerValue)
+                    {
+                        result = GameResult.Push;
+                    }
                     else
                     {
                         result = GameResult.PlayerWins;
                     }
                 }
             }
+            _playerHand.Clear();
+            _dealerHand.Clear();
             return result;
         }
     }
