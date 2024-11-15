@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace JD.BitBet.PL.Migrations
 {
     /// <inheritdoc />
-    public partial class BitBetDb : Migration
+    public partial class addmigrationbitbetdb : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -131,8 +131,8 @@ namespace JD.BitBet.PL.Migrations
                 columns: new[] { "Id", "CreateDate", "Email", "Password" },
                 values: new object[,]
                 {
-                    { new Guid("207d65b5-5405-486c-a51c-bb9ba1676976"), new DateTime(2024, 11, 3, 11, 32, 27, 3, DateTimeKind.Local).AddTicks(5049), "jbstrange2@gmail.com", "W6ph5Mm5Pz8GgiULbPgzG37mj9g=" },
-                    { new Guid("21c5970f-31aa-4137-9468-9abc00d6fb5e"), new DateTime(2024, 11, 3, 11, 32, 27, 3, DateTimeKind.Local).AddTicks(4977), "knudtdaw0000@gmail.com", "W6ph5Mm5Pz8GgiULbPgzG37mj9g=" }
+                    { new Guid("00918b19-007f-428b-bc6e-f2e87c3db17a"), new DateTime(2024, 11, 15, 15, 48, 45, 142, DateTimeKind.Local).AddTicks(7998), "knudtdaw0000@gmail.com", "W6ph5Mm5Pz8GgiULbPgzG37mj9g=" },
+                    { new Guid("dc0cbb4e-0295-42f0-8ffd-b192ac8c2eec"), new DateTime(2024, 11, 15, 15, 48, 45, 142, DateTimeKind.Local).AddTicks(8110), "jbstrange2@gmail.com", "W6ph5Mm5Pz8GgiULbPgzG37mj9g=" }
                 });
 
             migrationBuilder.InsertData(
@@ -140,8 +140,8 @@ namespace JD.BitBet.PL.Migrations
                 columns: new[] { "Id", "ErrorDateTime", "ErrorMessage", "ErrorType", "UserId" },
                 values: new object[,]
                 {
-                    { new Guid("15c7f635-390b-480e-badf-a0b530229fac"), new DateTime(2024, 11, 3, 11, 32, 27, 3, DateTimeKind.Local).AddTicks(8552), "Test", "Login Exception", new Guid("207d65b5-5405-486c-a51c-bb9ba1676976") },
-                    { new Guid("5d7095a8-10e8-4cb2-a193-67d644cf894a"), new DateTime(2024, 11, 3, 11, 32, 27, 3, DateTimeKind.Local).AddTicks(8534), "Test", "Login Exception", new Guid("21c5970f-31aa-4137-9468-9abc00d6fb5e") }
+                    { new Guid("2cb95b00-1f85-4ffc-bd56-f920572c95e9"), new DateTime(2024, 11, 15, 15, 48, 45, 143, DateTimeKind.Local).AddTicks(1722), "Test", "Login Exception", new Guid("dc0cbb4e-0295-42f0-8ffd-b192ac8c2eec") },
+                    { new Guid("f6af8d3d-d064-4943-b156-28c10dd4692c"), new DateTime(2024, 11, 15, 15, 48, 45, 143, DateTimeKind.Local).AddTicks(1707), "Test", "Login Exception", new Guid("00918b19-007f-428b-bc6e-f2e87c3db17a") }
                 });
 
             migrationBuilder.InsertData(
@@ -149,8 +149,8 @@ namespace JD.BitBet.PL.Migrations
                 columns: new[] { "Id", "GameResult", "UserId" },
                 values: new object[,]
                 {
-                    { new Guid("a6bd0303-7674-4c12-a848-f1a0ba44a849"), 200.0, new Guid("21c5970f-31aa-4137-9468-9abc00d6fb5e") },
-                    { new Guid("ba62583f-a903-40e3-aa29-3328b311d056"), 200.0, new Guid("21c5970f-31aa-4137-9468-9abc00d6fb5e") }
+                    { new Guid("0e12d4be-f291-481c-b5d1-1c8147ca4dc2"), 200.0, new Guid("00918b19-007f-428b-bc6e-f2e87c3db17a") },
+                    { new Guid("4145c5c1-aab1-4a74-9517-683c0e496e9a"), 200.0, new Guid("00918b19-007f-428b-bc6e-f2e87c3db17a") }
                 });
 
             migrationBuilder.InsertData(
@@ -158,8 +158,8 @@ namespace JD.BitBet.PL.Migrations
                 columns: new[] { "Id", "Balance", "UserId", "WalletAddress" },
                 values: new object[,]
                 {
-                    { new Guid("38635c5b-d8e7-4e72-8294-525afc799689"), 0.0, new Guid("21c5970f-31aa-4137-9468-9abc00d6fb5e"), "0xE2dC61497FDD26F9ea285172A41F0b25373f22df" },
-                    { new Guid("7ea0caea-d46d-41bb-a39a-bd4580761c68"), 0.0, new Guid("207d65b5-5405-486c-a51c-bb9ba1676976"), "0xE2dC61497FDD26F9eaYaBoi5373f22df" }
+                    { new Guid("42249b6d-c658-41d3-a0a3-7ded8940ac84"), 0.0, new Guid("dc0cbb4e-0295-42f0-8ffd-b192ac8c2eec"), "0xE2dC61497FDD26F9eaYaBoi5373f22df" },
+                    { new Guid("f141bbd2-52f1-47b8-b378-26cb3f5f5fae"), 0.0, new Guid("00918b19-007f-428b-bc6e-f2e87c3db17a"), "0xE2dC61497FDD26F9ea285172A41F0b25373f22df" }
                 });
 
             migrationBuilder.InsertData(
@@ -167,8 +167,8 @@ namespace JD.BitBet.PL.Migrations
                 columns: new[] { "Id", "BetAmount", "GameId", "Result" },
                 values: new object[,]
                 {
-                    { new Guid("aac2c75b-c63a-4388-878c-0d167feaefb3"), 20.0, new Guid("a6bd0303-7674-4c12-a848-f1a0ba44a849"), 40.0 },
-                    { new Guid("feba23eb-b62a-4c31-a875-edc755797f12"), 20.0, new Guid("ba62583f-a903-40e3-aa29-3328b311d056"), -20.0 }
+                    { new Guid("2993f826-3ab7-4320-a11e-3bf20b7f226d"), 20.0, new Guid("0e12d4be-f291-481c-b5d1-1c8147ca4dc2"), -20.0 },
+                    { new Guid("f068d930-2aa3-40fd-9fab-cd2cc12781a0"), 20.0, new Guid("4145c5c1-aab1-4a74-9517-683c0e496e9a"), 40.0 }
                 });
 
             migrationBuilder.InsertData(
@@ -176,10 +176,10 @@ namespace JD.BitBet.PL.Migrations
                 columns: new[] { "Id", "Amount", "TransactionDate", "TransactionType", "WalletId" },
                 values: new object[,]
                 {
-                    { new Guid("44094019-46ec-42f8-9398-0890d5f75efa"), 2.0, new DateTime(2024, 11, 3, 11, 32, 27, 3, DateTimeKind.Local).AddTicks(6593), "Withdrawal", new Guid("7ea0caea-d46d-41bb-a39a-bd4580761c68") },
-                    { new Guid("692a266c-b3a6-43f3-9982-b1cf9d53ff91"), 1.0, new DateTime(2024, 11, 3, 11, 32, 27, 3, DateTimeKind.Local).AddTicks(6583), "Withdrawal", new Guid("7ea0caea-d46d-41bb-a39a-bd4580761c68") },
-                    { new Guid("a5d235d4-5937-44f0-ae1b-59e6f8ee54ec"), 2.0, new DateTime(2024, 11, 3, 11, 32, 27, 3, DateTimeKind.Local).AddTicks(6572), "Withdrawal", new Guid("38635c5b-d8e7-4e72-8294-525afc799689") },
-                    { new Guid("f587eedb-497e-4ee3-8ead-e7025f3eaa4d"), 1.0, new DateTime(2024, 11, 3, 11, 32, 27, 3, DateTimeKind.Local).AddTicks(6555), "Withdrawal", new Guid("38635c5b-d8e7-4e72-8294-525afc799689") }
+                    { new Guid("2d86f55c-d9f4-4ad1-9994-03d4aee121d1"), 1.0, new DateTime(2024, 11, 15, 15, 48, 45, 142, DateTimeKind.Local).AddTicks(9923), "Withdrawal", new Guid("42249b6d-c658-41d3-a0a3-7ded8940ac84") },
+                    { new Guid("517a31a4-c83b-4fb8-bc1a-e9a2f6540f39"), 1.0, new DateTime(2024, 11, 15, 15, 48, 45, 142, DateTimeKind.Local).AddTicks(9896), "Withdrawal", new Guid("f141bbd2-52f1-47b8-b378-26cb3f5f5fae") },
+                    { new Guid("d42c83f5-7a66-4f9b-addd-d50404be817b"), 2.0, new DateTime(2024, 11, 15, 15, 48, 45, 142, DateTimeKind.Local).AddTicks(9912), "Withdrawal", new Guid("f141bbd2-52f1-47b8-b378-26cb3f5f5fae") },
+                    { new Guid("f8dc8753-d2c0-49db-9494-acb36a0dc671"), 2.0, new DateTime(2024, 11, 15, 15, 48, 45, 142, DateTimeKind.Local).AddTicks(9933), "Withdrawal", new Guid("42249b6d-c658-41d3-a0a3-7ded8940ac84") }
                 });
 
             migrationBuilder.CreateIndex(
