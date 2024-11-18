@@ -90,12 +90,11 @@ public class Program
         app.UseRouting();
         app.UseAuthorization();
 
-        // app.MapControllers();
-        //app.UseEndpoints(endpoints =>
-        //{
-        //    endpoints.MapControllers();
-        //    endpoints.MapHub<BingoHub>("/bingohub");
-        //});
+        app.MapControllers();
+        app.UseEndpoints(endpoints =>
+        {
+            endpoints.MapControllers();
+        });
         app.Run();
     }
 }

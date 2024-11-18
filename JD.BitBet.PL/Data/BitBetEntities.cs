@@ -114,7 +114,7 @@ namespace JD.BitBet.PL.Data
                 Id = userId[0],
                 Email = "knudtdaw0000@gmail.com",
                 Password = GetHash("password"),
-                CreateDate = DateTime.Now,
+                CreateDate = new DateTime(1990, 12, 4),
             });
             modelBuilder.Entity<tblUser>().HasData(new tblUser
             {
@@ -155,7 +155,7 @@ namespace JD.BitBet.PL.Data
                 Id = transactionId[0],
                 WalletId = walletId[0],
                 TransactionType = "Withdrawal",
-                TransactionDate = DateTime.Now,
+                TransactionDate = new DateTime(1990, 12, 4),
                 Amount = 1,
             });
             modelBuilder.Entity<tblTransaction>().HasData(new tblTransaction
@@ -291,7 +291,7 @@ namespace JD.BitBet.PL.Data
                 UserId = userId[0],
                 ErrorType = "Login Exception",
                 ErrorMessage = "Test",
-                ErrorDateTime = DateTime.Now,
+                ErrorDateTime = new DateTime(1990, 12, 4),
             });
             modelBuilder.Entity<tblErrorLog>().HasData(new tblErrorLog
             {

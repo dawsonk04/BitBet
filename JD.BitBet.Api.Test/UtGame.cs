@@ -10,5 +10,10 @@ namespace JD.BitBet.Api.Test
         {
             await base.LoadTestAsync<Game>(6);
         }
+        [TestMethod]
+        public async Task DeleteTestAsync()
+        {
+            await base.DeleteTestAsync<Game>(new KeyValuePair<string, string>("Type", "Other"));
+        }
     }
 }

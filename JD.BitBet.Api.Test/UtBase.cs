@@ -144,6 +144,18 @@ namespace JD.BitBet.Api.Test
 
         }
 
+        //[TestMethod]
+        //public async Task LoadByIdTestAsync<T>(Guid id)
+        //{
+        //    dynamic items;
+        //    var response = client.GetStringAsync(typeof(T).Name + "/" + id).Result;
+        //    items = JsonConvert.DeserializeObject(response);
+        //    T item = items.ToObject<T>();
+
+        //    Assert.AreEqual(id, item.GetType().GetProperty("Id").GetValue(item, null));
+
+        //}
+
         public async Task<T> LoadByIdAsync<T>(KeyValuePair<string, string> filter)
         {
             Guid id = await GetId<T>(filter);
