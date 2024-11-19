@@ -7,7 +7,7 @@ namespace JD.BitBet.BL
     public class HandManager : GenericManager<tblHand>
     {
         private const string NOTFOUND_MESSAGE = "Row does not exist";
-        public HandManager(DbContextOptions<BitBetEntities> options, ILogger logger) : base(options, logger) { }
+        public HandManager(ILogger logger, DbContextOptions<BitBetEntities> options) : base(options, logger) { }
         public HandManager(DbContextOptions<BitBetEntities> options) : base(options) { }
         public HandManager() { }
 

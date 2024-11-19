@@ -5,7 +5,7 @@ namespace JD.BitBet.BL
     public class TransactionManager : GenericManager<tblTransaction>
     {
         public TransactionManager() { }
-        public TransactionManager(DbContextOptions<BitBetEntities> options, ILogger logger) : base(options, logger) { }
+        public TransactionManager(ILogger logger, DbContextOptions<BitBetEntities> options) : base(options, logger) { }
         public TransactionManager(DbContextOptions<BitBetEntities> options) : base(options) { }
 
         public async Task<Guid> InsertAsync(Models.Transaction transaction, bool rollback = false)

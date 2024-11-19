@@ -5,7 +5,7 @@ namespace JD.BitBet.BL
     public class WalletManager : GenericManager<tblWallet>
     {
         private const string NOTFOUND_MESSAGE = "Row does not exist";
-        public WalletManager(DbContextOptions<BitBetEntities> options, ILogger logger) : base(options, logger) { }
+        public WalletManager(ILogger logger, DbContextOptions<BitBetEntities> options) : base(options, logger) { }
         public WalletManager(DbContextOptions<BitBetEntities> options) : base(options) { }
         public WalletManager() { }
 

@@ -171,12 +171,5 @@
             return objTo;
         }
 
-        internal Task<T> LoadByIdAsync(Guid id)
-        {
-            throw new NotImplementedException();
-        }
-
-
-
     }
 }

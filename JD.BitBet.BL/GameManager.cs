@@ -9,7 +9,7 @@ namespace JD.BitBet.BL
         public static List<Card> _dealerHand {get; set; }   
         public static Deck _deck;
         private const string NOTFOUND_MESSAGE = "Row does not exist";
-        public GameManager(DbContextOptions<BitBetEntities> options, ILogger logger) : base(options, logger) { }
+        public GameManager( ILogger logger, DbContextOptions<BitBetEntities> options) : base(options, logger) { }
         public GameManager(DbContextOptions<BitBetEntities> options) : base(options) { }
         public GameManager() { }
 

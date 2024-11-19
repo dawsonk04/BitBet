@@ -118,10 +118,9 @@ namespace JD.BitBet.BL
         {
             try
             {
-                tblUser row = await base.LoadByIdAsync(id);
-
-                if (row != null)
-                    return Map<tblUser, User>(row);
+                List<tblUser> row = await base.LoadAsync(e => e.Id == id);
+                if (row[0] != null)
+                    return Map<tblUser, User>(row[0]);
                 else
                     throw new Exception("Row does not exist.");
             }

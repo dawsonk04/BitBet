@@ -41,7 +41,7 @@ namespace JD.BitBet.API.Controllers
         {
             try
             {
-                return Ok(await manager.LoadbyIdAsync(id));
+                return Ok(await manager.LoadByIdAsync(id));
             }
             catch (Exception ex)
             {
