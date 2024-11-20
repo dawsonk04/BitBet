@@ -26,7 +26,7 @@ namespace JD.BitBet.PL.Data
         {
         }
 
-        public virtual DbSet<tblErrorLog> TblErrors { get; set; }
+        public virtual DbSet<tblErrorLog> tblErrors { get; set; }
         public virtual DbSet<tblGame> tblGame { get; set; }
         public virtual DbSet<tblHand> tblHand { get; set; }
         public virtual DbSet<tblTransaction> tblTransaction { get; set; }
@@ -225,6 +225,20 @@ namespace JD.BitBet.PL.Data
                 BetAmount = 20.00,
                 Result = -20.00,
             });
+            modelBuilder.Entity<tblHand>().HasData(new tblHand
+            {
+                Id = handId[2],
+                GameId = gameId[0],
+                BetAmount = 20.00,
+                Result = 40.00,
+            });
+            modelBuilder.Entity<tblHand>().HasData(new tblHand
+            {
+                Id = handId[3],
+                GameId = gameId[1],
+                BetAmount = 20.00,
+                Result = -20.00,
+            });
         }
 
         private void CreateGames(ModelBuilder modelBuilder)
@@ -333,61 +347,60 @@ namespace JD.BitBet.PL.Data
             });
             modelBuilder.Entity<tblCard>().HasData(new tblCard
             {
-                Id = gameId[0],
+                Id = cardId[0],
                 HandId = handId[0],
                 Value = 10,
                 Suit = "King"
             });
             modelBuilder.Entity<tblCard>().HasData(new tblCard
             {
-                Id = gameId[1],
+                Id = cardId[1],
                 HandId = handId[0],
                 Value = 1,
                 Suit = "King"
             });
             modelBuilder.Entity<tblCard>().HasData(new tblCard
             {
-                Id = gameId[2],
+                Id = cardId[2],
                 HandId = handId[1],
                 Value = 1,
                 Suit = "King"
             });
             modelBuilder.Entity<tblCard>().HasData(new tblCard
             {
-                Id = gameId[3],
+                Id = cardId[3],
                 HandId = handId[1],
                 Value = 1,
                 Suit = "King"
             });
             modelBuilder.Entity<tblCard>().HasData(new tblCard
             {
-                Id = gameId[4],
+                Id = cardId[4],
                 HandId = handId[2],
                 Value = 1,
                 Suit = "King"
             });
             modelBuilder.Entity<tblCard>().HasData(new tblCard
             {
-                Id = gameId[5],
+                Id = cardId[5],
                 HandId = handId[2],
                 Value = 1,
                 Suit = "King"
             });
             modelBuilder.Entity<tblCard>().HasData(new tblCard
             {
-                Id = gameId[6],
+                Id = cardId[6],
                 HandId = handId[3],
                 Value = 1,
                 Suit = "King"
             });
             modelBuilder.Entity<tblCard>().HasData(new tblCard
             {
-                Id = gameId[7],
+                Id = cardId[7],
                 HandId = handId[3],
                 Value = 1,
                 Suit = "King"
             });
-            
            
         }
 
