@@ -25,13 +25,13 @@ namespace JD.BitBet.Api.Test
         [TestMethod]
         public async Task DeleteTestAsync()
         {
-            await base.DeleteTestAsync<Game>(new KeyValuePair<string, string>("Id", "3bb9209d-5f39-41ed-ba67-9dc14305126b"));
+            await base.DeleteTestAsync<Game>(new KeyValuePair<string, string>("Id", "f0819c2c-acfc-4d79-9a25-2cf588fd565e"));
         }
 
         [TestMethod]
         public async Task LoadByIdTestAsync()
         {
-            await base.LoadByIdTestAsync<Game>(new KeyValuePair<string, string>("Id", "3bb9209d-5f39-41ed-ba67-9dc14305126b"));
+            await base.LoadByIdTestAsync<Game>(new KeyValuePair<string, string>("Id", "f0819c2c-acfc-4d79-9a25-2cf588fd565e"));
         }
 
     }

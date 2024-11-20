@@ -2,15 +2,23 @@
 using JD.BitBet.BL.Models;
 using JD.BitBet.PL.Data;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Formatters.Xml;
 using Microsoft.EntityFrameworkCore;
 
 namespace JD.BitBet.API.Controllers
-{
+{    
     [Route("api/[controller]")]
     [ApiController]
     public class HandController : GenericController<Hand, HandManager, BitBetEntities>
     {
         public HandController(ILogger<HandController> logger, DbContextOptions<BitBetEntities> options) : base(logger, options) { }
-
     }
+
+    //[HttpPost]
+    //[Route("hit")]
+    //public async Task<ActionResult> Hit(int handId)
+    //{
+        
+    //}
+
 }

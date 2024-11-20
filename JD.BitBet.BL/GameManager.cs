@@ -1,4 +1,5 @@
 ﻿using JD.BitBet.BL.Models;
+using System.ComponentModel;
 using static JD.BitBet.BL.Models.Cards;
 
 namespace JD.BitBet.BL
@@ -114,6 +115,10 @@ namespace JD.BitBet.BL
             DealerWins,
             Push
         }
+        public enum handAction
+        {
+            Hit, Stand, Double, Split
+        }
         public static GameResult CompleteGame()
         {     
             int BlackjackValue = 21;
@@ -202,5 +207,27 @@ namespace JD.BitBet.BL
             _dealerHand.Clear();
             return result;
         }
+
+        public void Hit(List<Cards> hand)
+        {
+            
+        }
+
+        public void Stand(Guid handId)
+        {
+
+        }
+
+        public void Double(Guid handId)
+        {
+
+        }
+
+        public void Split(Guid handId)
+        {
+
+        }
+
+
     }
 }

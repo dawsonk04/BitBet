@@ -12,4 +12,8 @@ namespace JD.BitBet.API.Controllers
     {
         public GameController(ILogger<GameController> logger, DbContextOptions<BitBetEntities> options) : base(logger, options) { }
     }
+
+    
+
+
 }

@@ -11,6 +11,7 @@ namespace JD.BitBet.PL.Data
         Guid[] gameId = new Guid[2];
         Guid[] errorLogId = new Guid[2];
         Guid[] handId = new Guid[4];
+        Guid[] cardId = new Guid[8];
 
         public BitBetEntities(DbContextOptions<BitBetEntities> options) : base(options)
         {
@@ -31,6 +32,7 @@ namespace JD.BitBet.PL.Data
         public virtual DbSet<tblTransaction> tblTransaction { get; set; }
         public virtual DbSet<tblUser> tblUser { get; set; }
         public virtual DbSet<tblWallet> tblWallet { get; set; }
+        public virtual DbSet<tblCard> tblCard { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -41,6 +43,7 @@ namespace JD.BitBet.PL.Data
             CreateGames(modelBuilder);
             CreateHands(modelBuilder);
             CreateErrors(modelBuilder);
+            CreateCards(modelBuilder);
 
         }
 
@@ -301,6 +304,91 @@ namespace JD.BitBet.PL.Data
                 ErrorMessage = "Test",
                 ErrorDateTime = DateTime.Now,
             });
+        }
+
+        private void CreateCards(ModelBuilder modelBuilder)
+        {
+            for (int i = 0; i < cardId.Length; i++)
+            {
+                cardId[i] = Guid.NewGuid();
+            }
+            modelBuilder.Entity<tblCard>(entity =>
+            {
+                entity.HasKey(e => e.Id).HasName("Pk__tblCard_Id");
+
+                entity.ToTable("tblCard");
+
+                entity.Property(e => e.Id).ValueGeneratedNever();
+                entity.Property(e => e.Value)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+                entity.Property(e => e.Suit)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+                entity.HasOne(e => e.hand)
+                    .WithMany(p => p.cards)
+                    .HasForeignKey(d => d.HandId)
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .HasConstraintName("FK_tblCard_HandId");
+            });
+            modelBuilder.Entity<tblCard>().HasData(new tblCard
+            {
+                Id = gameId[0],
+                HandId = handId[0],
+                Value = 10,
+                Suit = "King"
+            });
+            modelBuilder.Entity<tblCard>().HasData(new tblCard
+            {
+                Id = gameId[1],
+                HandId = handId[0],
+                Value = 1,
+                Suit = "King"
+            });
+            modelBuilder.Entity<tblCard>().HasData(new tblCard
+            {
+                Id = gameId[2],
+                HandId = handId[1],
+                Value = 1,
+                Suit = "King"
+            });
+            modelBuilder.Entity<tblCard>().HasData(new tblCard
+            {
+                Id = gameId[3],
+                HandId = handId[1],
+                Value = 1,
+                Suit = "King"
+            });
+            modelBuilder.Entity<tblCard>().HasData(new tblCard
+            {
+                Id = gameId[4],
+                HandId = handId[2],
+                Value = 1,
+                Suit = "King"
+            });
+            modelBuilder.Entity<tblCard>().HasData(new tblCard
+            {
+                Id = gameId[5],
+                HandId = handId[2],
+                Value = 1,
+                Suit = "King"
+            });
+            modelBuilder.Entity<tblCard>().HasData(new tblCard
+            {
+                Id = gameId[6],
+                HandId = handId[3],
+                Value = 1,
+                Suit = "King"
+            });
+            modelBuilder.Entity<tblCard>().HasData(new tblCard
+            {
+                Id = gameId[7],
+                HandId = handId[3],
+                Value = 1,
+                Suit = "King"
+            });
+            
+           
         }
 
         private static string GetHash(string Password)
