@@ -10,10 +10,96 @@ namespace JD.BitBet.API.Controllers
     [ApiController]
     public class GameController : GenericController<Game, GameManager, BitBetEntities>
     {
-        public GameController(ILogger<GameController> logger, DbContextOptions<BitBetEntities> options) : base(logger, options) { }
+
+        public GameController(ILogger<GameController> logger, DbContextOptions<BitBetEntities> options) : base(logger, options)
+        {
+
+        }
+
+        [HttpPost("start")]
+        public IActionResult StartNewGame()
+        {
+            try
+            {
+                GameManager.StartNewGame();
+                return Ok(GameManager.State);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+
+        [HttpPost("hit")]
+        public IActionResult Hit(GameManager gameManager)
+        {
+            try
+            {
+                gameManager.Hit();
+                return Ok(GameManager.State);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+
+        [HttpPost("stand")]
+        public IActionResult Stand(GameManager gameManager)
+        {
+            try
+            {
+                gameManager.Stand();
+                return Ok(GameManager.State);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+
+        [HttpPost("double/{handId}")]
+        public IActionResult Double(Guid handId, GameManager gameManager)
+        {
+            try
+            {
+                gameManager.Double(handId);
+                return Ok(GameManager.State);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+
+        [HttpPost("split/{handId}")]
+        public IActionResult Split(Guid handId, GameManager gameManager)
+        {
+            try
+            {
+                gameManager.Split(handId);
+                return Ok(GameManager.State);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+
+        [HttpGet("state")]
+        public IActionResult GetGameState()
+        {
+            try
+            {
+                return Ok(GameManager.State);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+
+
+
     }
-
-    
-
-
 }
