@@ -136,13 +136,11 @@ namespace JD.BitBet.BL
             dealerCard2.handId = dealerHand.Id;
             dealerCard2.Id = Guid.NewGuid();
 
-            // Insert Hands and Cards into Database
-            await handManager.InsertAsync(playerHand);
-            await handManager.InsertAsync(dealerHand);
-            await cardManager.InsertAsync(playerCard1);
-            await cardManager.InsertAsync(playerCard2);
-            await cardManager.InsertAsync(dealerCard1);
-            await cardManager.InsertAsync(dealerCard2);
+            // Add Cards to State
+            State.playerHand.Cards.Add(playerCard1);
+            State.playerHand.Cards.Add(playerCard2);
+            State.dealerHand.Cards.Add(dealerCard1);
+            State.dealerHand.Cards.Add(dealerCard2);
 
             // Add Cards to State
             State.playerHand.Cards.Add(playerCard1);
@@ -160,6 +158,14 @@ namespace JD.BitBet.BL
                 State.Message = "Blackjack! Player wins.";
                 State.isGameOver = true;
             }
+
+            // Insert Hands and Cards into Database
+            await handManager.InsertAsync(playerHand);
+            await handManager.InsertAsync(dealerHand);
+            await cardManager.InsertAsync(playerCard1);
+            await cardManager.InsertAsync(playerCard2);
+            await cardManager.InsertAsync(dealerCard1);
+            await cardManager.InsertAsync(dealerCard2);
 
             // Save Game State
             await gameStateManager.InsertAsync(State);
