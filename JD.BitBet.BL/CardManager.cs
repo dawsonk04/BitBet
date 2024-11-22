@@ -20,7 +20,10 @@ namespace JD.BitBet.BL
             try
             {
                 tblCard row = Map<Card, tblCard>(Card);
-                return await base.InsertAsync(row,null, rollback);
+                return await base.InsertAsync(row,null,
+                    //e => e.Suit == Card.Suit.ToString() &&
+                    //e.Rank == ((int)Card.Rank)) && 
+                    rollback);
             }
             catch (Exception ex)
             {

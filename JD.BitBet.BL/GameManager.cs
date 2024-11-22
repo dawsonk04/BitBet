@@ -6,10 +6,21 @@ namespace JD.BitBet.BL
     public class GameManager : GenericManager<tblGame>
     {
         public static GameState State { get; private set; }
-        public CardManager cardManager { get; private set; }
+        public static GameStateManager GameStateManager { get; private set; }
+        public static HandManager handManager { get; private set; }
+        public static CardManager cardManager { get; private set; }
+
         private static Deck _deck;
+
         private const string NOTFOUND_MESSAGE = "Row does not exist";
-        public GameManager(ILogger logger, DbContextOptions<BitBetEntities> options) : base(options, logger) { }
+        public GameManager(ILogger logger, DbContextOptions<BitBetEntities> options) : base(options, logger)
+        {
+            State = new GameState();
+            GameStateManager = new GameStateManager(logger, options);
+            handManager = new HandManager(logger, options);
+            cardManager = new CardManager(logger, options);
+        }
+
         public GameManager(DbContextOptions<BitBetEntities> options) : base(options) { }
         public GameManager() { }
 
@@ -83,13 +94,6 @@ namespace JD.BitBet.BL
         //}
         public static async Task<GameState> StartNewGame()
         {
-            // Initialize State
-            State = new GameState();
-
-            // Managers
-            GameStateManager gameStateManager = new GameStateManager();
-            HandManager handManager = new HandManager();
-            CardManager cardManager = new CardManager();
 
             // Create Player and Dealer Hands
             Hand playerHand = new Hand
@@ -142,12 +146,6 @@ namespace JD.BitBet.BL
             State.dealerHand.Cards.Add(dealerCard1);
             State.dealerHand.Cards.Add(dealerCard2);
 
-            // Add Cards to State
-            State.playerHand.Cards.Add(playerCard1);
-            State.playerHand.Cards.Add(playerCard2);
-            State.dealerHand.Cards.Add(dealerCard1);
-            State.dealerHand.Cards.Add(dealerCard2);
-
             // Calculate Hand Values
             State.playerHandVal = CalculateHandValue(State.playerHand.Cards);
             State.dealerHandVal = CalculateHandValue(State.dealerHand.Cards);
@@ -168,7 +166,7 @@ namespace JD.BitBet.BL
             await cardManager.InsertAsync(dealerCard2);
 
             // Save Game State
-            await gameStateManager.InsertAsync(State);
+            await GameStateManager.InsertAsync(State);
 
             return State;
         }
