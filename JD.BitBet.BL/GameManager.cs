@@ -90,13 +90,11 @@ namespace JD.BitBet.BL
             CardManager cardManager = new CardManager();
 
             Hand playerHand = new Hand();
-            playerHand.Id = Guid.NewGuid();
             playerHand.BetAmount = 10;
             playerHand.Result = 0;
             playerHand.Cards = new List<Cards>();
 
             Hand dealerHand = new Hand();
-            dealerHand.Id = Guid.NewGuid();
             dealerHand.BetAmount = 0;
             dealerHand.Result = 0;
             dealerHand.Cards = new List<Cards>();

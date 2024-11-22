@@ -30,7 +30,6 @@ namespace JD.BitBet.BL.Test
             {
                 Id = Guid.NewGuid(),
                 BetAmount = 200,
-                GameId = (await new HandManager(options).LoadAsync()).FirstOrDefault().GameId,
                 Result = 2012
             };
             Guid result = await new HandManager(options).InsertAsync(hand, true);
