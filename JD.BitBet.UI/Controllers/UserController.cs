@@ -15,6 +15,8 @@ namespace JD.BitBet.UI.Controllers
         private readonly ApiClient _apiClient;
         public UserController(HttpClient httpClient) : base(httpClient)
         {
+            this._apiClient = new ApiClient(httpClient.BaseAddress.AbsoluteUri);
+
         }
         //private readonly UserManager _userManager = new UserManager();
         //public IActionResult Index()
@@ -60,31 +62,30 @@ namespace JD.BitBet.UI.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(User user)
         {
-            if (ModelState.IsValid)
+
+            var jsonContent = JsonConvert.SerializeObject(user);
+            var httpContent = new StringContent(jsonContent, Encoding.UTF8, "application/json");
+
+            var response = await _apiClient.PostAsync("User/Authenticate", httpContent);
+
+            // Log response status and message for debugging
+            var responseContent = await response.Content.ReadAsStringAsync();
+            if (response.IsSuccessStatusCode)
             {
-                // Call the API with the user model for authentication
-                var jsonContent = JsonConvert.SerializeObject(user);
-                var httpContent = new StringContent(jsonContent, Encoding.UTF8, "application/json");
-
-                var response = await _apiClient.PostAsync("User/Authenticate", httpContent);
-
-                if (response.IsSuccessStatusCode)
+                // Deserialize the response content
+                var authenticatedUser = JsonConvert.DeserializeObject<User>(responseContent);
+                if (authenticatedUser != null)
                 {
-                    // Deserialize the JSON response
-                    var jsonResponse = await response.Content.ReadAsStringAsync();
-                    var authenticatedUser = JsonConvert.DeserializeObject<User>(jsonResponse);
-
-                    // Store user details in session
-                    HttpContext.Session.SetString("User", JsonConvert.SerializeObject(authenticatedUser));
-
-                    return RedirectToAction("Index", "Game");
+                    return RedirectToAction("Index", "Game"); // Redirect to the game index
                 }
-
-                ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                Console.WriteLine("Error: Unable to parse user details.");
             }
-
-            return View(user); // Return to the login view
+            else
+            {
+                Console.WriteLine($"Login failed. {response.StatusCode}: {responseContent}");
+            }
+            return View(user); // Return the login view if model state is invalid or login failed
         }
-
     }
 }
+
