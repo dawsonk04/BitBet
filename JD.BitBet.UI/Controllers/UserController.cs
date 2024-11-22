@@ -5,9 +5,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace JD.BitBet.UI.Controllers
 {
-    public class UserController : Controller 
+    public class UserController : Controller
     {
-        private readonly UserManager _userManager;    
+        private readonly UserManager _userManager;
         public IActionResult Index()
         {
             return View();
@@ -53,12 +53,12 @@ namespace JD.BitBet.UI.Controllers
         {
             try
             {
-               bool result = await _userManager.LoginAsync(user);
+                bool result = await _userManager.LoginAsync(user);
                 SetUser(user);
                 if (TempData["returnUrl"] != null)
                     return Redirect(TempData["returnUrl"]?.ToString());
 
-                return RedirectToAction(nameof(Index), "Home");
+                return RedirectToAction("Index", "Game");
             }
             catch (Exception ex)
             {

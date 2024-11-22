@@ -10,5 +10,16 @@
         public bool isPlayerTurn { get; set; }
         public bool isGameOver { get; set; }
         public string Message { get; set; }
+
+        public GameState()
+        {
+            playerHand = new List<Card>();
+            dealerHand = new List<Card>();
+            playerHands = new List<List<Card>>();
+            isPlayerTurn = true;
+            isGameOver = false;
+            Message = "Game initialized.";
+        }
+
     }
 }

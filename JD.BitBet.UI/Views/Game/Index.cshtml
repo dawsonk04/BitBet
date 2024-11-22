@@ -1,0 +1,50 @@
+﻿@{
+    ViewBag.Title = "Blackjack Game";
+    var gameState = ViewBag.GameState != null ? Newtonsoft.Json.JsonConvert.DeserializeObject<dynamic>(ViewBag.GameState) : null;
+}
+
+<h1>Blackjack Game</h1>
+
+@if (ViewBag.Error != null)
+{
+    <p style="color: red;">@ViewBag.Error</p>
+}
+else if (gameState != null)
+{
+    <h2>Current State</h2>
+    <p>Game Status: @gameState.status</p>
+    <p>Dealer's Cards:</p>
+    <ul>
+        @foreach (var card in gameState.dealerCards)
+        {
+            <li>@card.rank of @card.suit</li>
+        }
+    </ul>
+
+    <p>Your Cards:</p>
+    <ul>
+        @foreach (var card in gameState.playerCards)
+        {
+            <li>@card.rank of @card.suit</li>
+        }
+    </ul>
+
+    <p>Your Score: @gameState.playerScore</p>
+    <p>Dealer's Score: @gameState.dealerScore</p>
+}
+
+<div>
+    <form asp-action="Start" method="post">
+        <button type="submit">Start Game</button>
+    </form>
+</div>
+<div>
+    <form asp-action="Hit" method="post">
+        <button type="submit">Hit</button>
+    </form>
+</div>
+<div>
+    <form asp-action="Stand" method="post">
+        <button type="submit">Stand</button>
+    </form>
+</div>
