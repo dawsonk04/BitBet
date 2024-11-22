@@ -7,7 +7,7 @@ namespace JD.BitBet.BL
     {
         public static GameState State { get; private set; }
         public CardManager cardManager { get; private set; }
-        public static Deck _deck;
+        private static Deck _deck;
         private const string NOTFOUND_MESSAGE = "Row does not exist";
         public GameManager(ILogger logger, DbContextOptions<BitBetEntities> options) : base(options, logger) { }
         public GameManager(DbContextOptions<BitBetEntities> options) : base(options) { }
@@ -83,12 +83,15 @@ namespace JD.BitBet.BL
         //}
         public static async Task<GameState> StartNewGame()
         {
-
+            // Initialize State
             State = new GameState();
+
+            // Managers
             GameStateManager gameStateManager = new GameStateManager();
             HandManager handManager = new HandManager();
             CardManager cardManager = new CardManager();
 
+            // Create Player and Dealer Hands
             Hand playerHand = new Hand
             {
                 Id = Guid.NewGuid(),
@@ -96,6 +99,7 @@ namespace JD.BitBet.BL
                 Result = 0,
                 Cards = new List<Card>()
             };
+
             Hand dealerHand = new Hand
             {
                 Id = Guid.NewGuid(),
@@ -103,22 +107,26 @@ namespace JD.BitBet.BL
                 Result = 0,
                 Cards = new List<Card>()
             };
- 
 
-            State.dealerHandId = dealerHand.Id;
+            // Assign to State
+            State.playerHand = playerHand;
+            State.dealerHand = dealerHand;
             State.playerHandId = playerHand.Id;
+            State.dealerHandId = dealerHand.Id;
             State.isGameOver = false;
             State.isPlayerTurn = true;
 
+            // Initialize Deck
             _deck = new Deck();
-
             _deck.Shuffle();
-            //Initialize cards for hand
+
+            // Deal Cards
             Card playerCard1 = _deck.Deal();
             Card playerCard2 = _deck.Deal();
             Card dealerCard1 = _deck.Deal();
             Card dealerCard2 = _deck.Deal();
 
+            // Assign Hand IDs
             playerCard1.handId = playerHand.Id;
             playerCard1.Id = Guid.NewGuid();
             playerCard2.handId = playerHand.Id;
@@ -128,7 +136,7 @@ namespace JD.BitBet.BL
             dealerCard2.handId = dealerHand.Id;
             dealerCard2.Id = Guid.NewGuid();
 
-            //Insert Cards
+            // Insert Hands and Cards into Database
             await handManager.InsertAsync(playerHand);
             await handManager.InsertAsync(dealerHand);
             await cardManager.InsertAsync(playerCard1);
@@ -136,27 +144,29 @@ namespace JD.BitBet.BL
             await cardManager.InsertAsync(dealerCard1);
             await cardManager.InsertAsync(dealerCard2);
 
+            // Add Cards to State
             State.playerHand.Cards.Add(playerCard1);
             State.playerHand.Cards.Add(playerCard2);
             State.dealerHand.Cards.Add(dealerCard1);
             State.dealerHand.Cards.Add(dealerCard2);
 
+            // Calculate Hand Values
             State.playerHandVal = CalculateHandValue(State.playerHand.Cards);
             State.dealerHandVal = CalculateHandValue(State.dealerHand.Cards);
 
+            // Check for Blackjack
             if (State.playerHandVal == 21)
             {
                 State.Message = "Blackjack! Player wins.";
                 State.isGameOver = true;
             }
 
-            //Insert Hands And finish Gamestate
-            await handManager.InsertAsync(playerHand);
-            await handManager.InsertAsync(dealerHand);
+            // Save Game State
             await gameStateManager.InsertAsync(State);
 
             return State;
         }
+
         public static int CalculateHandValue(List<Card> hand)
         {
             int value = 0;
@@ -296,7 +306,7 @@ namespace JD.BitBet.BL
         public void Split(Guid handId)
         {
 
-      //      State.playerHand = cardManager.LoadByHandId(handId);
+            //      State.playerHand = cardManager.LoadByHandId(handId);
 
             if (State.playerHand.Cards.Count != 2 || State.playerHand.Cards[0].Rank != State.playerHand.Cards[1].Rank)
             {
