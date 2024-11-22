@@ -89,17 +89,21 @@ namespace JD.BitBet.BL
             HandManager handManager = new HandManager();
             CardManager cardManager = new CardManager();
 
-            Hand playerHand = new Hand();
-            playerHand.Id = new Guid();
-            playerHand.BetAmount = 10;
-            playerHand.Result = 0;
-            playerHand.Cards = new List<Card>();
-
-            Hand dealerHand = new Hand();
-            dealerHand.Id = new Guid();
-            dealerHand.BetAmount = 0;
-            dealerHand.Result = 0;
-            dealerHand.Cards = new List<Card>();
+            Hand playerHand = new Hand
+            {
+                Id = Guid.NewGuid(),
+                BetAmount = 10,
+                Result = 0,
+                Cards = new List<Card>()
+            };
+            Hand dealerHand = new Hand
+            {
+                Id = Guid.NewGuid(),
+                BetAmount = 0,
+                Result = 0,
+                Cards = new List<Card>()
+            };
+ 
 
             State.dealerHandId = dealerHand.Id;
             State.playerHandId = playerHand.Id;
@@ -116,11 +120,17 @@ namespace JD.BitBet.BL
             Card dealerCard2 = _deck.Deal();
 
             playerCard1.handId = playerHand.Id;
+            playerCard1.Id = Guid.NewGuid();
             playerCard2.handId = playerHand.Id;
+            playerCard2.Id = Guid.NewGuid();
             dealerCard1.handId = dealerHand.Id;
+            dealerCard1.Id = Guid.NewGuid();
             dealerCard2.handId = dealerHand.Id;
+            dealerCard2.Id = Guid.NewGuid();
 
             //Insert Cards
+            await handManager.InsertAsync(playerHand);
+            await handManager.InsertAsync(dealerHand);
             await cardManager.InsertAsync(playerCard1);
             await cardManager.InsertAsync(playerCard2);
             await cardManager.InsertAsync(dealerCard1);
