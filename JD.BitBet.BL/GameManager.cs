@@ -90,14 +90,16 @@ namespace JD.BitBet.BL
             CardManager cardManager = new CardManager();
 
             Hand playerHand = new Hand();
+            playerHand.Id = new Guid();
             playerHand.BetAmount = 10;
             playerHand.Result = 0;
-            playerHand.Cards = new List<Cards>();
+            playerHand.Cards = new List<Card>();
 
             Hand dealerHand = new Hand();
+            dealerHand.Id = new Guid();
             dealerHand.BetAmount = 0;
             dealerHand.Result = 0;
-            dealerHand.Cards = new List<Cards>();
+            dealerHand.Cards = new List<Card>();
 
             State.dealerHandId = dealerHand.Id;
             State.playerHandId = playerHand.Id;
@@ -124,13 +126,13 @@ namespace JD.BitBet.BL
             await cardManager.InsertAsync(dealerCard1);
             await cardManager.InsertAsync(dealerCard2);
 
-            State.playerHand.Add(playerCard1);
-            State.playerHand.Add(playerCard2);
-            State.dealerHand.Add(dealerCard1);
-            State.dealerHand.Add(dealerCard2);
+            State.playerHand.Cards.Add(playerCard1);
+            State.playerHand.Cards.Add(playerCard2);
+            State.dealerHand.Cards.Add(dealerCard1);
+            State.dealerHand.Cards.Add(dealerCard2);
 
-            State.playerHandVal = CalculateHandValue(State.playerHand);
-            State.dealerHandVal = CalculateHandValue(State.dealerHand);
+            State.playerHandVal = CalculateHandValue(State.playerHand.Cards);
+            State.dealerHandVal = CalculateHandValue(State.dealerHand.Cards);
 
             if (State.playerHandVal == 21)
             {
@@ -190,8 +192,8 @@ namespace JD.BitBet.BL
                 return;
             }
 
-            State.playerHand.Add(_deck.Deal());
-            State.playerHandVal = CalculateHandValue(State.playerHand);
+            State.playerHand.Cards.Add(_deck.Deal());
+            State.playerHandVal = CalculateHandValue(State.playerHand.Cards);
 
             if (State.playerHandVal > 21)
             {
@@ -226,8 +228,8 @@ namespace JD.BitBet.BL
 
             while (State.dealerHandVal < 17)
             {
-                State.dealerHand.Add(_deck.Deal());
-                State.dealerHandVal = CalculateHandValue(State.dealerHand);
+                State.dealerHand.Cards.Add(_deck.Deal());
+                State.dealerHandVal = CalculateHandValue(State.dealerHand.Cards);
             }
             DetermineWinner();
         }
@@ -267,8 +269,8 @@ namespace JD.BitBet.BL
             }
 
             // Double the bet (not implemented here but tracked in your game logic)
-            State.playerHand.Add(_deck.Deal());
-            State.playerHandVal = CalculateHandValue(State.playerHand);
+            State.playerHand.Cards.Add(_deck.Deal());
+            State.playerHandVal = CalculateHandValue(State.playerHand.Cards);
 
             if (State.playerHandVal > 21)
             {
@@ -286,13 +288,13 @@ namespace JD.BitBet.BL
 
       //      State.playerHand = cardManager.LoadByHandId(handId);
 
-            if (State.playerHand.Count != 2 || State.playerHand[0].Rank != State.playerHand[1].Rank)
+            if (State.playerHand.Cards.Count != 2 || State.playerHand.Cards[0].Rank != State.playerHand.Cards[1].Rank)
             {
                 State.Message = "Cannot split this hand.";
                 return;
             }
-            var hand1 = new List<Card> { State.playerHand[0], _deck.Deal() };
-            var hand2 = new List<Card> { State.playerHand[1], _deck.Deal() };
+            var hand1 = new List<Card> { State.playerHand.Cards[0], _deck.Deal() };
+            var hand2 = new List<Card> { State.playerHand.Cards[1], _deck.Deal() };
 
             State.playerHands = new List<List<Card>> { hand1, hand2 };
             State.Message = "Player splits their hand.";

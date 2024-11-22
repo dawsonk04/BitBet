@@ -67,16 +67,16 @@ namespace JD.BitBet.PL.Data
                 entity.Property(e => e.dealerHandVal)
                     .HasMaxLength(50)
                     .IsUnicode(false);
-                entity.HasOne(e => e.dealerHand)
-                    .WithMany(p => p.dealerGameStates)
-                    .HasForeignKey(d => d.dealerHandId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_tblGameState_DealerHandId");
+
                 entity.HasOne(e => e.playerHand)
-                    .WithMany(p => p.playerGameStates)
-                    .HasForeignKey(d => d.playerHandId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_tblGameState_PlayerHand");
+                  .WithMany()
+                  .HasForeignKey(e => e.playerHandId)
+                  .OnDelete(DeleteBehavior.NoAction);  
+                entity.HasOne(e => e.dealerHand)
+                    .WithMany()
+                    .HasForeignKey(e => e.dealerHandId)
+                    .OnDelete(DeleteBehavior.NoAction);
+
             });
             modelBuilder.Entity<tblGameState>().HasData(new tblGameState
             {

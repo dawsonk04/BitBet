@@ -8,6 +8,6 @@ namespace JD.BitBet.BL.Models
         public double BetAmount { get; set; }
         public double Result { get; set; }
         public virtual tblGame Game { get; set; }     
-        public List<Cards> Cards { get; set; }
+        public List<Card> Cards { get; set; }
     }
 }

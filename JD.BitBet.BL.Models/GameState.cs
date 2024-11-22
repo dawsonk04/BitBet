@@ -4,8 +4,8 @@ namespace JD.BitBet.BL.Models
 {
     public class GameState
     {
-        public List<Card> playerHand { get; set; }
-        public List<Card> dealerHand { get; set; }
+        public Hand playerHand { get; set; }
+        public Hand dealerHand { get; set; }
         public List<List<Card>> playerHands { get; set; }
         public int playerHandVal { get; set; }
         public int dealerHandVal { get; set; }
@@ -16,12 +16,7 @@ namespace JD.BitBet.BL.Models
         public string Message { get; set; }
         public GameState()
         {
-            playerHand = new List<Card>();
-            dealerHand = new List<Card>();
-            playerHands = new List<List<Card>>();
-            isPlayerTurn = true;
-            isGameOver = false;
-            Message = "Game initialized.";
+            Message = "Game Initialized";
         }
 
     }
