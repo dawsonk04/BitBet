@@ -19,7 +19,7 @@ namespace JD.BitBet.BL.Test
         public async Task LoadTest()
         {
             List<Hand> hands = await new HandManager(options).LoadAsync();
-            int expected = 2;
+            int expected = 4;
             Assert.AreEqual(expected, hands.Count);
         }
 

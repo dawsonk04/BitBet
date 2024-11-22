@@ -333,7 +333,7 @@ namespace JD.BitBet.PL.Data
                 entity.ToTable("tblCard");
 
                 entity.Property(e => e.Id).ValueGeneratedNever();
-                entity.Property(e => e.Value)
+                entity.Property(e => e.Rank)
                     .HasMaxLength(50)
                     .IsUnicode(false);
                 entity.Property(e => e.Suit)
@@ -349,56 +349,56 @@ namespace JD.BitBet.PL.Data
             {
                 Id = cardId[0],
                 HandId = handId[0],
-                Value = 10,
+                Rank = 10,
                 Suit = "King"
             });
             modelBuilder.Entity<tblCard>().HasData(new tblCard
             {
                 Id = cardId[1],
                 HandId = handId[0],
-                Value = 1,
+                Rank = 1,
                 Suit = "King"
             });
             modelBuilder.Entity<tblCard>().HasData(new tblCard
             {
                 Id = cardId[2],
                 HandId = handId[1],
-                Value = 1,
+                Rank = 1,
                 Suit = "King"
             });
             modelBuilder.Entity<tblCard>().HasData(new tblCard
             {
                 Id = cardId[3],
                 HandId = handId[1],
-                Value = 1,
+                Rank = 1,
                 Suit = "King"
             });
             modelBuilder.Entity<tblCard>().HasData(new tblCard
             {
                 Id = cardId[4],
                 HandId = handId[2],
-                Value = 1,
+                Rank = 1,
                 Suit = "King"
             });
             modelBuilder.Entity<tblCard>().HasData(new tblCard
             {
                 Id = cardId[5],
                 HandId = handId[2],
-                Value = 1,
+                Rank = 1,
                 Suit = "King"
             });
             modelBuilder.Entity<tblCard>().HasData(new tblCard
             {
                 Id = cardId[6],
                 HandId = handId[3],
-                Value = 1,
+                Rank = 1,
                 Suit = "King"
             });
             modelBuilder.Entity<tblCard>().HasData(new tblCard
             {
                 Id = cardId[7],
                 HandId = handId[3],
-                Value = 1,
+                Rank = 1,
                 Suit = "King"
             });
            

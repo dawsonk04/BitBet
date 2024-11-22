@@ -12,6 +12,8 @@ builder.Services.AddSession(options =>
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
 });
+
+builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("https://localhost:7061/api/") });
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

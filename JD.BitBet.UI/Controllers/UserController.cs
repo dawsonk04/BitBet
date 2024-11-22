@@ -1,71 +1,90 @@
-﻿using JD.BitBet.BL;
+﻿using DocumentFormat.OpenXml.Spreadsheet;
+using JD.BitBet.BL;
 using JD.BitBet.BL.Models;
 using JD.BitBet.UI.Extensions;
+using JD.Utility;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
+using System.Net;
+using System.Text;
 
 namespace JD.BitBet.UI.Controllers
 {
-    public class UserController : Controller
+    public class UserController : GenericController<User>
     {
-        private readonly UserManager _userManager;
-        public IActionResult Index()
+        private readonly ApiClient _apiClient;
+        public UserController(HttpClient httpClient) : base(httpClient)
         {
-            return View();
         }
-        private void SetUser(User user)
-        {
+        //private readonly UserManager _userManager = new UserManager();
+        //public IActionResult Index()
+        //{
+        //    return View();
+        //}
+        //private void SetUser(User user)
+        //{
 
-            HttpContext.Session.SetObject("user", user);
+        //    HttpContext.Session.SetObject("user", user);
 
-            if (user != null)
-            {
-                HttpContext.Session.SetObject("email", "Welcome " + user.Email);
-            }
-            else
-            {
-                HttpContext.Session.SetObject("email", string.Empty);
-            }
-        }
+        //    if (user != null)
+        //    {
+        //        HttpContext.Session.SetObject("email", "Welcome " + user.Email);
+        //    }
+        //    else
+        //    {
+        //        HttpContext.Session.SetObject("email", string.Empty);
+        //    }
+        //}
 
-        public IActionResult Logout()
-        {
-            SetUser(null);
-            return View();
-        }
+        //public IActionResult Logout()
+        //{
+        //    SetUser(null);
+        //    return View();
+        //}
 
-        public IActionResult Seed()
-        {
-            _userManager.Seed();
-            return View();
-        }
+        //public IActionResult Seed()
+        //{
+        //    _userManager.Seed();
+        //    return View();
+        //}
 
 
-        public IActionResult Login(string returnUrl)
-        {
+        //public IActionResult Login(string returnUrl)
+        //{
 
-            TempData["returnUrl"] = returnUrl;
-            ViewBag.Title = "Login";
-            return View();
-        }
-
+        //    TempData["returnUrl"] = returnUrl;
+        //    ViewBag.Title = "Login";
+        //    return View();
+        //}
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(User user)
         {
-            try
+            if (ModelState.IsValid)
             {
-                bool result = await _userManager.LoginAsync(user);
-                SetUser(user);
-                if (TempData["returnUrl"] != null)
-                    return Redirect(TempData["returnUrl"]?.ToString());
+                // Call the API with the user model for authentication
+                var jsonContent = JsonConvert.SerializeObject(user);
+                var httpContent = new StringContent(jsonContent, Encoding.UTF8, "application/json");
 
-                return RedirectToAction("Index", "Game");
+                var response = await _apiClient.PostAsync("User/Authenticate", httpContent);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    // Deserialize the JSON response
+                    var jsonResponse = await response.Content.ReadAsStringAsync();
+                    var authenticatedUser = JsonConvert.DeserializeObject<User>(jsonResponse);
+
+                    // Store user details in session
+                    HttpContext.Session.SetString("User", JsonConvert.SerializeObject(authenticatedUser));
+
+                    return RedirectToAction("Index", "Game");
+                }
+
+                ModelState.AddModelError(string.Empty, "Invalid login attempt.");
             }
-            catch (Exception ex)
-            {
-                ViewBag.Title = "Login";
-                ViewBag.Error = ex.Message;
-                return View(user);
-            }
+
+            return View(user); // Return to the login view
         }
+
     }
 }

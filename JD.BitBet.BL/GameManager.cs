@@ -6,6 +6,7 @@ namespace JD.BitBet.BL
     public class GameManager : GenericManager<tblGame>
     {
         public static GameState State { get; private set; }
+        public CardManager cardManager { get; private set; }
         public static Deck _deck;
         private const string NOTFOUND_MESSAGE = "Row does not exist";
         public GameManager(ILogger logger, DbContextOptions<BitBetEntities> options) : base(options, logger) { }
@@ -145,95 +146,6 @@ namespace JD.BitBet.BL
         {
             Hit, Stand, Double, Split
         }
-        //public static GameResult CompleteGame()
-        //{
-        //    int BlackjackValue = 21;
-        //    GameResult result;
-        //    int dealerValue = CalculateHandValue(_dealerHand);
-        //    int playerValue = CalculateHandValue(_playerHand);
-
-        //    //Player Plays
-        //    //Todo: remove when UI is implemented
-        //    if (dealerValue != BlackjackValue)
-        //    {
-        //        while (playerValue < 17)
-        //        {
-        //            _playerHand.Add(_deck.Deal());
-        //            playerValue = CalculateHandValue(_playerHand);
-        //        }
-        //        if (playerValue == BlackjackValue)
-        //        {
-        //            result = GameResult.PlayerBlackjack;
-        //        }
-        //        else if (playerValue > BlackjackValue)
-        //        {
-        //            result = GameResult.PlayerBust;
-        //        }
-        //        else
-        //        {
-        //            result = GameResult.PlayerStand;
-        //        }
-        //    }
-        //    else
-        //    {
-        //        if (playerValue == BlackjackValue)
-        //        {
-        //            result = GameResult.Push;
-        //        }
-        //        else
-        //        {
-        //            result = GameResult.DealerWins;
-        //        }
-        //    }
-
-        //    //Check To see if dealer plays
-        //    if (result == GameResult.PlayerBust)
-        //    {
-        //        result = GameResult.DealerWins;
-        //    }
-        //    else if (result == GameResult.PlayerBlackjack)
-        //    {
-        //        //Todo: Add Muiltiplier for winnings
-        //        result = GameResult.PlayerWins;
-        //    }
-        //    else
-        //    {
-        //        //Dealer Plays
-        //        while (dealerValue < 17)
-        //        {
-        //            _dealerHand.Add(_deck.Deal());
-        //            dealerValue = CalculateHandValue(_dealerHand);
-        //        }
-        //        if (dealerValue == BlackjackValue)
-        //        {
-        //            result = GameResult.DealerWins;
-        //        }
-        //        if (dealerValue > BlackjackValue)
-        //        {
-        //            result = GameResult.PlayerWins;
-        //        }
-        //        //Both players stand
-        //        else
-        //        {
-        //            if (dealerValue > playerValue)
-        //            {
-        //                result = GameResult.DealerWins;
-        //            }
-        //            else if (dealerValue == playerValue)
-        //            {
-        //                result = GameResult.Push;
-        //            }
-        //            else
-        //            {
-        //                result = GameResult.PlayerWins;
-        //            }
-        //        }
-        //    }
-        //    _playerHand.Clear();
-        //    _dealerHand.Clear();
-        //    return result;
-        //}
-
         public void Hit()
         {
             if (State.isGameOver || !State.isPlayerTurn)
@@ -281,7 +193,6 @@ namespace JD.BitBet.BL
                 State.dealerHand.Add(_deck.Deal());
                 State.dealerHandVal = CalculateHandValue(State.dealerHand);
             }
-
             DetermineWinner();
         }
 
@@ -336,12 +247,14 @@ namespace JD.BitBet.BL
 
         public void Split(Guid handId)
         {
+
+      //      State.playerHand = cardManager.LoadByHandId(handId);
+
             if (State.playerHand.Count != 2 || State.playerHand[0].Rank != State.playerHand[1].Rank)
             {
                 State.Message = "Cannot split this hand.";
                 return;
             }
-
             var hand1 = new List<Card> { State.playerHand[0], _deck.Deal() };
             var hand2 = new List<Card> { State.playerHand[1], _deck.Deal() };
 

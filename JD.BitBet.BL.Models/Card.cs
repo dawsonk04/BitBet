@@ -6,7 +6,7 @@ namespace JD.BitBet.BL.Models
     {
         public Rank Rank { get; private set; }
         public Suit Suit { get; private set; }
-
+        public Guid handId { get; set; }
         public Card(Rank rank, Suit suit)
         {
             Rank = rank;
