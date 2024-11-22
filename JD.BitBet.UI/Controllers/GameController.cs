@@ -1,20 +1,20 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using JD.BitBet.BL.Models;
+using JD.Utility;
+using Microsoft.AspNetCore.Mvc;
 
 namespace JD.BitBet.UI.Controllers
 {
-    public class GameController : Controller
+    public class GameController : GenericController<Game>
     {
-        private readonly HttpClient _httpClient;
-
-        public GameController()
+        private readonly ApiClient _apiClient;
+        public GameController(HttpClient httpClient) : base(httpClient)
         {
-            _httpClient = new HttpClient();
-            _httpClient.BaseAddress = new Uri("https://localhost:7061/api/Game/");
+            this._apiClient = new ApiClient(httpClient.BaseAddress.AbsoluteUri);
+
         }
-
-        public async Task<IActionResult> Index()
+        public  async Task<IActionResult> GameIndex()
         {
-            var response = await _httpClient.GetAsync("state");
+            var response = await _apiClient.GetAsync("Game/state");
             if (response.IsSuccessStatusCode)
             {
                 var gameState = await response.Content.ReadAsStringAsync();
@@ -30,20 +30,20 @@ namespace JD.BitBet.UI.Controllers
 
         public async Task<IActionResult> Start()
         {
-            var response = await _httpClient.PostAsync("start", null);
-            return RedirectToAction("Index");
+            var response = await _apiClient.PostAsync("Game/start", null);
+            return RedirectToAction("GameIndex");
         }
 
         public async Task<IActionResult> Hit()
         {
-            var response = await _httpClient.PostAsync("hit", null);
-            return RedirectToAction("Index");
+            var response = await _apiClient.PostAsync("Game/hit", null);
+            return RedirectToAction("GameIndex");
         }
 
         public async Task<IActionResult> Stand()
         {
-            var response = await _httpClient.PostAsync("stand", null);
-            return RedirectToAction("Index");
+            var response = await _apiClient.PostAsync("Game/stand", null);
+            return RedirectToAction("GameIndex");
         }
 
         public void Double()

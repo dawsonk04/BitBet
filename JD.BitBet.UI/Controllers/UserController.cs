@@ -18,46 +18,6 @@ namespace JD.BitBet.UI.Controllers
             this._apiClient = new ApiClient(httpClient.BaseAddress.AbsoluteUri);
 
         }
-        //private readonly UserManager _userManager = new UserManager();
-        //public IActionResult Index()
-        //{
-        //    return View();
-        //}
-        //private void SetUser(User user)
-        //{
-
-        //    HttpContext.Session.SetObject("user", user);
-
-        //    if (user != null)
-        //    {
-        //        HttpContext.Session.SetObject("email", "Welcome " + user.Email);
-        //    }
-        //    else
-        //    {
-        //        HttpContext.Session.SetObject("email", string.Empty);
-        //    }
-        //}
-
-        //public IActionResult Logout()
-        //{
-        //    SetUser(null);
-        //    return View();
-        //}
-
-        //public IActionResult Seed()
-        //{
-        //    _userManager.Seed();
-        //    return View();
-        //}
-
-
-        //public IActionResult Login(string returnUrl)
-        //{
-
-        //    TempData["returnUrl"] = returnUrl;
-        //    ViewBag.Title = "Login";
-        //    return View();
-        //}
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(User user)
@@ -76,7 +36,7 @@ namespace JD.BitBet.UI.Controllers
                 var authenticatedUser = JsonConvert.DeserializeObject<User>(responseContent);
                 if (authenticatedUser != null)
                 {
-                    return RedirectToAction("Index", "Game"); // Redirect to the game index
+                    return RedirectToAction("GameIndex", "Game"); // Redirect to the game index
                 }
                 Console.WriteLine("Error: Unable to parse user details.");
             }
