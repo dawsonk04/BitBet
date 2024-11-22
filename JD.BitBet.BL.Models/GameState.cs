@@ -1,4 +1,6 @@
-﻿namespace JD.BitBet.BL.Models
+﻿using JD.BitBet.PL;
+
+namespace JD.BitBet.BL.Models
 {
     public class GameState
     {
@@ -7,10 +9,11 @@
         public List<List<Card>> playerHands { get; set; }
         public int playerHandVal { get; set; }
         public int dealerHandVal { get; set; }
+        public Guid playerHandId { get; set; }
+        public Guid dealerHandId { get; set; }
         public bool isPlayerTurn { get; set; }
         public bool isGameOver { get; set; }
         public string Message { get; set; }
-
         public GameState()
         {
             playerHand = new List<Card>();

@@ -8,7 +8,10 @@ namespace JD.BitBet.PL
         public Guid GameId { get; set; }
         public double BetAmount { get; set; }
         public double Result { get; set; }
-        public virtual tblGame Game { get; set; }
+        public virtual tblGameState GameState { get; set; }
         public virtual ICollection<tblCard> cards { get; set; }
+        public virtual ICollection<tblGameState> dealerGameStates{ get; set; }
+        public virtual ICollection<tblGameState> playerGameStates { get; set; }
+
     }
 }

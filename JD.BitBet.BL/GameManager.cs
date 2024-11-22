@@ -81,23 +81,55 @@ namespace JD.BitBet.BL
         //    _dealerHand.Add(_deck.Deal());
         //    _dealerHand.Add(_deck.Deal());
         //}
-        public static void StartNewGame()
+        public static async Task<GameState> StartNewGame()
         {
-            State = new GameState();
-            State.dealerHand = new List<Card>();
-            State.playerHand = new List<Card>();
 
-            State.isPlayerTurn = true;
+            State = new GameState();
+            GameStateManager gameStateManager = new GameStateManager();
+            HandManager handManager = new HandManager();
+            CardManager cardManager = new CardManager();
+
+            Hand playerHand = new Hand();
+            playerHand.Id = Guid.NewGuid();
+            playerHand.BetAmount = 10;
+            playerHand.Result = 0;
+            playerHand.Cards = new List<Cards>();
+
+            Hand dealerHand = new Hand();
+            dealerHand.Id = Guid.NewGuid();
+            dealerHand.BetAmount = 0;
+            dealerHand.Result = 0;
+            dealerHand.Cards = new List<Cards>();
+
+            State.dealerHandId = dealerHand.Id;
+            State.playerHandId = playerHand.Id;
             State.isGameOver = false;
-            State.Message = "Game Started!";
+            State.isPlayerTurn = true;
 
             _deck = new Deck();
-            _deck.Shuffle();
 
-            State.playerHand.Add(_deck.Deal());
-            State.playerHand.Add(_deck.Deal());
-            State.dealerHand.Add(_deck.Deal());
-            State.dealerHand.Add(_deck.Deal());
+            _deck.Shuffle();
+            //Initialize cards for hand
+            Card playerCard1 = _deck.Deal();
+            Card playerCard2 = _deck.Deal();
+            Card dealerCard1 = _deck.Deal();
+            Card dealerCard2 = _deck.Deal();
+
+            playerCard1.handId = playerHand.Id;
+            playerCard2.handId = playerHand.Id;
+            dealerCard1.handId = dealerHand.Id;
+            dealerCard2.handId = dealerHand.Id;
+
+            //Insert Cards
+            await cardManager.InsertAsync(playerCard1);
+            await cardManager.InsertAsync(playerCard2);
+            await cardManager.InsertAsync(dealerCard1);
+            await cardManager.InsertAsync(dealerCard2);
+
+            State.playerHand.Add(playerCard1);
+            State.playerHand.Add(playerCard2);
+            State.dealerHand.Add(dealerCard1);
+            State.dealerHand.Add(dealerCard2);
 
             State.playerHandVal = CalculateHandValue(State.playerHand);
             State.dealerHandVal = CalculateHandValue(State.dealerHand);
@@ -108,6 +140,12 @@ namespace JD.BitBet.BL
                 State.isGameOver = true;
             }
 
+            //Insert Hands And finish Gamestate
+            await handManager.InsertAsync(playerHand);
+            await handManager.InsertAsync(dealerHand);
+            await gameStateManager.InsertAsync(State);
+
+            return State;
         }
         public static int CalculateHandValue(List<Card> hand)
         {

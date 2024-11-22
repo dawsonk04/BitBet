@@ -19,7 +19,6 @@ namespace JD.BitBet.BL
                 return await base.InsertAsync(row,
                     e => e.Result == Hand.Result && 
                     e.BetAmount == Hand.BetAmount &&
-                    e.GameId == Hand.GameId &&
                     rollback);
             }
             catch (Exception ex)
