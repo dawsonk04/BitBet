@@ -32,11 +32,11 @@ namespace JD.BitBet.API.Controllers
         }
 
         [HttpPost("hit")]
-        public IActionResult Hit(GameManager gameManager)
+        public IActionResult Hit(GameState state)
         {
             try
             {
-                gameManager.Hit();
+                gameManager.Hit(state);
                 return Ok(GameManager.State);
             }
             catch (Exception ex)

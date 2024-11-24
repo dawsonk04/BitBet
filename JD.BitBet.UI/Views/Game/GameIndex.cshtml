@@ -11,40 +11,54 @@
 }
 else if (gameState != null)
 {
-    <h2>Current State</h2>
-    <p>Game Status: @gameState.status</p>
-    <p>Dealer's Cards:</p>
-    <ul>
-        @foreach (var card in gameState.dealerCards)
-        {
-            <li>@card.rank of @card.suit</li>
-        }
-    </ul>
+    <h2>Current Game Status: @gameState.Message</h2>
 
-    <p>Your Cards:</p>
-    <ul>
-        @foreach (var card in gameState.playerCards)
-        {
-            <li>@card.rank of @card.suit</li>
-        }
-    </ul>
+    <div>
+@*         <h3>Dealer's Hand</h3>
+        <ul>
+            @foreach (var card in gameState.dealerCards)
+            {
+                <li>@card.rank of @card.suit</li>
+            }
+        </ul> *@
+        <p><strong>Dealer's Score: </strong>@gameState.dealerHandVal</p>
+    </div>
 
-    <p>Your Score: @gameState.playerScore</p>
-    <p>Dealer's Score: @gameState.dealerScore</p>
+    <div>
+@*         <h3>Your Hand</h3>
+        <ul>
+            @foreach (var card in gameState.playerCards)
+            {
+                <li>@card.rank of @card.suit</li>
+            }
+        </ul> *@
+        <p><strong>Your Score: </strong>@gameState.playerHandVal</p>
+    </div>
+
+    <div>
+        @if (gameState.Message == "Player's Turn")
+        {
+            <form asp-action="Hit" method="post">
+                <button type="submit">Hit</button>
+            </form>
+
+            <form asp-action="Stand" method="post">
+                <button type="submit">Stand</button>
+            </form>
+        }
+        else
+        {
+            <p>Game over! Click below to start a new game:</p>
+            <form asp-action="Start" method="post">
+                <button type="submit">Start New Game</button>
+            </form>
+        }
+    </div>
 }
-
-<div>
+else
+{
+    <p>Welcome to Blackjack! Click below to start a new game:</p>
     <form asp-action="Start" method="post">
         <button type="submit">Start Game</button>
     </form>
-</div>
-<div>
-    <form asp-action="Hit" method="post">
-        <button type="submit">Hit</button>
-    </form>
-</div>
-<div>
-    <form asp-action="Stand" method="post">
-        <button type="submit">Stand</button>
-    </form>
-</div>
+}

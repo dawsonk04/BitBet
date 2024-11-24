@@ -218,32 +218,39 @@ namespace JD.BitBet.BL
         {
             Hit, Stand, Double, Split
         }
-        public void Hit()
+        public async Task<GameState> Hit(GameState state)
         {
-            if (State.isGameOver || !State.isPlayerTurn)
+            if (state.isGameOver || !state.isPlayerTurn)
             {
-                State.Message = "Invalid action. The game is over or it's not your turn.";
-                return;
+                state.Message = "Invalid action. The game is over or it's not your turn.";
+                return State;
             }
 
-            State.playerHand.Cards.Add(_deck.Deal());
-            State.playerHandVal = CalculateHandValue(State.playerHand.Cards);
+            Card newCard = _deck.Deal();
+            newCard.HandId = State.playerHandId;
+            state.playerHand.Cards.Add(newCard);
 
-            if (State.playerHandVal > 21)
+            state.playerHandVal = CalculateHandValue(state.playerHand.Cards);
+
+            if (state.playerHandVal > 21)
             {
-                State.isGameOver = true;
-                State.Message = "Player busts! Dealer wins.";
+                state.isGameOver = true;
+                state.Message = "Player busts! Dealer wins.";
             }
-            else if (State.playerHandVal == 21)
+            else if (state.playerHandVal == 21)
             {
-                State.Message = "Player hits 21!";
+                state.Message = "Player hits 21!";
             }
             else
             {
-                State.Message = "Player hits.";
+                state.Message = "Player hits.";
             }
-        }
 
+            await cardManager.InsertAsync(newCard);
+            await gameStateManager.UpdateAsync(state);
+
+            return await populateGameState();
+        }
         public void Stand()
         {
             if (State.isGameOver || !State.isPlayerTurn)

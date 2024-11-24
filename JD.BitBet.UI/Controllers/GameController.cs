@@ -1,12 +1,15 @@
 ﻿using JD.BitBet.BL.Models;
 using JD.Utility;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
+using System.Text;
 
 namespace JD.BitBet.UI.Controllers
 {
     public class GameController : GenericController<Game>
     {
         private readonly ApiClient _apiClient;
+        private GameState state;
         public GameController(HttpClient httpClient) : base(httpClient)
         {
             this._apiClient = new ApiClient(httpClient.BaseAddress.AbsoluteUri);
@@ -28,18 +31,76 @@ namespace JD.BitBet.UI.Controllers
             return View();
         }
 
+        //public async Task<IActionResult> Start()
+        //{
+        //    var response = await _apiClient.PostAsync("Game/start", null);
+        //    HttpContext.Session.SetString("GameState", JsonConvert.SerializeObject(response));
+        //    ViewBag.GameState = HttpContext.Session.GetString("GameState");
+        //    return RedirectToAction("GameIndex");
+        //}
+
+        //public async Task<IActionResult> Hit()
+        //{
+        //    //var response = await _apiClient.PostAsync("Game/hit", null);
+        //    //return RedirectToAction("GameIndex");
+        //    var gameStateJson = HttpContext.Session.GetString("GameState");
+        //    if (string.IsNullOrEmpty(gameStateJson))
+        //    {
+        //        return RedirectToAction("GameIndex");
+        //    }
+
+        //    var gameState = JsonConvert.DeserializeObject<GameState>(gameStateJson);
+
+        //    var content = new StringContent(JsonConvert.SerializeObject(gameState), Encoding.UTF8, "application/json");
+        //    var response = await _apiClient.PostAsync("Game/hit", content);
+
+        //    if (response.IsSuccessStatusCode)
+        //    {
+        //        var updatedGameStateJson = await response.Content.ReadAsStringAsync();
+        //        HttpContext.Session.SetString("GameState", updatedGameStateJson);
+        //    }
+
+        //    return RedirectToAction("GameIndex");
+        //}
         public async Task<IActionResult> Start()
         {
             var response = await _apiClient.PostAsync("Game/start", null);
+            var gameStateJson = await response.Content.ReadAsStringAsync();
+            if (response.IsSuccessStatusCode)
+            {
+                HttpContext.Session.SetString("GameState", gameStateJson);
+            }
+            else
+            {
+                ViewBag.Error = "Failed to start the game.";
+            }
+
             return RedirectToAction("GameIndex");
         }
-
         public async Task<IActionResult> Hit()
         {
-            var response = await _apiClient.PostAsync("Game/hit", null);
+            var gameStateJson = HttpContext.Session.GetString("GameState");
+            if (string.IsNullOrEmpty(gameStateJson))
+            {
+                return RedirectToAction("GameIndex");
+            }
+
+            var gameState = JsonConvert.DeserializeObject<GameState>(gameStateJson);
+
+            var content = new StringContent(JsonConvert.SerializeObject(gameState), Encoding.UTF8, "application/json");
+            var response = await _apiClient.PostAsync("Game/hit", content);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var updatedGameStateJson = await response.Content.ReadAsStringAsync();
+                HttpContext.Session.SetString("GameState", updatedGameStateJson);
+            }
+            else
+            {
+                ViewBag.Error = "Failed to perform hit action.";
+            }
             return RedirectToAction("GameIndex");
         }
-
         public async Task<IActionResult> Stand()
         {
             var response = await _apiClient.PostAsync("Game/stand", null);
