@@ -15,7 +15,7 @@ namespace JD.BitBet.PL.Entities
         public int dealerHandVal { get; set; }
         public bool isPlayerTurn { get; set; }
         public bool isGameOver { get; set; }
-        public tblHand dealerHand { get; set; }
-        public tblHand playerHand { get; set; }
+        public virtual tblHand dealerHand { get; set; }
+        public virtual tblHand playerHand { get; set; }
     }
 }

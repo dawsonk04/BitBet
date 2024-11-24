@@ -1,5 +1,5 @@
 ﻿using JD.BitBet.BL.Models;
-using static JD.BitBet.BL.Models.Cards;
+using static JD.BitBet.PL.Entities.tblCard;
 
 namespace JD.BitBet.BL
 {
@@ -92,8 +92,11 @@ namespace JD.BitBet.BL
         //    _dealerHand.Add(_deck.Deal());
         //    _dealerHand.Add(_deck.Deal());
         //}
-        public static async Task<GameState> StartNewGame()
+        public async Task<GameState> StartNewGame(bool rollback = false)
         {
+            State = new GameState();
+            handManager = new HandManager();
+            cardManager = new CardManager();
 
             // Create Player and Dealer Hands
             Hand playerHand = new Hand
@@ -131,13 +134,15 @@ namespace JD.BitBet.BL
             Card dealerCard2 = _deck.Deal();
 
             // Assign Hand IDs
-            playerCard1.handId = playerHand.Id;
+            playerCard1.HandId = playerHand.Id;
             playerCard1.Id = Guid.NewGuid();
-            playerCard2.handId = playerHand.Id;
+            playerCard2.HandId = playerHand.Id;
             playerCard2.Id = Guid.NewGuid();
-            dealerCard1.handId = dealerHand.Id;
+
+            dealerCard1.HandId = dealerHand.Id;
             dealerCard1.Id = Guid.NewGuid();
-            dealerCard2.handId = dealerHand.Id;
+
+            dealerCard2.HandId = dealerHand.Id;
             dealerCard2.Id = Guid.NewGuid();
 
             // Add Cards to State
@@ -149,7 +154,6 @@ namespace JD.BitBet.BL
             // Calculate Hand Values
             State.playerHandVal = CalculateHandValue(State.playerHand.Cards);
             State.dealerHandVal = CalculateHandValue(State.dealerHand.Cards);
-
             // Check for Blackjack
             if (State.playerHandVal == 21)
             {
@@ -157,17 +161,16 @@ namespace JD.BitBet.BL
                 State.isGameOver = true;
             }
 
-            // Insert Hands and Cards into Database
-            await handManager.InsertAsync(playerHand);
-            await handManager.InsertAsync(dealerHand);
-            await cardManager.InsertAsync(playerCard1);
-            await cardManager.InsertAsync(playerCard2);
-            await cardManager.InsertAsync(dealerCard1);
-            await cardManager.InsertAsync(dealerCard2);
 
-            // Save Game State
+            await handManager.InsertAsync(playerHand,rollback);
+            await handManager.InsertAsync(dealerHand, rollback);
+
+            await cardManager.InsertAsync(playerCard1, rollback);
+            await cardManager.InsertAsync(playerCard2, rollback);
+            await cardManager.InsertAsync(dealerCard1, rollback);
+            await cardManager.InsertAsync(dealerCard2, rollback);
             await GameStateManager.InsertAsync(State);
-
+            // Save Game State
             return State;
         }
 
@@ -178,9 +181,9 @@ namespace JD.BitBet.BL
 
             foreach (var card in hand)
             {
-                if (card.Rank == Rank.Ace)
+                if (card.rank == Rank.Ace)
                     aceCount++;
-                value += (int)card.Rank;
+                value += (int)card.rank;
             }
 
             while (value > 21 && aceCount > 0)
@@ -312,7 +315,7 @@ namespace JD.BitBet.BL
 
             //      State.playerHand = cardManager.LoadByHandId(handId);
 
-            if (State.playerHand.Cards.Count != 2 || State.playerHand.Cards[0].Rank != State.playerHand.Cards[1].Rank)
+            if (State.playerHand.Cards.Count != 2 || State.playerHand.Cards[0].rank != State.playerHand.Cards[1].rank)
             {
                 State.Message = "Cannot split this hand.";
                 return;

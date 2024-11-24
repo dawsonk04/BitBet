@@ -52,7 +52,10 @@
                         IDbContextTransaction transaction = null;
                         if (rollback) transaction = dc.Database.BeginTransaction();
 
-                        entity.Id = Guid.NewGuid();
+                        if (entity.Id == Guid.Empty)
+                        {
+                            entity.Id = Guid.NewGuid();  
+                        }
                         dc.Set<T>().Add(entity);
 
                         dc.SaveChanges();

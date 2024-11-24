@@ -1,5 +1,6 @@
 ﻿using JD.BitBet.PL.Entities;
 using Microsoft.EntityFrameworkCore;
+using static JD.BitBet.PL.Entities.tblCard;
 
 namespace JD.BitBet.PL.Data
 {
@@ -367,10 +368,13 @@ namespace JD.BitBet.PL.Data
                 entity.ToTable("tblCard");
 
                 entity.Property(e => e.Id).ValueGeneratedNever();
-                entity.Property(e => e.Rank)
+                entity.Property(e => e.rank)
+                    .HasConversion<string>() // Converts enum to string in the database
                     .HasMaxLength(50)
                     .IsUnicode(false);
-                entity.Property(e => e.Suit)
+
+                entity.Property(e => e.suit)
+                    .HasConversion<string>() // Converts enum to string in the database
                     .HasMaxLength(50)
                     .IsUnicode(false);
                 entity.HasOne(e => e.hand)
@@ -383,57 +387,57 @@ namespace JD.BitBet.PL.Data
             {
                 Id = cardId[0],
                 HandId = handId[0],
-                Rank = 10,
-                Suit = "King"
+                rank = Rank.Ten,
+                suit = Suit.Diamonds
             });
             modelBuilder.Entity<tblCard>().HasData(new tblCard
             {
                 Id = cardId[1],
                 HandId = handId[0],
-                Rank = 10,
-                Suit = "King"
+                rank = Rank.Ten,
+                suit = Suit.Diamonds
             });
             modelBuilder.Entity<tblCard>().HasData(new tblCard
             {
                 Id = cardId[2],
                 HandId = handId[1],
-                Rank = 10,
-                Suit = "King"
+                rank = Rank.Ten,
+                suit = Suit.Diamonds
             });
             modelBuilder.Entity<tblCard>().HasData(new tblCard
             {
                 Id = cardId[3],
                 HandId = handId[1],
-                Rank = 10,
-                Suit = "King"
+                rank = Rank.Ten,
+                suit = Suit.Diamonds
             });
             modelBuilder.Entity<tblCard>().HasData(new tblCard
             {
                 Id = cardId[4],
                 HandId = handId[2],
-                Rank = 10,
-                Suit = "King"
+                rank = Rank.Ten,
+                suit = Suit.Diamonds
             });
             modelBuilder.Entity<tblCard>().HasData(new tblCard
             {
                 Id = cardId[5],
                 HandId = handId[2],
-                Rank = 10,
-                Suit = "King"
+                rank = Rank.Ten,
+                suit = Suit.Diamonds
             });
             modelBuilder.Entity<tblCard>().HasData(new tblCard
             {
                 Id = cardId[6],
                 HandId = handId[3],
-                Rank = 10,
-                Suit = "King"
+                rank = Rank.Ten,
+                suit = Suit.Diamonds
             });
             modelBuilder.Entity<tblCard>().HasData(new tblCard
             {
                 Id = cardId[7],
                 HandId = handId[3],
-                Rank = 10,
-                Suit = "King"
+                rank = Rank.Ten,
+                suit = Suit.Diamonds
             });
            
         }

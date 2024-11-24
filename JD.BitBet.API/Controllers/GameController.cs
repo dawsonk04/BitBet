@@ -10,7 +10,7 @@ namespace JD.BitBet.API.Controllers
     [ApiController]
     public class GameController : GenericController<Game, GameManager, BitBetEntities>
     {
-
+        GameManager gameManager;
         public GameController(ILogger<GameController> logger, DbContextOptions<BitBetEntities> options) : base(logger, options)
         {
 
@@ -21,7 +21,8 @@ namespace JD.BitBet.API.Controllers
         {
             try
             {
-                GameManager.StartNewGame();
+                gameManager = new GameManager();
+                gameManager.StartNewGame();
                 return Ok(GameManager.State);
             }
             catch (Exception ex)

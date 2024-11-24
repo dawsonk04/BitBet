@@ -1,4 +1,4 @@
-﻿using static JD.BitBet.BL.Models.Cards;
+﻿using static JD.BitBet.PL.Entities.tblCard;
 
 namespace JD.BitBet.BL.Models
 {
