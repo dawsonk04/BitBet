@@ -44,7 +44,11 @@ public class Program
 
         });
 
-        builder.Services.AddDbContextPool<BitBetEntities>(options =>
+        //builder.Services.AddDbContextPool<BitBetEntities>(options =>
+        //{
+        //    options.UseSqlServer(builder.Configuration.GetConnectionString("BitBetConnection"));
+        //});
+        builder.Services.AddDbContext<BitBetEntities>(options =>
         {
             options.UseSqlServer(builder.Configuration.GetConnectionString("BitBetConnection"));
         });

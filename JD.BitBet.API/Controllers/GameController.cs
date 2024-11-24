@@ -32,12 +32,13 @@ namespace JD.BitBet.API.Controllers
         }
 
         [HttpPost("hit")]
-        public IActionResult Hit(GameState state)
+        public async Task<IActionResult> Hit([FromBody] GameState state)
         {
             try
             {
-                gameManager.Hit(state);
-                return Ok(GameManager.State);
+                gameManager = new GameManager(options);
+                GameState gameState = await gameManager.Hit(state);
+                return Ok(gameState);
             }
             catch (Exception ex)
             {

@@ -155,7 +155,7 @@ namespace JD.BitBet.Api.Test
         //    Assert.AreEqual(id, item.GetType().GetProperty("Id").GetValue(item, null));
 
         //}
-
+        [TestMethod]
         public async Task<T> LoadByIdAsync<T>(KeyValuePair<string, string> filter)
         {
             Guid id = await GetId<T>(filter);
@@ -165,5 +165,6 @@ namespace JD.BitBet.Api.Test
             T item = items.ToObject<T>();
             return item;
         }
+        
     }
 }
