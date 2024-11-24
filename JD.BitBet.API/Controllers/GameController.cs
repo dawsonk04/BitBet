@@ -17,13 +17,13 @@ namespace JD.BitBet.API.Controllers
         }
 
         [HttpPost("start")]
-        public IActionResult StartNewGame()
+        public async Task<IActionResult> StartNewGame()
         {
             try
             {
-                gameManager = new GameManager();
-                gameManager.StartNewGame();
-                return Ok(GameManager.State);
+                gameManager = new GameManager(options);
+                GameState gameState = await gameManager.StartNewGame();
+                return Ok(gameState);
             }
             catch (Exception ex)
             {

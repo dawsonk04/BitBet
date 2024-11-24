@@ -14,7 +14,7 @@ namespace JD.BitBet.BL.Models
             rank = rank2;
             suit = suit2;
         }
-
+        public Card() { }
         public override string ToString()
         {
             return $"{rank} of {suit}";

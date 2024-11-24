@@ -77,13 +77,38 @@ namespace JD.BitBet.BL
                 throw;
             }
         }
+        //public async Task<List<Card>> LoadByHandId(Guid handId)
+        //{
+        //    try
+        //    {
+        //        List<tblCard> row = await base.LoadAsync(e => e.HandId == handId);
+        //        if (row != null && row.Any())
+        //            return Map<tblCard, List<Card>>(row[0]);
+        //        else
+        //            throw new Exception("No Row");
+        //    }
+        //    catch (Exception)
+        //    {
+
+        //        throw;
+        //    }
+        //}
         public async Task<List<Card>> LoadByHandId(Guid handId)
         {
             try
             {
+                List<Card> cards = new List<Card>();
                 List<tblCard> row = await base.LoadAsync(e => e.HandId == handId);
-                if (row[0] != null)
-                    return Map<tblCard, List<Card>>(row[0]);
+                if (row != null && row.Any())
+                {
+                    int counter = 0;
+                    foreach (var item in row)
+                    {
+                        cards.Add(Map<tblCard, Card>(row[counter]));
+                        counter++;
+                    }
+                    return cards;
+                }
                 else
                     throw new Exception("No Row");
             }
@@ -93,6 +118,5 @@ namespace JD.BitBet.BL
                 throw;
             }
         }
-
     }
 }

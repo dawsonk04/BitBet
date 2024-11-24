@@ -166,14 +166,8 @@ namespace JD.BitBet.BL
             await cardManager.InsertAsync(dealerCard2);
             await gameStateManager.InsertAsync(State);
 
-            GameState dbGamestate = await gameStateManager.LoadByIdAsync(State.Id);
-            dbGamestate.dealerHand = await handManager.LoadByIdAsync(State.dealerHandId);
-            dbGamestate.playerHand = await handManager.LoadByIdAsync(State.playerHandId);
-            dbGamestate.playerHand.Cards = await cardManager.LoadByHandId(State.playerHandId);
-            dbGamestate.dealerHand.Cards = await cardManager.LoadByHandId(State.dealerHandId);
-
             // Save Game State
-            return dbGamestate;
+            return await populateGameState();
         }
            
         public static int CalculateHandValue(List<Card> hand)
@@ -208,6 +202,17 @@ namespace JD.BitBet.BL
             DealerBust,
             DealerWins,
             Push
+        }
+        public async Task<GameState> populateGameState()
+        {
+            GameState dbGamestate = await gameStateManager.LoadByIdAsync(State.Id);
+            dbGamestate.dealerHand = await handManager.LoadByIdAsync(State.dealerHandId);
+            dbGamestate.playerHand = await handManager.LoadByIdAsync(State.playerHandId);
+            dbGamestate.playerHand.Cards = await cardManager.LoadByHandId(State.playerHandId);
+            dbGamestate.dealerHand.Cards = await cardManager.LoadByHandId(State.dealerHandId);
+
+            // Save Game State
+            return dbGamestate;
         }
         public enum handAction
         {
