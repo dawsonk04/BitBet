@@ -69,13 +69,15 @@ namespace JD.BitBet.UI.Controllers
             if (response.IsSuccessStatusCode)
             {
                 HttpContext.Session.SetString("GameState", gameStateJson);
+                var gameState = JsonConvert.DeserializeObject<GameState>(gameStateJson);
+                return View("GameIndex", gameState);
             }
             else
             {
                 ViewBag.Error = "Failed to start the game.";
             }
 
-            return RedirectToAction("GameIndex");
+            return View("GameIndex");
         }
         public async Task<IActionResult> Hit()
         {

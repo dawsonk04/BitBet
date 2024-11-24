@@ -1,6 +1,6 @@
-﻿@{
+﻿@model JD.BitBet.BL.Models.GameState
+@{
     ViewBag.Title = "Blackjack Game";
-    var gameState = ViewBag.GameState != null ? Newtonsoft.Json.JsonConvert.DeserializeObject<dynamic>(ViewBag.GameState) : null;
 }
 
 <h1>Blackjack Game</h1>
@@ -9,9 +9,9 @@
 {
     <p style="color: red;">@ViewBag.Error</p>
 }
-else if (gameState != null)
+else if (Model != null)
 {
-    <h2>Current Game Status: @gameState.Message</h2>
+    <h2>Current Game Status: @Model.Message</h2>
 
     <div>
 @*         <h3>Dealer's Hand</h3>
@@ -21,7 +21,7 @@ else if (gameState != null)
                 <li>@card.rank of @card.suit</li>
             }
         </ul> *@
-        <p><strong>Dealer's Score: </strong>@gameState.dealerHandVal</p>
+        <p><strong>Dealer's Score: </strong>@Model.dealerHandVal</p>
     </div>
 
     <div>
@@ -32,11 +32,11 @@ else if (gameState != null)
                 <li>@card.rank of @card.suit</li>
             }
         </ul> *@
-        <p><strong>Your Score: </strong>@gameState.playerHandVal</p>
+        <p><strong>Your Score: </strong>@Model.playerHandVal</p>
     </div>
 
     <div>
-        @if (gameState.Message == "Player's Turn")
+        @if (Model.isPlayerTurn == true)
         {
             <form asp-action="Hit" method="post">
                 <button type="submit">Hit</button>
