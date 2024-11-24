@@ -21,12 +21,7 @@ namespace JD.BitBet.BL
             {
                                 
                 tblCard row = Map<Card, tblCard>(Card);
-                row.suit = Card.suit;  
-                row.rank = Card.rank;
-
-                return await base.InsertAsync(row,
-                    e => e.suit == Card.suit &&
-                    e.rank == Card.rank);
+                return await base.InsertAsync(row, null, rollback);
             }
             catch (Exception ex)
             {

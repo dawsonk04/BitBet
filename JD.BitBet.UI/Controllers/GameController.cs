@@ -88,7 +88,6 @@ namespace JD.BitBet.UI.Controllers
             }
 
             var gameState = JsonConvert.DeserializeObject<GameState>(gameStateJson);
-
             var content = new StringContent(JsonConvert.SerializeObject(gameState), Encoding.UTF8, "application/json");
             var response = await _apiClient.PostAsync("Game/hit", content);
 
@@ -96,12 +95,14 @@ namespace JD.BitBet.UI.Controllers
             {
                 var updatedGameStateJson = await response.Content.ReadAsStringAsync();
                 HttpContext.Session.SetString("GameState", updatedGameStateJson);
+                gameState = JsonConvert.DeserializeObject<GameState>(updatedGameStateJson);
             }
             else
             {
                 ViewBag.Error = "Failed to perform hit action.";
             }
-            return RedirectToAction("GameIndex");
+
+            return View("GameIndex", gameState);
         }
         public async Task<IActionResult> Stand()
         {

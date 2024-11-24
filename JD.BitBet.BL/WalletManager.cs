@@ -14,11 +14,7 @@ namespace JD.BitBet.BL
             try
             {
                 tblWallet row = Map<Wallet, tblWallet>(wallet);
-                return await base.InsertAsync(row,
-                    e => e.WalletAddress == e.WalletAddress &&
-                    e.Balance  == e.Balance &&
-                    e.UserId == e.UserId &&
-                    rollback);
+                return await base.InsertAsync(row, null,rollback);
             }
             catch (Exception ex)
             {

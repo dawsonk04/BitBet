@@ -29,8 +29,7 @@ namespace JD.BitBet.BL
             try
             {
                 tblGame row = Map<Game, tblGame>(game);
-                return await base.InsertAsync(row,
-                    e => e.GameResult == game.GameResult, rollback);
+                return await base.InsertAsync(row,null, rollback);
             }
             catch (Exception ex)
             {
