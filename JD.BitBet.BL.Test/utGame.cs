@@ -59,7 +59,7 @@ namespace JD.BitBet.BL.Test
         [TestMethod]
         public async Task StartGame()
         {
-            GameState state = (await new GameManager(options).StartNewGame(true));
+            GameState state = (await new GameManager(options).StartNewGame());
             Assert.AreEqual((await new GameManager(options).LoadByIdAsync(state.Id)).Id, state.Id);
 
         }

@@ -6,7 +6,7 @@ namespace JD.BitBet.BL
     public class GameManager : GenericManager<tblGame>
     {
         public static GameState State { get; private set; }
-        public static GameStateManager GameStateManager { get; private set; }
+        public static GameStateManager gameStateManager { get; private set; }
         public static HandManager handManager { get; private set; }
         public static CardManager cardManager { get; private set; }
 
@@ -16,7 +16,7 @@ namespace JD.BitBet.BL
         public GameManager(ILogger logger, DbContextOptions<BitBetEntities> options) : base(options, logger)
         {
             State = new GameState();
-            GameStateManager = new GameStateManager(logger, options);
+            gameStateManager = new GameStateManager(logger, options);
             handManager = new HandManager(logger, options);
             cardManager = new CardManager(logger, options);
         }
@@ -92,12 +92,14 @@ namespace JD.BitBet.BL
         //    _dealerHand.Add(_deck.Deal());
         //    _dealerHand.Add(_deck.Deal());
         //}
-        public async Task<GameState> StartNewGame(bool rollback = false)
+        public async Task<GameState> StartNewGame()
         {
             State = new GameState();
-            handManager = new HandManager();
-            cardManager = new CardManager();
+            gameStateManager = new GameStateManager(options);
+            handManager = new HandManager(options);
+            cardManager = new CardManager(options);
 
+            State.Id = Guid.NewGuid();
             // Create Player and Dealer Hands
             Hand playerHand = new Hand
             {
@@ -135,15 +137,9 @@ namespace JD.BitBet.BL
 
             // Assign Hand IDs
             playerCard1.HandId = playerHand.Id;
-            playerCard1.Id = Guid.NewGuid();
             playerCard2.HandId = playerHand.Id;
-            playerCard2.Id = Guid.NewGuid();
-
             dealerCard1.HandId = dealerHand.Id;
-            dealerCard1.Id = Guid.NewGuid();
-
             dealerCard2.HandId = dealerHand.Id;
-            dealerCard2.Id = Guid.NewGuid();
 
             // Add Cards to State
             State.playerHand.Cards.Add(playerCard1);
@@ -162,18 +158,24 @@ namespace JD.BitBet.BL
             }
 
 
-            await handManager.InsertAsync(playerHand,rollback);
-            await handManager.InsertAsync(dealerHand, rollback);
+            await handManager.InsertAsync(dealerHand);
+            await handManager.InsertAsync(playerHand);
+            await cardManager.InsertAsync(playerCard1);
+            await cardManager.InsertAsync(playerCard2);
+            await cardManager.InsertAsync(dealerCard1);
+            await cardManager.InsertAsync(dealerCard2);
+            await gameStateManager.InsertAsync(State);
 
-            await cardManager.InsertAsync(playerCard1, rollback);
-            await cardManager.InsertAsync(playerCard2, rollback);
-            await cardManager.InsertAsync(dealerCard1, rollback);
-            await cardManager.InsertAsync(dealerCard2, rollback);
-            await GameStateManager.InsertAsync(State);
+            GameState dbGamestate = await gameStateManager.LoadByIdAsync(State.Id);
+            dbGamestate.dealerHand = await handManager.LoadByIdAsync(State.dealerHandId);
+            dbGamestate.playerHand = await handManager.LoadByIdAsync(State.playerHandId);
+            dbGamestate.playerHand.Cards = await cardManager.LoadByHandId(State.playerHandId);
+            dbGamestate.dealerHand.Cards = await cardManager.LoadByHandId(State.dealerHandId);
+
             // Save Game State
-            return State;
+            return dbGamestate;
         }
-
+           
         public static int CalculateHandValue(List<Card> hand)
         {
             int value = 0;

@@ -23,7 +23,6 @@ namespace JD.BitBet.BL.Test
 
             options = new DbContextOptionsBuilder<BitBetEntities>()
                 .UseSqlServer(_configuration.GetConnectionString("BitBetConnection"))
-                .UseLazyLoadingProxies()
                 .Options;
 
             dc = new BitBetEntities(options);
