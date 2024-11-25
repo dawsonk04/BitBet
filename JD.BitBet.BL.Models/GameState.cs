@@ -7,7 +7,7 @@ namespace JD.BitBet.BL.Models
         public Guid Id { get; set; }
         public Hand playerHand { get; set; }
         public Hand dealerHand { get; set; }
-        public List<List<Card>> playerHands { get; set; }
+        public List<Hand> playerHands { get; set; }
         public int playerHandVal { get; set; }
         public int dealerHandVal { get; set; }
         public Guid playerHandId { get; set; }

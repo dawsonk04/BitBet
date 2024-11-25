@@ -11,7 +11,7 @@ namespace JD.BitBet.Api.Test
         UtGame()
         {
             _client = new HttpClient();
-            _client.BaseAddress = new Uri("")
+            _client.BaseAddress = new Uri("");
         }
         [TestMethod]
         public async Task LoadTestAsync()

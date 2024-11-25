@@ -32,7 +32,7 @@ namespace JD.BitBet.API.Controllers
         }
 
         [HttpPost("hit")]
-        public async Task<IActionResult> Hit([FromBody] GameState state)
+        public async Task<IActionResult> Hit(GameState state)
         {
             try
             {

@@ -1,4 +1,6 @@
 ﻿using JD.BitBet.BL.Models;
+using JD.BitBet.PL.Entities;
+using System.Diagnostics.Metrics;
 using static JD.BitBet.PL.Entities.tblCard;
 
 namespace JD.BitBet.BL
@@ -115,9 +117,10 @@ namespace JD.BitBet.BL
                 Result = 0,
                 Cards = new List<Card>()
             };
-
+            State.playerHands = new List<Hand>();
             // Assign to State
             State.playerHand = playerHand;
+            State.playerHands.Add(playerHand);
             State.dealerHand = dealerHand;
             State.playerHandId = playerHand.Id;
             State.dealerHandId = dealerHand.Id;
@@ -156,7 +159,6 @@ namespace JD.BitBet.BL
                 State.isGameOver = true;
             }
 
-
             await handManager.InsertAsync(dealerHand);
             await handManager.InsertAsync(playerHand);
             await cardManager.InsertAsync(playerCard1);
@@ -166,7 +168,7 @@ namespace JD.BitBet.BL
             await gameStateManager.InsertAsync(State);
 
             // Save Game State
-            return await populateGameState();
+            return await populateGameState(State);
         }
            
         public static int CalculateHandValue(List<Card> hand)
@@ -202,21 +204,30 @@ namespace JD.BitBet.BL
             DealerWins,
             Push
         }
-        public async Task<GameState> populateGameState()
+        public async Task<GameState> populateGameState(GameState state)
         {
-            GameState dbGamestate = await gameStateManager.LoadByIdAsync(State.Id);
-            dbGamestate.dealerHand = await handManager.LoadByIdAsync(State.dealerHandId);
-            dbGamestate.playerHand = await handManager.LoadByIdAsync(State.playerHandId);
-            dbGamestate.playerHand.Cards = await cardManager.LoadByHandId(State.playerHandId);
-            dbGamestate.dealerHand.Cards = await cardManager.LoadByHandId(State.dealerHandId);
+            GameState dbGamestate = await gameStateManager.LoadByIdAsync(state.Id);
+            dbGamestate.dealerHand = await handManager.LoadByIdAsync(state.dealerHandId);
+            dbGamestate.playerHand = await handManager.LoadByIdAsync(state.playerHandId);
+            dbGamestate.playerHand.Cards = await cardManager.LoadByHandId(state.playerHandId);
+            dbGamestate.dealerHand.Cards = await cardManager.LoadByHandId(state.dealerHandId);
+            dbGamestate.playerHands = new List<Hand>();
+            int counter = 0;
+            foreach (var hand in state.playerHands)
+            {
+                dbGamestate.playerHands.Add(await handManager.LoadByIdAsync(hand.Id));
 
-            // Save Game State
+                foreach (var card in state.playerHands[counter].Cards)
+                    dbGamestate.playerHands[counter].Cards = await cardManager.LoadByHandId(hand.Id);
+                counter++;
+            }
             return dbGamestate;
         }
         public enum handAction
         {
             Hit, Stand, Double, Split
         }
+
         public async Task<GameState> Hit(GameState state)
         {
             if (state.isGameOver || !state.isPlayerTurn)
@@ -226,7 +237,8 @@ namespace JD.BitBet.BL
             }
 
             Card newCard = _deck.Deal();
-            newCard.HandId = State.playerHandId;
+            newCard.Id = Guid.NewGuid();
+            newCard.HandId = state.playerHandId;
             state.playerHand.Cards.Add(newCard);
 
             state.playerHandVal = CalculateHandValue(state.playerHand.Cards);
@@ -248,7 +260,7 @@ namespace JD.BitBet.BL
             await cardManager.InsertAsync(newCard);
             await gameStateManager.UpdateAsync(state);
 
-            return await populateGameState();
+            return await populateGameState(state);
         }
         public void Stand()
         {
@@ -336,7 +348,7 @@ namespace JD.BitBet.BL
             var hand1 = new List<Card> { State.playerHand.Cards[0], _deck.Deal() };
             var hand2 = new List<Card> { State.playerHand.Cards[1], _deck.Deal() };
 
-            State.playerHands = new List<List<Card>> { hand1, hand2 };
+            //State.playerHands = new List<Hand> { hand1, hand2 };
             State.Message = "Player splits their hand.";
         }
 
