@@ -15,7 +15,7 @@ namespace JD.BitBet.UI.Controllers
             this._apiClient = new ApiClient(httpClient.BaseAddress.AbsoluteUri);
 
         }
-        public  async Task<IActionResult> GameIndex()
+        public async Task<IActionResult> GameIndex()
         {
             var response = await _apiClient.GetAsync("Game/state");
             if (response.IsSuccessStatusCode)
@@ -104,6 +104,31 @@ namespace JD.BitBet.UI.Controllers
 
             return View("GameIndex", gameState);
         }
+        public async Task<IActionResult> Double()
+        {
+            var gameStateJson = HttpContext.Session.GetString("GameState");
+            if (string.IsNullOrEmpty(gameStateJson))
+            {
+                return RedirectToAction("GameIndex");
+            }
+
+            var gameState = JsonConvert.DeserializeObject<GameState>(gameStateJson);
+            var content = new StringContent(JsonConvert.SerializeObject(gameState), Encoding.UTF8, "application/json");
+            var response = await _apiClient.PostAsync("Game/double", content);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var updatedGameStateJson = await response.Content.ReadAsStringAsync();
+                HttpContext.Session.SetString("GameState", updatedGameStateJson);
+                gameState = JsonConvert.DeserializeObject<GameState>(updatedGameStateJson);
+            }
+            else
+            {
+                ViewBag.Error = "Failed to perform double action.";
+            }
+
+            return View("GameIndex", gameState);
+        }
         public async Task<IActionResult> Stand()
         {
             var gameStateJson = HttpContext.Session.GetString("GameState");
@@ -128,16 +153,6 @@ namespace JD.BitBet.UI.Controllers
             }
 
             return View("GameIndex", gameState);
-        }
-
-        public void Double()
-        {
-
-        }
-
-        public void Split()
-        {
-
         }
 
     }

@@ -52,57 +52,57 @@ namespace JD.BitBet.PL.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("6c0201c2-fb3c-4d94-a8ec-c9f56fb0b5e5"),
-                            HandId = new Guid("707e2bda-9c52-47e4-ab59-ebb970644c31"),
+                            Id = new Guid("8eab3034-1ad9-4dc3-89b7-b417cedea079"),
+                            HandId = new Guid("7e10e828-50e3-45c0-bc7b-4a2ac2ba696c"),
                             rank = "Ten",
                             suit = "Diamonds"
                         },
                         new
                         {
-                            Id = new Guid("aca16560-c99f-48df-a3cb-81d4220525d9"),
-                            HandId = new Guid("707e2bda-9c52-47e4-ab59-ebb970644c31"),
+                            Id = new Guid("beddcc64-f549-42a7-833a-e0914c6aee90"),
+                            HandId = new Guid("7e10e828-50e3-45c0-bc7b-4a2ac2ba696c"),
                             rank = "Ten",
                             suit = "Diamonds"
                         },
                         new
                         {
-                            Id = new Guid("109ee187-0eff-443c-b29d-1e558461dbde"),
-                            HandId = new Guid("5e96d516-1d1e-4976-9824-ff4f6c8366a9"),
+                            Id = new Guid("d3238a91-03f4-4105-ba59-e75561402d22"),
+                            HandId = new Guid("77ae2c0d-d600-469a-b6ef-8ec9d1ab0a9e"),
                             rank = "Ten",
                             suit = "Diamonds"
                         },
                         new
                         {
-                            Id = new Guid("3bc0c5ed-048a-4314-b154-5eda6a377e74"),
-                            HandId = new Guid("5e96d516-1d1e-4976-9824-ff4f6c8366a9"),
+                            Id = new Guid("9811ebc9-537d-42a3-857d-4bfc72698882"),
+                            HandId = new Guid("77ae2c0d-d600-469a-b6ef-8ec9d1ab0a9e"),
                             rank = "Ten",
                             suit = "Diamonds"
                         },
                         new
                         {
-                            Id = new Guid("e232843b-bb3a-4f07-92e7-322532697c62"),
-                            HandId = new Guid("06433f7a-e498-41ec-a3e1-a5130c174eb2"),
+                            Id = new Guid("711a6459-1649-4726-bc76-d86a30a77201"),
+                            HandId = new Guid("39bb55b2-7f6a-403d-88d9-dd046742bf1d"),
                             rank = "Ten",
                             suit = "Diamonds"
                         },
                         new
                         {
-                            Id = new Guid("26590074-206f-4df1-95f1-54c72b876b9c"),
-                            HandId = new Guid("06433f7a-e498-41ec-a3e1-a5130c174eb2"),
+                            Id = new Guid("908bac09-98d3-4220-b911-19440100f9de"),
+                            HandId = new Guid("39bb55b2-7f6a-403d-88d9-dd046742bf1d"),
                             rank = "Ten",
                             suit = "Diamonds"
                         },
                         new
                         {
-                            Id = new Guid("55a00c37-c2cd-4832-9310-0a04491ab13b"),
-                            HandId = new Guid("e2db2428-f059-4ba5-af80-c7dc39229250"),
+                            Id = new Guid("4ec3d6d7-ace9-4089-9c1f-344f30263566"),
+                            HandId = new Guid("61d10f4e-a7dc-46a5-b795-45ad3a97392f"),
                             rank = "Ten",
                             suit = "Diamonds"
                         },
                         new
                         {
-                            Id = new Guid("8f23917f-249d-4cb9-8588-7694d5899684"),
-                            HandId = new Guid("e2db2428-f059-4ba5-af80-c7dc39229250"),
+                            Id = new Guid("c1a93cda-3097-4595-805f-23dcd2c41450"),
+                            HandId = new Guid("61d10f4e-a7dc-46a5-b795-45ad3a97392f"),
                             rank = "Ten",
                             suit = "Diamonds"
                         });
@@ -131,15 +131,15 @@ namespace JD.BitBet.PL.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("be9510cc-8aeb-4572-bd10-b645ad21581d"),
+                            Id = new Guid("a0d4af79-af67-4e0d-a035-c0f3e4c2be3f"),
                             GameResult = 200.0,
-                            UserId = new Guid("6ce299f0-e70c-48d7-81d1-e52a452fc55e")
+                            UserId = new Guid("3a0eb3ff-e2f1-4345-8d62-a21eb3fa64e4")
                         },
                         new
                         {
-                            Id = new Guid("3e62ea65-1e76-4c5f-b9da-f904364ba971"),
+                            Id = new Guid("91f73ce5-0bbb-4e20-8b7a-b74bfb461ad5"),
                             GameResult = 200.0,
-                            UserId = new Guid("6ce299f0-e70c-48d7-81d1-e52a452fc55e")
+                            UserId = new Guid("3a0eb3ff-e2f1-4345-8d62-a21eb3fa64e4")
                         });
                 });
 
@@ -184,13 +184,13 @@ namespace JD.BitBet.PL.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("cd1dd1f7-76c4-44b8-aaec-3df25a154373"),
-                            dealerHandId = new Guid("707e2bda-9c52-47e4-ab59-ebb970644c31"),
+                            Id = new Guid("5cddf765-b46e-42c6-a9d5-0e03d84829cf"),
+                            dealerHandId = new Guid("7e10e828-50e3-45c0-bc7b-4a2ac2ba696c"),
                             dealerHandVal = 20,
                             isGameOver = true,
                             isPlayerTurn = true,
                             message = "Game Over",
-                            playerHandId = new Guid("5e96d516-1d1e-4976-9824-ff4f6c8366a9"),
+                            playerHandId = new Guid("77ae2c0d-d600-469a-b6ef-8ec9d1ab0a9e"),
                             playerHandVal = 20
                         });
                 });
@@ -223,15 +223,15 @@ namespace JD.BitBet.PL.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("6ce299f0-e70c-48d7-81d1-e52a452fc55e"),
+                            Id = new Guid("3a0eb3ff-e2f1-4345-8d62-a21eb3fa64e4"),
                             CreateDate = new DateTime(1990, 12, 4, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "knudtdaw0000@gmail.com",
                             Password = "W6ph5Mm5Pz8GgiULbPgzG37mj9g="
                         },
                         new
                         {
-                            Id = new Guid("35d0cbd0-3e83-4353-b894-f2fb78a3481d"),
-                            CreateDate = new DateTime(2024, 11, 26, 0, 14, 48, 695, DateTimeKind.Local).AddTicks(3026),
+                            Id = new Guid("2a1f4034-1b4e-47bb-b0d4-73a15dbb25fa"),
+                            CreateDate = new DateTime(2024, 11, 26, 17, 4, 4, 994, DateTimeKind.Local).AddTicks(9919),
                             Email = "jbstrange2@gmail.com",
                             Password = "W6ph5Mm5Pz8GgiULbPgzG37mj9g="
                         });
@@ -265,16 +265,16 @@ namespace JD.BitBet.PL.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("a7755297-5a29-41da-9d43-a9b18fd9a3be"),
+                            Id = new Guid("6221616d-eafa-45fe-8f2b-ee09fb1f38d3"),
                             Balance = 0.0,
-                            UserId = new Guid("6ce299f0-e70c-48d7-81d1-e52a452fc55e"),
+                            UserId = new Guid("3a0eb3ff-e2f1-4345-8d62-a21eb3fa64e4"),
                             WalletAddress = "0xE2dC61497FDD26F9ea285172A41F0b25373f22df"
                         },
                         new
                         {
-                            Id = new Guid("6501866c-dbbf-467e-bf15-ddee36bcd348"),
+                            Id = new Guid("1680f429-bb18-42a6-a6cf-b9d613cc7514"),
                             Balance = 0.0,
-                            UserId = new Guid("35d0cbd0-3e83-4353-b894-f2fb78a3481d"),
+                            UserId = new Guid("2a1f4034-1b4e-47bb-b0d4-73a15dbb25fa"),
                             WalletAddress = "0xE2dC61497FDD26F9eaYaBoi5373f22df"
                         });
                 });
@@ -310,19 +310,19 @@ namespace JD.BitBet.PL.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("dd73786a-0c69-4052-aad7-ec0e927c0506"),
+                            Id = new Guid("54e1d2f8-c2a8-48a9-ade1-1ee591513d77"),
                             ErrorDateTime = new DateTime(1990, 12, 4, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             ErrorMessage = "Test",
                             ErrorType = "Login Exception",
-                            UserId = new Guid("6ce299f0-e70c-48d7-81d1-e52a452fc55e")
+                            UserId = new Guid("3a0eb3ff-e2f1-4345-8d62-a21eb3fa64e4")
                         },
                         new
                         {
-                            Id = new Guid("c514902b-3348-4a22-a933-fcb38f46bea6"),
-                            ErrorDateTime = new DateTime(2024, 11, 26, 0, 14, 48, 695, DateTimeKind.Local).AddTicks(6244),
+                            Id = new Guid("e611cd10-b3c7-4442-9fa4-3286d183a219"),
+                            ErrorDateTime = new DateTime(2024, 11, 26, 17, 4, 4, 995, DateTimeKind.Local).AddTicks(4925),
                             ErrorMessage = "Test",
                             ErrorType = "Login Exception",
-                            UserId = new Guid("35d0cbd0-3e83-4353-b894-f2fb78a3481d")
+                            UserId = new Guid("2a1f4034-1b4e-47bb-b0d4-73a15dbb25fa")
                         });
                 });
 
@@ -354,25 +354,25 @@ namespace JD.BitBet.PL.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("707e2bda-9c52-47e4-ab59-ebb970644c31"),
+                            Id = new Guid("7e10e828-50e3-45c0-bc7b-4a2ac2ba696c"),
                             BetAmount = 20.0,
                             Result = 40.0
                         },
                         new
                         {
-                            Id = new Guid("5e96d516-1d1e-4976-9824-ff4f6c8366a9"),
+                            Id = new Guid("77ae2c0d-d600-469a-b6ef-8ec9d1ab0a9e"),
                             BetAmount = 20.0,
                             Result = -20.0
                         },
                         new
                         {
-                            Id = new Guid("06433f7a-e498-41ec-a3e1-a5130c174eb2"),
+                            Id = new Guid("39bb55b2-7f6a-403d-88d9-dd046742bf1d"),
                             BetAmount = 20.0,
                             Result = 40.0
                         },
                         new
                         {
-                            Id = new Guid("e2db2428-f059-4ba5-af80-c7dc39229250"),
+                            Id = new Guid("61d10f4e-a7dc-46a5-b795-45ad3a97392f"),
                             BetAmount = 20.0,
                             Result = -20.0
                         });
@@ -409,35 +409,35 @@ namespace JD.BitBet.PL.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("048dcf8f-d6a6-40f7-b540-c79968daf1c1"),
+                            Id = new Guid("f2460c4c-8129-43e6-a2b0-292f37249e5e"),
                             Amount = 1.0,
                             TransactionDate = new DateTime(1990, 12, 4, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             TransactionType = "Withdrawal",
-                            WalletId = new Guid("a7755297-5a29-41da-9d43-a9b18fd9a3be")
+                            WalletId = new Guid("6221616d-eafa-45fe-8f2b-ee09fb1f38d3")
                         },
                         new
                         {
-                            Id = new Guid("a9e75d18-5914-471c-affb-4bcbd1a456a8"),
+                            Id = new Guid("136f2658-53fe-4f45-b3ef-c1480b43e874"),
                             Amount = 2.0,
-                            TransactionDate = new DateTime(2024, 11, 26, 0, 14, 48, 695, DateTimeKind.Local).AddTicks(4627),
+                            TransactionDate = new DateTime(2024, 11, 26, 17, 4, 4, 995, DateTimeKind.Local).AddTicks(3190),
                             TransactionType = "Withdrawal",
-                            WalletId = new Guid("a7755297-5a29-41da-9d43-a9b18fd9a3be")
+                            WalletId = new Guid("6221616d-eafa-45fe-8f2b-ee09fb1f38d3")
                         },
                         new
                         {
-                            Id = new Guid("f184fdde-3aed-4431-b8a0-0c9c6180fa47"),
+                            Id = new Guid("7f4dd09f-41a6-4d44-b107-4ee19dc22feb"),
                             Amount = 1.0,
-                            TransactionDate = new DateTime(2024, 11, 26, 0, 14, 48, 695, DateTimeKind.Local).AddTicks(4643),
+                            TransactionDate = new DateTime(2024, 11, 26, 17, 4, 4, 995, DateTimeKind.Local).AddTicks(3214),
                             TransactionType = "Withdrawal",
-                            WalletId = new Guid("6501866c-dbbf-467e-bf15-ddee36bcd348")
+                            WalletId = new Guid("1680f429-bb18-42a6-a6cf-b9d613cc7514")
                         },
                         new
                         {
-                            Id = new Guid("d148839b-b01e-4d01-a0bc-5aa0ef65f9ae"),
+                            Id = new Guid("f575dae7-d8ce-489a-9278-2b68d71669b9"),
                             Amount = 2.0,
-                            TransactionDate = new DateTime(2024, 11, 26, 0, 14, 48, 695, DateTimeKind.Local).AddTicks(4654),
+                            TransactionDate = new DateTime(2024, 11, 26, 17, 4, 4, 995, DateTimeKind.Local).AddTicks(3224),
                             TransactionType = "Withdrawal",
-                            WalletId = new Guid("6501866c-dbbf-467e-bf15-ddee36bcd348")
+                            WalletId = new Guid("1680f429-bb18-42a6-a6cf-b9d613cc7514")
                         });
                 });
 

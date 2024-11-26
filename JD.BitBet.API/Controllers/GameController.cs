@@ -61,13 +61,14 @@ namespace JD.BitBet.API.Controllers
             }
         }
 
-        [HttpPost("double/{handId}")]
-        public IActionResult Double(Guid handId, GameManager gameManager)
+        [HttpPost("double")]
+        public async Task<IActionResult> DoublePlayerHand(GameState state)
         {
             try
             {
-                gameManager.Double(handId);
-                return Ok(GameManager.State);
+                gameManager = new GameManager(options);
+                GameState gameState = await gameManager.Double(state);
+                return Ok(gameState);
             }
             catch (Exception ex)
             {

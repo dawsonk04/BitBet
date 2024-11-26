@@ -1,7 +1,4 @@
 ﻿using JD.BitBet.BL.Models;
-using JD.BitBet.PL.Entities;
-using Mono.TextTemplating;
-using System.Diagnostics.Metrics;
 using static JD.BitBet.PL.Entities.tblCard;
 
 namespace JD.BitBet.BL
@@ -32,7 +29,7 @@ namespace JD.BitBet.BL
             try
             {
                 tblGame row = Map<Game, tblGame>(game);
-                return await base.InsertAsync(row,null, rollback);
+                return await base.InsertAsync(row, null, rollback);
             }
             catch (Exception ex)
             {
@@ -175,7 +172,7 @@ namespace JD.BitBet.BL
             // Save Game State
             return await populateGameState(State);
         }
-           
+
         public static int CalculateHandValue(List<Card> hand)
         {
             int value = 0;
@@ -326,27 +323,24 @@ namespace JD.BitBet.BL
             }
         }
 
-        public void Double(Guid handId)
+        public async Task<GameState> Double(GameState state)
         {
-            if (State.isGameOver || !State.isPlayerTurn)
+            if (state.isGameOver || !state.isPlayerTurn)
             {
-                State.message = "Invalid action. The game is over or it's not your turn.";
-                return;
+                state.message = "Invalid action. The game is over or it's not your turn.";
+                return state;
             }
 
-            // Double the bet (not implemented here but tracked in your game logic)
-            State.playerHand.Cards.Add(_deck.Deal());
-            State.playerHandVal = CalculateHandValue(State.playerHand.Cards);
 
-            if (State.playerHandVal > 21)
-            {
-                State.isGameOver = true;
-                State.message = "Player busts after doubling!";
-            }
-            else
-            {
-                //Stand(); // Automatically ends the turn.
-            }
+            Card card = _deck.Deal();
+            state.playerHand.Cards.Add(card);
+            card.HandId = state.playerHandId;
+            await cardManager.InsertAsync(card);
+            state.playerHandVal = CalculateHandValue(await cardManager.LoadByHandId(state.playerHandId));
+
+            state.playerHand.BetAmount *= 2;
+
+            return await Stand(state);
         }
 
         public void Split(Guid handId)
