@@ -14,7 +14,7 @@ namespace JD.BitBet.BL
 
         private static Deck _deck;
 
-        private const string NOTFOUND_MESSAGE = "Row does not exist";
+        private const string NOTFOUND_message = "Row does not exist";
         public GameManager(ILogger logger, DbContextOptions<BitBetEntities> options) : base(options, logger)
         {
             State = new GameState();
@@ -155,8 +155,12 @@ namespace JD.BitBet.BL
             // Check for Blackjack
             if (State.playerHandVal == 21)
             {
-                State.Message = "Blackjack! Player wins.";
+                State.message = "Blackjack! Player wins.";
                 State.isGameOver = true;
+            }
+            else
+            {
+                State.message = "Game Initialized";
             }
 
             await handManager.InsertAsync(dealerHand);
@@ -221,6 +225,21 @@ namespace JD.BitBet.BL
                     dbGamestate.playerHands[counter].Cards = await cardManager.LoadByHandId(hand.Id);
                 counter++;
             }
+            dbGamestate.playerHandVal = CalculateHandValue(await cardManager.LoadByHandId(state.playerHandId));
+
+            if (dbGamestate.playerHandVal > 21)
+            {
+                dbGamestate.isGameOver = true;
+                dbGamestate.message = "Player busts! Dealer wins.";
+            }
+            else if (dbGamestate.playerHandVal == 21)
+            {
+                dbGamestate.message = "Player hits 21!";
+            }
+            else
+            {
+                dbGamestate.message = "Player hits.";
+            }
             return dbGamestate;
         }
         public enum handAction
@@ -232,30 +251,14 @@ namespace JD.BitBet.BL
         {
             if (state.isGameOver || !state.isPlayerTurn)
             {
-                state.Message = "Invalid action. The game is over or it's not your turn.";
-                return State;
+                state.message = "Invalid action. The game is over or it's not your turn.";
+                return state;
             }
 
             Card newCard = _deck.Deal();
             newCard.Id = Guid.NewGuid();
             newCard.HandId = state.playerHandId;
             state.playerHand.Cards.Add(newCard);
-
-            state.playerHandVal = CalculateHandValue(state.playerHand.Cards);
-
-            if (state.playerHandVal > 21)
-            {
-                state.isGameOver = true;
-                state.Message = "Player busts! Dealer wins.";
-            }
-            else if (state.playerHandVal == 21)
-            {
-                state.Message = "Player hits 21!";
-            }
-            else
-            {
-                state.Message = "Player hits.";
-            }
 
             await cardManager.InsertAsync(newCard);
             await gameStateManager.UpdateAsync(state);
@@ -266,7 +269,7 @@ namespace JD.BitBet.BL
         {
             if (State.isGameOver || !State.isPlayerTurn)
             {
-                State.Message = "Invalid action. The game is over or it's not your turn.";
+                State.message = "Invalid action. The game is over or it's not your turn.";
                 return;
             }
 
@@ -276,7 +279,7 @@ namespace JD.BitBet.BL
 
         public void PerformDealerTurn()
         {
-            State.Message = "Dealer's turn.";
+            State.message = "Dealer's turn.";
 
             while (State.dealerHandVal < 17)
             {
@@ -291,24 +294,24 @@ namespace JD.BitBet.BL
             if (State.dealerHandVal > 21)
             {
                 State.isGameOver = true;
-                State.Message = "Dealer busts! Player wins.";
+                State.message = "Dealer busts! Player wins.";
                 return;
             }
 
             if (State.playerHandVal > State.dealerHandVal)
             {
                 State.isGameOver = true;
-                State.Message = "Player wins!";
+                State.message = "Player wins!";
             }
             else if (State.playerHandVal < State.dealerHandVal)
             {
                 State.isGameOver = true;
-                State.Message = "Dealer wins!";
+                State.message = "Dealer wins!";
             }
             else
             {
                 State.isGameOver = true;
-                State.Message = "Push! It's a tie.";
+                State.message = "Push! It's a tie.";
             }
         }
 
@@ -316,7 +319,7 @@ namespace JD.BitBet.BL
         {
             if (State.isGameOver || !State.isPlayerTurn)
             {
-                State.Message = "Invalid action. The game is over or it's not your turn.";
+                State.message = "Invalid action. The game is over or it's not your turn.";
                 return;
             }
 
@@ -327,7 +330,7 @@ namespace JD.BitBet.BL
             if (State.playerHandVal > 21)
             {
                 State.isGameOver = true;
-                State.Message = "Player busts after doubling!";
+                State.message = "Player busts after doubling!";
             }
             else
             {
@@ -342,14 +345,14 @@ namespace JD.BitBet.BL
 
             if (State.playerHand.Cards.Count != 2 || State.playerHand.Cards[0].rank != State.playerHand.Cards[1].rank)
             {
-                State.Message = "Cannot split this hand.";
+                State.message = "Cannot split this hand.";
                 return;
             }
             var hand1 = new List<Card> { State.playerHand.Cards[0], _deck.Deal() };
             var hand2 = new List<Card> { State.playerHand.Cards[1], _deck.Deal() };
 
             //State.playerHands = new List<Hand> { hand1, hand2 };
-            State.Message = "Player splits their hand.";
+            State.message = "Player splits their hand.";
         }
 
 

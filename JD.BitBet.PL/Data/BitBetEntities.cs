@@ -87,6 +87,7 @@ namespace JD.BitBet.PL.Data
                 dealerHandId = handId[0],
                 playerHandId = handId[1],
                 playerHandVal = 20,
+                message = "Game Over",
                 dealerHandVal = 20,
             });
         }

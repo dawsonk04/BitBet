@@ -14,8 +14,6 @@ namespace JD.BitBet.PL.Entities
         public Rank rank { get; set; }
         public Suit suit { get; set; }
         public virtual tblHand hand { get; set; }
-
-
         public enum Rank
         {
             Two = 2,

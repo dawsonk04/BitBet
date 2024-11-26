@@ -14,11 +14,9 @@ namespace JD.BitBet.BL.Models
         public Guid dealerHandId { get; set; }
         public bool isPlayerTurn { get; set; }
         public bool isGameOver { get; set; }
-        public string Message { get; set; }
+        public string message { get; set; }
         public GameState()
-        {
-            Message = "Game Initialized";
-        }
+        {        }
 
     }
 }
