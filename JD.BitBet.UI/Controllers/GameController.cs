@@ -106,8 +106,28 @@ namespace JD.BitBet.UI.Controllers
         }
         public async Task<IActionResult> Stand()
         {
-            var response = await _apiClient.PostAsync("Game/stand", null);
-            return RedirectToAction("GameIndex");
+            var gameStateJson = HttpContext.Session.GetString("GameState");
+            if (string.IsNullOrEmpty(gameStateJson))
+            {
+                return RedirectToAction("GameIndex");
+            }
+
+            var gameState = JsonConvert.DeserializeObject<GameState>(gameStateJson);
+            var content = new StringContent(JsonConvert.SerializeObject(gameState), Encoding.UTF8, "application/json");
+            var response = await _apiClient.PostAsync("Game/stand", content);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var updatedGameStateJson = await response.Content.ReadAsStringAsync();
+                HttpContext.Session.SetString("GameState", updatedGameStateJson);
+                gameState = JsonConvert.DeserializeObject<GameState>(updatedGameStateJson);
+            }
+            else
+            {
+                ViewBag.Error = "Failed to perform stand action.";
+            }
+
+            return View("GameIndex", gameState);
         }
 
         public void Double()

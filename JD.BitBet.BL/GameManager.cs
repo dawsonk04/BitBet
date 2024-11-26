@@ -1,5 +1,6 @@
 ﻿using JD.BitBet.BL.Models;
 using JD.BitBet.PL.Entities;
+using Mono.TextTemplating;
 using System.Diagnostics.Metrics;
 using static JD.BitBet.PL.Entities.tblCard;
 
@@ -216,6 +217,7 @@ namespace JD.BitBet.BL
             dbGamestate.playerHand.Cards = await cardManager.LoadByHandId(state.playerHandId);
             dbGamestate.dealerHand.Cards = await cardManager.LoadByHandId(state.dealerHandId);
             dbGamestate.playerHands = new List<Hand>();
+
             int counter = 0;
             foreach (var hand in state.playerHands)
             {
@@ -265,53 +267,62 @@ namespace JD.BitBet.BL
 
             return await populateGameState(state);
         }
-        public void Stand()
+        public async Task<GameState> Stand(GameState state)
         {
-            if (State.isGameOver || !State.isPlayerTurn)
+            if (state.isGameOver || !state.isPlayerTurn)
             {
                 State.message = "Invalid action. The game is over or it's not your turn.";
-                return;
+                return state;
             }
 
             State.isPlayerTurn = false;
-            PerformDealerTurn();
+            return await PerformDealerTurn(state);
         }
 
-        public void PerformDealerTurn()
+        public async Task<GameState> PerformDealerTurn(GameState state)
         {
-            State.message = "Dealer's turn.";
+            state.message = "Dealer's turn.";
 
-            while (State.dealerHandVal < 17)
+            while (state.dealerHandVal < 17)
             {
-                State.dealerHand.Cards.Add(_deck.Deal());
-                State.dealerHandVal = CalculateHandValue(State.dealerHand.Cards);
+                Card card = _deck.Deal();
+                state.dealerHand.Cards.Add(card);
+                card.HandId = state.dealerHandId;
+                await cardManager.InsertAsync(card);
+                state.dealerHandVal = CalculateHandValue(await cardManager.LoadByHandId(state.dealerHandId));
             }
-            DetermineWinner();
+            return await DetermineWinner(state);
         }
 
-        public void DetermineWinner()
+        public async Task<GameState> DetermineWinner(GameState state)
         {
-            if (State.dealerHandVal > 21)
+            if (state.dealerHandVal > 21)
             {
-                State.isGameOver = true;
-                State.message = "Dealer busts! Player wins.";
-                return;
+                state.isGameOver = true;
+                state.message = "Dealer busts! Player wins.";
+                await gameStateManager.UpdateAsync(state);
+                return state;
             }
-
-            if (State.playerHandVal > State.dealerHandVal)
+            if (state.playerHandVal > state.dealerHandVal)
             {
-                State.isGameOver = true;
-                State.message = "Player wins!";
+                state.isGameOver = true;
+                state.message = "Player wins!";
+                await gameStateManager.UpdateAsync(state);
+                return state;
             }
-            else if (State.playerHandVal < State.dealerHandVal)
+            else if (state.playerHandVal < state.dealerHandVal)
             {
-                State.isGameOver = true;
-                State.message = "Dealer wins!";
+                state.isGameOver = true;
+                state.message = "Dealer wins!";
+                await gameStateManager.UpdateAsync(state);
+                return state;
             }
             else
             {
-                State.isGameOver = true;
-                State.message = "Push! It's a tie.";
+                state.isGameOver = true;
+                state.message = "Push! It's a tie.";
+                await gameStateManager.UpdateAsync(state);
+                return state;
             }
         }
 
@@ -334,7 +345,7 @@ namespace JD.BitBet.BL
             }
             else
             {
-                Stand(); // Automatically ends the turn.
+                //Stand(); // Automatically ends the turn.
             }
         }
 

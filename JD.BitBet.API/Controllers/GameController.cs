@@ -32,7 +32,7 @@ namespace JD.BitBet.API.Controllers
         }
 
         [HttpPost("hit")]
-        public async Task<IActionResult> Hit(GameState state)
+        public async Task<IActionResult> HitPlayerHand(GameState state)
         {
             try
             {
@@ -47,12 +47,13 @@ namespace JD.BitBet.API.Controllers
         }
 
         [HttpPost("stand")]
-        public IActionResult Stand(GameManager gameManager)
+        public async Task<IActionResult> StandPlayerHand(GameState state)
         {
             try
             {
-                gameManager.Stand();
-                return Ok(GameManager.State);
+                gameManager = new GameManager(options);
+                GameState gameState = await gameManager.Stand(state);
+                return Ok(gameState);
             }
             catch (Exception ex)
             {
