@@ -133,19 +133,16 @@ namespace JD.BitBet.BL
             Card playerCard1 = _deck.Deal();
             Card playerCard2 = _deck.Deal();
             Card dealerCard1 = _deck.Deal();
-            Card dealerCard2 = _deck.Deal();
 
             // Assign Hand IDs
             playerCard1.HandId = playerHand.Id;
             playerCard2.HandId = playerHand.Id;
             dealerCard1.HandId = dealerHand.Id;
-            dealerCard2.HandId = dealerHand.Id;
 
             // Add Cards to State
             State.playerHand.Cards.Add(playerCard1);
             State.playerHand.Cards.Add(playerCard2);
             State.dealerHand.Cards.Add(dealerCard1);
-            State.dealerHand.Cards.Add(dealerCard2);
 
             // Calculate Hand Values
             State.playerHandVal = CalculateHandValue(State.playerHand.Cards);
@@ -166,7 +163,6 @@ namespace JD.BitBet.BL
             await cardManager.InsertAsync(playerCard1);
             await cardManager.InsertAsync(playerCard2);
             await cardManager.InsertAsync(dealerCard1);
-            await cardManager.InsertAsync(dealerCard2);
             await gameStateManager.InsertAsync(State);
 
             // Save Game State
@@ -322,7 +318,6 @@ namespace JD.BitBet.BL
                 return state;
             }
         }
-
         public async Task<GameState> Double(GameState state)
         {
             if (state.isGameOver || !state.isPlayerTurn)
@@ -330,8 +325,6 @@ namespace JD.BitBet.BL
                 state.message = "Invalid action. The game is over or it's not your turn.";
                 return state;
             }
-
-
             Card card = _deck.Deal();
             state.playerHand.Cards.Add(card);
             card.HandId = state.playerHandId;

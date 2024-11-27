@@ -31,10 +31,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Hub\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\JD.BitBet.BL.Models\JD.BitBet.BL.Models.csproj" />
     <ProjectReference Include="..\JD.BitBet.BL\JD.BitBet.BL.csproj" />
     <ProjectReference Include="..\JD.BitBet.PL\JD.BitBet.PL.csproj" />
