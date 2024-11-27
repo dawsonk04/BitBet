@@ -80,17 +80,6 @@ namespace JD.BitBet.BL
                 throw;
             }
         }
-        //public static void StartNewGame1()
-        //{
-        //    _deck = new Deck();
-        //    _playerHand = new List<Card>();
-        //    _dealerHand = new List<Card>();
-        //    _deck.Shuffle();
-        //    _playerHand.Add(_deck.Deal());
-        //    _playerHand.Add(_deck.Deal());
-        //    _dealerHand.Add(_deck.Deal());
-        //    _dealerHand.Add(_deck.Deal());
-        //}
         public async Task<GameState> StartNewGame()
         {
             State = new GameState();
