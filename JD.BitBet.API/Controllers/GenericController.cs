@@ -15,6 +15,7 @@ namespace JD.BitBet.API.Controllers
             this.logger = logger;
             this.manager = (U)Activator.CreateInstance(typeof(U), logger, options);
         }
+
         /// <summary>
         /// get entities of particular type
         /// </summary>

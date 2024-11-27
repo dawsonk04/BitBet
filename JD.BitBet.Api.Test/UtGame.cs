@@ -1,10 +1,18 @@
 ﻿using JD.BitBet.BL.Models;
+using Newtonsoft.Json;
+using System.Text;
 
 namespace JD.BitBet.Api.Test
 {
     [TestClass]
     public class UtGame : utBase
     {
+        public HttpClient _client;
+        UtGame()
+        {
+            _client = new HttpClient();
+            _client.BaseAddress = new Uri("");
+        }
         [TestMethod]
         public async Task LoadTestAsync()
         {
@@ -33,6 +41,27 @@ namespace JD.BitBet.Api.Test
         {
             await base.LoadByIdTestAsync<Game>(new KeyValuePair<string, string>("Id", "f0819c2c-acfc-4d79-9a25-2cf588fd565e"));
         }
+        [TestMethod]
+        public async Task Hit()
+        {
+            _client = new HttpClient();
+            var response = await _client.PostAsync("/Game/start", null); 
+            response.EnsureSuccessStatusCode();
+            var startGameResult = await response.Content.ReadAsStringAsync();
+            var returnedGameState = JsonConvert.DeserializeObject<GameState>(startGameResult);
 
+            Assert.IsNotNull(returnedGameState);
+            Assert.IsNotNull(returnedGameState.playerHand);
+            Assert.IsNotNull(returnedGameState.dealerHand);
+
+            var hitContent = new StringContent(JsonConvert.SerializeObject(returnedGameState), Encoding.UTF8, "application/json");
+            var hitResponse = await _client.PostAsync("/Game/hit", hitContent);
+
+            hitResponse.EnsureSuccessStatusCode();
+            var hitResult = await hitResponse.Content.ReadAsStringAsync();
+            var updatedGameState = JsonConvert.DeserializeObject<GameState>(hitResult);
+
+            Assert.AreEqual(returnedGameState.playerHand.Cards.Count + 1, updatedGameState.playerHand.Cards.Count);
+        }
     }
 }

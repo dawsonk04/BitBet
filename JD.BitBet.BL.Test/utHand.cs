@@ -19,7 +19,7 @@ namespace JD.BitBet.BL.Test
         public async Task LoadTest()
         {
             List<Hand> hands = await new HandManager(options).LoadAsync();
-            int expected = 2;
+            int expected = 4;
             Assert.AreEqual(expected, hands.Count);
         }
 
@@ -30,7 +30,6 @@ namespace JD.BitBet.BL.Test
             {
                 Id = Guid.NewGuid(),
                 BetAmount = 200,
-                GameId = (await new HandManager(options).LoadAsync()).FirstOrDefault().GameId,
                 Result = 2012
             };
             Guid result = await new HandManager(options).InsertAsync(hand, true);

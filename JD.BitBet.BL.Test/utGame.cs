@@ -56,5 +56,12 @@ namespace JD.BitBet.BL.Test
             Assert.AreEqual((await new GameManager(options).LoadByIdAsync(game.Id)).Id, game.Id);
 
         }
+        [TestMethod]
+        public async Task StartGame()
+        {
+            GameState state = (await new GameManager(options).StartNewGame());
+            Assert.AreEqual((await new GameManager(options).LoadByIdAsync(state.Id)).Id, state.Id);
+
+        }
     }
 }

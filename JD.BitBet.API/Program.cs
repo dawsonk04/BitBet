@@ -3,6 +3,8 @@ using Microsoft.EntityFrameworkCore;
 using Serilog;
 using Serilog.Ui.MsSqlServerProvider;
 using Serilog.Ui.Web;
+using WebApi;
+using WebApi.Services;
 
 public class Program
 {
@@ -20,6 +22,7 @@ public class Program
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
+        builder.Services.AddScoped<IUserService, UserService>();  // Add this line to register IUserService
 
         builder.Services.AddSwaggerGen(c =>
         {
@@ -41,13 +44,18 @@ public class Program
 
         });
 
-        builder.Services.AddDbContextPool<BitBetEntities>(options =>
+        //builder.Services.AddDbContextPool<BitBetEntities>(options =>
+        //{
+        //    options.UseSqlServer(builder.Configuration.GetConnectionString("BitBetConnection"));
+        //});
+        builder.Services.AddDbContext<BitBetEntities>(options =>
         {
             options.UseSqlServer(builder.Configuration.GetConnectionString("BitBetConnection"));
         });
 
         string connection = builder.Configuration.GetConnectionString("BitBetConnection");
 
+        builder.Services.Configure<AppSettings>(builder.Configuration.GetSection("AppSettings"));
 
         builder.Services.AddSerilogUi(options =>
         {

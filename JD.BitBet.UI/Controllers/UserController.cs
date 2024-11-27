@@ -1,71 +1,51 @@
-﻿using JD.BitBet.BL;
+﻿using DocumentFormat.OpenXml.Spreadsheet;
+using JD.BitBet.BL;
 using JD.BitBet.BL.Models;
 using JD.BitBet.UI.Extensions;
+using JD.Utility;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
+using System.Net;
+using System.Text;
 
 namespace JD.BitBet.UI.Controllers
 {
-    public class UserController : Controller 
+    public class UserController : GenericController<User>
     {
-        private readonly UserManager _userManager;    
-        public IActionResult Index()
+        private readonly ApiClient _apiClient;
+        public UserController(HttpClient httpClient) : base(httpClient)
         {
-            return View();
+            this._apiClient = new ApiClient(httpClient.BaseAddress.AbsoluteUri);
+
         }
-        private void SetUser(User user)
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Login(User user)
         {
 
-            HttpContext.Session.SetObject("user", user);
+            var jsonContent = JsonConvert.SerializeObject(user);
+            var httpContent = new StringContent(jsonContent, Encoding.UTF8, "application/json");
 
-            if (user != null)
+            var response = await _apiClient.PostAsync("User/Authenticate", httpContent);
+
+            // Log response status and message for debugging
+            var responseContent = await response.Content.ReadAsStringAsync();
+            if (response.IsSuccessStatusCode)
             {
-                HttpContext.Session.SetObject("email", "Welcome " + user.Email);
+                // Deserialize the response content
+                var authenticatedUser = JsonConvert.DeserializeObject<User>(responseContent);
+                if (authenticatedUser != null)
+                {
+                    return RedirectToAction("GameIndex", "Game"); // Redirect to the game index
+                }
+                Console.WriteLine("Error: Unable to parse user details.");
             }
             else
             {
-                HttpContext.Session.SetObject("email", string.Empty);
+                Console.WriteLine($"Login failed. {response.StatusCode}: {responseContent}");
             }
-        }
-
-        public IActionResult Logout()
-        {
-            SetUser(null);
-            return View();
-        }
-
-        public IActionResult Seed()
-        {
-            _userManager.Seed();
-            return View();
-        }
-
-
-        public IActionResult Login(string returnUrl)
-        {
-
-            TempData["returnUrl"] = returnUrl;
-            ViewBag.Title = "Login";
-            return View();
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> Login(User user)
-        {
-            try
-            {
-               bool result = await _userManager.LoginAsync(user);
-                SetUser(user);
-                if (TempData["returnUrl"] != null)
-                    return Redirect(TempData["returnUrl"]?.ToString());
-
-                return RedirectToAction(nameof(Index), "Home");
-            }
-            catch (Exception ex)
-            {
-                ViewBag.Title = "Login";
-                ViewBag.Error = ex.Message;
-                return View(user);
-            }
+            return View(user); // Return the login view if model state is invalid or login failed
         }
     }
 }
+

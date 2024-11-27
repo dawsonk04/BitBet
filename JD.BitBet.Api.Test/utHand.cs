@@ -16,7 +16,6 @@ namespace JD.BitBet.Api.Test
         {
             Hand hand = new Hand
             {
-                GameId = Guid.Parse("3bb9209d-5f39-41ed-ba67-9dc14305126b"),
                 BetAmount = 1,
                 Result = -1,
             };

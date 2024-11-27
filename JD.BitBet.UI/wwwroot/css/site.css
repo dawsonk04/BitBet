@@ -20,3 +20,106 @@ html {
 body {
   margin-bottom: 60px;
 }
+/* General Styles */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f9;
+    color: #333;
+    margin: 0;
+    padding: 20px;
+}
+
+/* Title */
+.game-title {
+    text-align: center;
+    font-size: 2.5em;
+    color: #333;
+}
+
+/* Error Message */
+.error-message {
+    color: red;
+    text-align: center;
+    font-weight: bold;
+}
+
+/* Game Container */
+.game-container {
+    max-width: 600px;
+    margin: 0 auto;
+    background-color: #fff;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Section Titles */
+.section-title {
+    text-align: center;
+    font-size: 1.2em;
+    margin-bottom: 10px;
+    color: #555;
+}
+
+/* Scores */
+.score {
+    text-align: center;
+    font-size: 1em;
+    margin: 10px 0;
+}
+
+/* Game Status */
+.game-status {
+    text-align: center;
+    font-size: 1.5em;
+    margin-bottom: 20px;
+    color: #555;
+}
+
+/* Welcome Message */
+.welcome-message,
+.game-over {
+    text-align: center;
+    font-size: 1em;
+    margin-bottom: 20px;
+    color: #777;
+}
+
+/* Buttons */
+.action-buttons {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.action-button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 1em;
+    cursor: pointer;
+    margin: 5px;
+    color: white;
+    transition: background-color 0.3s;
+}
+
+    .action-button:hover {
+        opacity: 0.9;
+    }
+
+.hit-button {
+    background-color: #28a745; /* Green */
+}
+
+.stand-button {
+    background-color: #007bff; /* Blue */
+}
+
+.start-button {
+    background-color: #dc3545; /* Red */
+}
+
+/* Forms */
+.action-form {
+    display: inline-block;
+}

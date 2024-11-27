@@ -3,6 +3,9 @@ using JD.BitBet.BL.Models;
 using JD.BitBet.PL.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
+using WebApi.Models;
+using WebApi.Services;
 
 namespace JD.BitBet.API.Controllers
 {
@@ -10,7 +13,29 @@ namespace JD.BitBet.API.Controllers
     [ApiController]
     public class UserController : GenericController<User, UserManager, BitBetEntities>
     {
-        public UserController(ILogger<UserController> logger, DbContextOptions<BitBetEntities> options) : base(logger, options) { }
+        private IUserService _userService;
+        private readonly ILogger<UserController> logger;
+        private readonly DbContextOptions<BitBetEntities> options;
 
+        public UserController(IUserService userService, ILogger<UserController> logger, DbContextOptions<BitBetEntities> options) : base(logger, options) 
+        {
+            this._userService = userService;
+            this.options = options;
+            this.logger = logger;
+        }
+
+        [HttpPost("authenticate")]
+        public IActionResult Authenticate(AuthenticateRequest model)
+        {
+            var response = _userService.Authenticate(model);
+
+            if (response == null)
+            {
+                logger.LogWarning("Authentication unsuccessful for {UserName}", model.Email);
+                return BadRequest(new { message = "Username or password is incorrect" });
+            }
+            logger.LogWarning("Authentication successful for {UserName}", model.Email);
+            return Ok(response);
+        }
     }
 }

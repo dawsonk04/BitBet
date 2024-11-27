@@ -17,7 +17,6 @@
             int rowsAffected = InsertTest(new tblHand
             {
                 Id = Guid.NewGuid(),
-                GameId = base.LoadTest().FirstOrDefault().GameId,
                 BetAmount = 1,
                 Result = 20,
             });

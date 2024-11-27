@@ -47,12 +47,15 @@
                 Guid results = Guid.Empty;
                 using (BitBetEntities dc = new BitBetEntities(options))
                 {
-                    if ((expression == null) || (expression != null) && (!dc.Set<T>().Any()))
+                    if ((expression == null) || (expression != null) && (!dc.Set<T>().Any(expression)))
                     {
                         IDbContextTransaction transaction = null;
                         if (rollback) transaction = dc.Database.BeginTransaction();
 
-                        entity.Id = Guid.NewGuid();
+                        if (entity.Id == Guid.Empty)
+                        {
+                            entity.Id = Guid.NewGuid();  
+                        }
                         dc.Set<T>().Add(entity);
 
                         dc.SaveChanges();

@@ -1,5 +1,6 @@
 ﻿using JD.BitBet.PL.Entities;
 using Microsoft.EntityFrameworkCore;
+using static JD.BitBet.PL.Entities.tblCard;
 
 namespace JD.BitBet.PL.Data
 {
@@ -12,6 +13,7 @@ namespace JD.BitBet.PL.Data
         Guid[] errorLogId = new Guid[2];
         Guid[] handId = new Guid[4];
         Guid[] cardId = new Guid[8];
+        Guid[] gameStateId = new Guid[1];
 
         public BitBetEntities(DbContextOptions<BitBetEntities> options) : base(options)
         {
@@ -32,6 +34,7 @@ namespace JD.BitBet.PL.Data
         public virtual DbSet<tblTransaction> tblTransaction { get; set; }
         public virtual DbSet<tblUser> tblUser { get; set; }
         public virtual DbSet<tblWallet> tblWallet { get; set; }
+        public virtual DbSet<tblGameState> tblGameState{ get; set; }
         public virtual DbSet<tblCard> tblCard { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -44,7 +47,49 @@ namespace JD.BitBet.PL.Data
             CreateHands(modelBuilder);
             CreateErrors(modelBuilder);
             CreateCards(modelBuilder);
+            CreateGameState(modelBuilder);
 
+        }
+
+        private void CreateGameState(ModelBuilder modelBuilder)
+        {
+            for (int i = 0; i < gameStateId.Length; i++)
+            {
+                gameStateId[i] = Guid.NewGuid();
+            }
+            modelBuilder.Entity<tblGameState>(entity =>
+            {
+                entity.HasKey(e => e.Id).HasName("Pk__tblGameState_Id");
+
+                entity.ToTable("tblGameState");
+
+                entity.Property(e => e.Id).ValueGeneratedNever();
+                entity.Property(e => e.isPlayerTurn);
+                entity.Property(e => e.dealerHandVal)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.HasOne(e => e.playerHand)
+                  .WithMany()
+                  .HasForeignKey(e => e.playerHandId)
+                  .OnDelete(DeleteBehavior.NoAction);  
+                entity.HasOne(e => e.dealerHand)
+                    .WithMany()
+                    .HasForeignKey(e => e.dealerHandId)
+                    .OnDelete(DeleteBehavior.NoAction);
+
+            });
+            modelBuilder.Entity<tblGameState>().HasData(new tblGameState
+            {
+                Id = gameStateId[0],
+                isGameOver = true,
+                isPlayerTurn = true,
+                dealerHandId = handId[0],
+                playerHandId = handId[1],
+                playerHandVal = 20,
+                message = "Game Over",
+                dealerHandVal = 20,
+            });
         }
 
         private void CreateWallets(ModelBuilder modelBuilder)
@@ -205,38 +250,38 @@ namespace JD.BitBet.PL.Data
                 entity.Property(e => e.BetAmount)
                     .HasMaxLength(50)
                     .IsUnicode(false);
-                entity.HasOne(e => e.Game)
-                    .WithMany(p => p.Hands)
-                    .HasForeignKey(d => d.GameId)
-                    .OnDelete(DeleteBehavior.Cascade)
-                    .HasConstraintName("FK_tblHand_GameId");
+                //entity.HasOne(e => e.user)
+                //     .WithMany(p => p.Hands)
+                //     .HasForeignKey(d => d.UserId)
+                //     .OnDelete(DeleteBehavior.Cascade)
+                //     .HasConstraintName("FK_tblHand_UserId");
             });
             modelBuilder.Entity<tblHand>().HasData(new tblHand
             {
                 Id = handId[0],
-                GameId = gameId[0],
                 BetAmount = 20.00,
+                //UserId = userId[0],
                 Result = 40.00,
             });
             modelBuilder.Entity<tblHand>().HasData(new tblHand
             {
                 Id = handId[1],
-                GameId = gameId[1],
                 BetAmount = 20.00,
+               // UserId = userId[0],
                 Result = -20.00,
             });
             modelBuilder.Entity<tblHand>().HasData(new tblHand
             {
                 Id = handId[2],
-                GameId = gameId[0],
                 BetAmount = 20.00,
+                //UserId = userId[0],
                 Result = 40.00,
             });
             modelBuilder.Entity<tblHand>().HasData(new tblHand
             {
                 Id = handId[3],
-                GameId = gameId[1],
                 BetAmount = 20.00,
+                //UserId = userId[0],
                 Result = -20.00,
             });
         }
@@ -333,10 +378,13 @@ namespace JD.BitBet.PL.Data
                 entity.ToTable("tblCard");
 
                 entity.Property(e => e.Id).ValueGeneratedNever();
-                entity.Property(e => e.Value)
+                entity.Property(e => e.rank)
+                    .HasConversion<string>() // Converts enum to string in the database
                     .HasMaxLength(50)
                     .IsUnicode(false);
-                entity.Property(e => e.Suit)
+
+                entity.Property(e => e.suit)
+                    .HasConversion<string>() // Converts enum to string in the database
                     .HasMaxLength(50)
                     .IsUnicode(false);
                 entity.HasOne(e => e.hand)
@@ -349,57 +397,57 @@ namespace JD.BitBet.PL.Data
             {
                 Id = cardId[0],
                 HandId = handId[0],
-                Value = 10,
-                Suit = "King"
+                rank = Rank.Ten,
+                suit = Suit.Diamonds
             });
             modelBuilder.Entity<tblCard>().HasData(new tblCard
             {
                 Id = cardId[1],
                 HandId = handId[0],
-                Value = 1,
-                Suit = "King"
+                rank = Rank.Ten,
+                suit = Suit.Diamonds
             });
             modelBuilder.Entity<tblCard>().HasData(new tblCard
             {
                 Id = cardId[2],
                 HandId = handId[1],
-                Value = 1,
-                Suit = "King"
+                rank = Rank.Ten,
+                suit = Suit.Diamonds
             });
             modelBuilder.Entity<tblCard>().HasData(new tblCard
             {
                 Id = cardId[3],
                 HandId = handId[1],
-                Value = 1,
-                Suit = "King"
+                rank = Rank.Ten,
+                suit = Suit.Diamonds
             });
             modelBuilder.Entity<tblCard>().HasData(new tblCard
             {
                 Id = cardId[4],
                 HandId = handId[2],
-                Value = 1,
-                Suit = "King"
+                rank = Rank.Ten,
+                suit = Suit.Diamonds
             });
             modelBuilder.Entity<tblCard>().HasData(new tblCard
             {
                 Id = cardId[5],
                 HandId = handId[2],
-                Value = 1,
-                Suit = "King"
+                rank = Rank.Ten,
+                suit = Suit.Diamonds
             });
             modelBuilder.Entity<tblCard>().HasData(new tblCard
             {
                 Id = cardId[6],
                 HandId = handId[3],
-                Value = 1,
-                Suit = "King"
+                rank = Rank.Ten,
+                suit = Suit.Diamonds
             });
             modelBuilder.Entity<tblCard>().HasData(new tblCard
             {
                 Id = cardId[7],
                 HandId = handId[3],
-                Value = 1,
-                Suit = "King"
+                rank = Rank.Ten,
+                suit = Suit.Diamonds
             });
            
         }
