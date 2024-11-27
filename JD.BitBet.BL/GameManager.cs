@@ -336,23 +336,5 @@ namespace JD.BitBet.BL
             return await Stand(state);
         }
 
-        public void Split(Guid handId)
-        {
-
-            //      State.playerHand = cardManager.LoadByHandId(handId);
-
-            if (State.playerHand.Cards.Count != 2 || State.playerHand.Cards[0].rank != State.playerHand.Cards[1].rank)
-            {
-                State.message = "Cannot split this hand.";
-                return;
-            }
-            var hand1 = new List<Card> { State.playerHand.Cards[0], _deck.Deal() };
-            var hand2 = new List<Card> { State.playerHand.Cards[1], _deck.Deal() };
-
-            //State.playerHands = new List<Hand> { hand1, hand2 };
-            State.message = "Player splits their hand.";
-        }
-
-
     }
 }

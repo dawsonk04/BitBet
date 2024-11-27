@@ -76,20 +76,6 @@ namespace JD.BitBet.API.Controllers
             }
         }
 
-        [HttpPost("split/{handId}")]
-        public IActionResult Split(Guid handId, GameManager gameManager)
-        {
-            try
-            {
-                gameManager.Split(handId);
-                return Ok(GameManager.State);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-            }
-        }
-
         [HttpGet("state")]
         public IActionResult GetGameState()
         {
