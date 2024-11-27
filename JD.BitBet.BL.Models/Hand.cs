@@ -8,5 +8,7 @@ namespace JD.BitBet.BL.Models
         public double BetAmount { get; set; }
         public double Result { get; set; }
         public List<Card> Cards { get; set; }
+        public Guid userId { get; set; }
+        public User user {  get; set; }
     }
 }

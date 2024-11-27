@@ -1,4 +1,4 @@
-﻿using JD.BitBet.PL;
+﻿    using JD.BitBet.PL;
 
 namespace JD.BitBet.BL.Models
 {

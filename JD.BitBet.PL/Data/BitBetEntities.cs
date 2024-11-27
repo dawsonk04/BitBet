@@ -250,29 +250,38 @@ namespace JD.BitBet.PL.Data
                 entity.Property(e => e.BetAmount)
                     .HasMaxLength(50)
                     .IsUnicode(false);
+                entity.HasOne(e => e.user)
+                     .WithMany(p => p.Hands)
+                     .HasForeignKey(d => d.UserId)
+                     .OnDelete(DeleteBehavior.Cascade)
+                     .HasConstraintName("FK_tblHand_UserId");
             });
             modelBuilder.Entity<tblHand>().HasData(new tblHand
             {
                 Id = handId[0],
                 BetAmount = 20.00,
+                UserId = userId[0],
                 Result = 40.00,
             });
             modelBuilder.Entity<tblHand>().HasData(new tblHand
             {
                 Id = handId[1],
                 BetAmount = 20.00,
+                UserId = userId[0],
                 Result = -20.00,
             });
             modelBuilder.Entity<tblHand>().HasData(new tblHand
             {
                 Id = handId[2],
                 BetAmount = 20.00,
+                UserId = userId[0],
                 Result = 40.00,
             });
             modelBuilder.Entity<tblHand>().HasData(new tblHand
             {
                 Id = handId[3],
                 BetAmount = 20.00,
+                UserId = userId[0],
                 Result = -20.00,
             });
         }

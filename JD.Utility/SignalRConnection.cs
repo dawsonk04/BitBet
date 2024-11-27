@@ -67,7 +67,6 @@ namespace JD.Utility
         {
             Start();
             string message = user + " Connected";
-
             try
             {
                 _connection.InvokeAsync("SendMessage", "System", message);

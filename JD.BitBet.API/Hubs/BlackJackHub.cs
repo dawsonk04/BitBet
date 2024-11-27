@@ -20,7 +20,6 @@ namespace JD.BitBet.API.Hubs
         {
             await Clients.Group(gameId).SendAsync("GameStateUpdated", gameState);
         }
-
         public async Task LeaveGame(string gameId)
         {
             await Groups.RemoveFromGroupAsync(Context.ConnectionId, gameId);

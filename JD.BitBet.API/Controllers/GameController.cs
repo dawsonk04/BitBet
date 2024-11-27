@@ -1,7 +1,9 @@
-﻿using JD.BitBet.BL;
+﻿using JD.BitBet.API.Hubs;
+using JD.BitBet.BL;
 using JD.BitBet.BL.Models;
 using JD.BitBet.PL.Data;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 
 namespace JD.BitBet.API.Controllers
@@ -11,18 +13,22 @@ namespace JD.BitBet.API.Controllers
     public class GameController : GenericController<Game, GameManager, BitBetEntities>
     {
         GameManager gameManager;
-        public GameController(ILogger<GameController> logger, DbContextOptions<BitBetEntities> options) : base(logger, options)
+        IHubContext<BlackJackHub> _hubContext;
+        public GameController(ILogger<GameController> logger, DbContextOptions<BitBetEntities> options, IHubContext<BlackJackHub> hubContext) : base(logger, options)
         {
-
+            _hubContext = hubContext;
         }
 
         [HttpPost("start")]
-        public async Task<IActionResult> StartNewGame()
+        public async Task<IActionResult> StartNewGame(Game game)
         {
             try
             {
                 gameManager = new GameManager(options);
+                await gameManager.InsertAsync(game);
                 GameState gameState = await gameManager.StartNewGame();
+                await _hubContext.Clients.Group(game.Id.ToString()).SendAsync("GameStateUpdated", gameState);
+             
                 return Ok(gameState);
             }
             catch (Exception ex)
@@ -44,8 +50,8 @@ namespace JD.BitBet.API.Controllers
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
-        }
 
+        }
         [HttpPost("stand")]
         public async Task<IActionResult> StandPlayerHand(GameState state)
         {
@@ -102,8 +108,5 @@ namespace JD.BitBet.API.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
-
-
-
     }
 }
