@@ -14,21 +14,20 @@ namespace JD.BitBet.API.Controllers
     {
         GameManager gameManager;
         IHubContext<BlackJackHub> _hubContext;
-        public GameController(ILogger<GameController> logger, DbContextOptions<BitBetEntities> options, IHubContext<BlackJackHub> hubContext) : base(logger, options)
+        public GameController(ILogger<GameController> logger, DbContextOptions<BitBetEntities> options/*, IHubContext<BlackJackHub> hubContext*/) : base(logger, options)
         {
-            _hubContext = hubContext;
+            //_hubContext = hubContext;
         }
 
         [HttpPost("start")]
-        public async Task<IActionResult> StartNewGame(Game game)
+        public async Task<IActionResult> StartNewGame(/*Game game*/)
         {
             try
             {
                 gameManager = new GameManager(options);
-                await gameManager.InsertAsync(game);
+                //await gameManager.InsertAsync(game);
                 GameState gameState = await gameManager.StartNewGame();
-                await _hubContext.Clients.Group(game.Id.ToString()).SendAsync("GameStateUpdated", gameState);
-             
+                //await _hubContext.Clients.Group(game.Id.ToString()).SendAsync("GameStateUpdated", gameState);
                 return Ok(gameState);
             }
             catch (Exception ex)
