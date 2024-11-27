@@ -1,4 +1,4 @@
-﻿using JD.BitBet.API.Hubs;
+﻿//using JD.BitBet.API.Hubs;
 using JD.BitBet.BL;
 using JD.BitBet.BL.Models;
 using JD.BitBet.PL.Data;
@@ -13,7 +13,7 @@ namespace JD.BitBet.API.Controllers
     public class GameController : GenericController<Game, GameManager, BitBetEntities>
     {
         GameManager gameManager;
-        IHubContext<BlackJackHub> _hubContext;
+        //IHubContext<BlackJackHub> _hubContext;
         public GameController(ILogger<GameController> logger, DbContextOptions<BitBetEntities> options/*, IHubContext<BlackJackHub> hubContext*/) : base(logger, options)
         {
             //_hubContext = hubContext;
