@@ -40,10 +40,10 @@ namespace JD.BitBet.PL.Data
         {
             base.OnModelCreating(modelBuilder);
 
+            CreateGames(modelBuilder);
             CreateUsers(modelBuilder);
             CreateWallets(modelBuilder);
             CreateTransactions(modelBuilder);
-            CreateGames(modelBuilder);
             CreateHands(modelBuilder);
             CreateErrors(modelBuilder);
             CreateCards(modelBuilder);
@@ -161,6 +161,11 @@ namespace JD.BitBet.PL.Data
                 entity.Property(e => e.CreateDate)
                    .HasMaxLength(50)
                    .IsUnicode(false);
+                entity.HasOne(e => e.Game)
+                  .WithMany(p => p.Users)
+                  .HasForeignKey(d => d.gameId)
+                  .OnDelete(DeleteBehavior.ClientSetNull)
+                  .HasConstraintName("FK_tblUser_GameId");
             });
 
             modelBuilder.Entity<tblUser>().HasData(new tblUser
@@ -168,6 +173,7 @@ namespace JD.BitBet.PL.Data
                 Id = userId[0],
                 Email = "knudtdaw0000@gmail.com",
                 Password = GetHash("password"),
+                gameId = null,
                 CreateDate = new DateTime(1990, 12, 4),
             });
             modelBuilder.Entity<tblUser>().HasData(new tblUser
@@ -175,6 +181,7 @@ namespace JD.BitBet.PL.Data
                 Id = userId[1],
                 Email = "jbstrange2@gmail.com",
                 Password = GetHash("password"),
+                gameId = null,
                 CreateDate = DateTime.Now,
             });
         }

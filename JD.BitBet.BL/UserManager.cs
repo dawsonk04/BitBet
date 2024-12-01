@@ -1,4 +1,5 @@
 ﻿using JD.BitBet.BL.Models;
+using System.Reflection.Metadata;
 
 namespace JD.BitBet.BL
 {
@@ -48,7 +49,23 @@ namespace JD.BitBet.BL
                 await InsertAsync(new User { Email = "knudtdaw0000@gmail.com", Password = "password", CreateDate = DateTime.Now });
             }
         }
-
+        public async Task<List<User>> LoadByGameAsync(Guid gameId)
+        {
+            List<User> users = new List<User>();
+            List<tblUser> row = await base.LoadAsync(e => e.gameId == gameId);
+            if (row != null && row.Any())
+            {
+                int counter = 0;
+                foreach (var item in row)
+                {
+                    users.Add(Map<tblUser, User>(row[counter]));
+                    counter++;
+                }
+                return users;
+            }
+            else
+                throw new Exception("No Row");
+        }
         public async Task<bool> LoginAsync(User user)
         {
             try
@@ -181,7 +198,7 @@ namespace JD.BitBet.BL
             {
                 int results = 0;
 
-                using (BitBetEntities dc = new BitBetEntities())
+                using (BitBetEntities dc = new BitBetEntities(options))
                 {
                     // Check if username already exists - do not allow ....
                     tblUser existingUser = dc.tblUser.Where(u => u.Email.Trim().ToUpper() == user.Email.Trim().ToUpper()).FirstOrDefault();
@@ -201,7 +218,7 @@ namespace JD.BitBet.BL
                         {
                             upDateRow.Email = user.Email;
                             upDateRow.Password = GetHash(user.Password.Trim());
-
+                            upDateRow.gameId = user.gameId;
                             dc.tblUser.Update(upDateRow);
 
                             results = dc.SaveChanges();

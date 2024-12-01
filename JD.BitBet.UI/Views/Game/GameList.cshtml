@@ -1,0 +1,17 @@
+﻿@model List<JD.BitBet.BL.Models.Game>
+
+<div class="row">
+    @foreach (var game in Model)
+    {
+        <div class="col-md-4 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Game @game.Id</h5>
+                    <form method="post" action="@Url.Action("JoinGame", "Game", new { gameId = game.Id })">
+                        <button type="submit" class="btn btn-primary">Join Game</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    }
+</div>

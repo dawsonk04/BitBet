@@ -20,6 +20,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\JD.BitBet.API\JD.BitBet.API.csproj" />
+    <ProjectReference Include="..\JD.BitBet.BL\JD.BitBet.BL.csproj" />
+    <ProjectReference Include="..\JD.Utility\JD.Utility.csproj" />
   </ItemGroup>
 
   <ItemGroup>

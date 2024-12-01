@@ -1,5 +1,8 @@
-﻿using JD.BitBet.BL.Models;
+﻿using JD.BitBet.BL;
+using JD.BitBet.BL.Models;
+using JD.Utility;
 using Newtonsoft.Json;
+using System.Net.Http;
 using System.Text;
 
 namespace JD.BitBet.Api.Test
@@ -7,11 +10,10 @@ namespace JD.BitBet.Api.Test
     [TestClass]
     public class UtGame : utBase
     {
-        public HttpClient _client;
-        UtGame()
+        public ApiClient apiClient;
+        UtGame(HttpClient client)
         {
-            _client = new HttpClient();
-            _client.BaseAddress = new Uri("");
+            this.apiClient = new ApiClient(client.BaseAddress.AbsoluteUri);
         }
         [TestMethod]
         public async Task LoadTestAsync()
@@ -28,7 +30,16 @@ namespace JD.BitBet.Api.Test
             await base.InsertTestAsync<Game>(game);
 
         }
-
+        [TestMethod]
+        public async Task JoinStartGame()
+        {
+            UserManager userManager = new UserManager();
+            GameManager gameManager= new GameManager();
+            Game game = (await gameManager.LoadAsync()).FirstOrDefault();
+            User user = (await userManager.LoadAsync()).FirstOrDefault();
+            var response = await apiClient.GetAsync($"/Game/join/{game.Id}/{user.Id}");
+            Assert.IsNotNull(response);
+        }
         [TestMethod]
         public async Task DeleteTestAsync()
         {
@@ -43,8 +54,7 @@ namespace JD.BitBet.Api.Test
         [TestMethod]
         public async Task Hit()
         {
-            _client = new HttpClient();
-            var response = await _client.PostAsync("/Game/start", null); 
+            var response = await apiClient.PostAsync("/Game/start", null); 
             response.EnsureSuccessStatusCode();
             var startGameResult = await response.Content.ReadAsStringAsync();
             var returnedGameState = JsonConvert.DeserializeObject<GameState>(startGameResult);
@@ -54,7 +64,7 @@ namespace JD.BitBet.Api.Test
             Assert.IsNotNull(returnedGameState.dealerHand);
 
             var hitContent = new StringContent(JsonConvert.SerializeObject(returnedGameState), Encoding.UTF8, "application/json");
-            var hitResponse = await _client.PostAsync("/Game/hit", hitContent);
+            var hitResponse = await apiClient.PostAsync("/Game/hit", hitContent);
 
             hitResponse.EnsureSuccessStatusCode();
             var hitResult = await hitResponse.Content.ReadAsStringAsync();

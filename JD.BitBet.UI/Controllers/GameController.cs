@@ -30,6 +30,47 @@ namespace JD.BitBet.UI.Controllers
 
             return View();
         }
+        public async Task<IActionResult> AllGames()
+        {
+            var response = await _apiClient.GetAsync("Game/"); 
+
+            if (response.IsSuccessStatusCode)
+            {
+                var games = await response.Content.ReadAsStringAsync();
+                return View(games);
+            }
+            else
+            {
+                ViewBag.Error = "Unable to fetch games.";
+                return View();
+            }
+        }
+        public async Task<IActionResult> JoinGame(Guid gameId)
+        {
+            try
+            {
+                var userId = HttpContext.Session.GetString("UserId");
+                if (string.IsNullOrEmpty(userId))
+                {
+                    return RedirectToAction("Login", "Account");
+                }
+                var response = await _apiClient.PostAsync($"Game/join/{gameId}/{userId}", null);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    return RedirectToAction("GameIndex", new { gameId });
+                }
+                else
+                {
+                    ViewBag.Error = "Unable to join the game.";
+                    return RedirectToAction("GameList", "Game");
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
         public async Task<IActionResult> Start()
         {
             var userId = HttpContext.Session.GetString("UserId");

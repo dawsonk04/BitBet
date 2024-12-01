@@ -13,6 +13,7 @@ namespace JD.BitBet.API.Controllers
     public class GameController : GenericController<Game, GameManager, BitBetEntities>
     {
         GameManager gameManager;
+        UserManager userManager;
         IHubContext<BlackJackHub> _hubContext;
         public GameController(ILogger<GameController> logger, DbContextOptions<BitBetEntities> options, IHubContext<BlackJackHub> hubContext) : base(logger, options)
         {
@@ -35,11 +36,35 @@ namespace JD.BitBet.API.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
-        [HttpPost("join")]
-        public async Task<IActionResult> JoinGame(Guid UserId, Game game)
+        [HttpPost("join/{gameId}/{UserId}")]
+        public async Task<IActionResult> JoinGame([FromRoute] Guid gameId, [FromRoute] Guid UserId)
         {
+            try
+            {
+                gameManager = new GameManager(options);
+                userManager = new UserManager(options);
+                User user = await userManager.LoadByIdAsync(UserId);
+                var game = await gameManager.LoadByIdAsync(gameId);
+                user.gameId = gameId;
+                await userManager.UpdateAsync(user);
+                game.Users = await userManager.LoadByGameAsync(game.Id);
+                if (game == null)
+                {
+                    return NotFound("Game not found.");
+                }
+                if (game.Users == null)
+                {
+                    game.Users = new List<User>();
+                }
+                await gameManager.UpdateAsync(game);
+                await _hubContext.Clients.Group(gameId.ToString()).SendAsync("UserJoined", user);
 
-            return Ok(game);
+                return Ok(game);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
         }
         [HttpPost("hit")]
         public async Task<IActionResult> HitPlayerHand(GameState state)
