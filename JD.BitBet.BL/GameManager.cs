@@ -79,23 +79,14 @@ namespace JD.BitBet.BL
                 throw;
             }
         }
-        //public static void StartNewGame1()
-        //{
-        //    _deck = new Deck();
-        //    _playerHand = new List<Card>();
-        //    _dealerHand = new List<Card>();
-        //    _deck.Shuffle();
-        //    _playerHand.Add(_deck.Deal());
-        //    _playerHand.Add(_deck.Deal());
-        //    _dealerHand.Add(_deck.Deal());
-        //    _dealerHand.Add(_deck.Deal());
-        //}
         public async Task<List<GameState>> StartNewGame(Game game)
         {
             List<GameState> states = new List<GameState>();
             gameStateManager = new GameStateManager(options);
             handManager = new HandManager(options);
             cardManager = new CardManager(options);
+            _deck = new Deck();
+            GameState State = new GameState();
 
             Hand dealerHand = new Hand
             {
@@ -105,18 +96,22 @@ namespace JD.BitBet.BL
                 Cards = new List<Card>()
             };
             Card dealerCard = new Card();
-            dealerCard = _deck.Deal();
+            _deck.Shuffle();
+            dealerCard = _deck.Deal();          
             dealerCard.HandId = dealerHand.Id;
-            await cardManager.InsertAsync(dealerCard);
+            State.dealerHandId = dealerHand.Id;
+            State.dealerHand = dealerHand;
+            State.dealerHand.Cards.Add(dealerCard);
+            State.dealerHandVal = CalculateHandValue(State.dealerHand.Cards);
+
             await handManager.InsertAsync(dealerHand);
+            await cardManager.InsertAsync(dealerCard);
 
             foreach (var user in game.Users)
             {
-                GameState State = new GameState();
                 State.GameId = game.Id;
                 State.UserId = user.Id;
                 State.Id = Guid.NewGuid();
-
                 // Create Player and Dealer Hands
                 Hand playerHand = new Hand
                 {
@@ -127,15 +122,9 @@ namespace JD.BitBet.BL
                 };
                 // Assign to State
                 State.playerHand = playerHand;
-                State.dealerHand = dealerHand;
                 State.playerHandId = playerHand.Id;
-                State.dealerHandId = dealerHand.Id;
                 State.isGameOver = false;
                 State.isPlayerTurn = true;
-
-                // Initialize Deck
-                _deck = new Deck();
-                _deck.Shuffle();
 
                 // Deal Cards
                 Card playerCard1 = _deck.Deal();
@@ -148,11 +137,9 @@ namespace JD.BitBet.BL
                 // Add Cards to State
                 State.playerHand.Cards.Add(playerCard1);
                 State.playerHand.Cards.Add(playerCard2);
-                State.dealerHand.Cards.Add(dealerCard);
 
                 // Calculate Hand Values
                 State.playerHandVal = CalculateHandValue(State.playerHand.Cards);
-                State.dealerHandVal = CalculateHandValue(State.dealerHand.Cards);
                 // Check for Blackjack
                 if (State.playerHandVal == 21)
                 {

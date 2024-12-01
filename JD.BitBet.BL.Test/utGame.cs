@@ -61,7 +61,12 @@ namespace JD.BitBet.BL.Test
             Game game = new Game();
             game.GameResult = 200000000000;
             game.Users = new List<User>();
-            game.Users.Add((await new UserManager(options).LoadAsync()).FirstOrDefault());
+            foreach (var user in(await new UserManager(options).LoadAsync()))
+            {
+                game.Users.Add(user);
+            }
+            game.Id = Guid.NewGuid();
+            await new GameManager(options).InsertAsync(game);
             List<GameState> state = (await new GameManager(options).StartNewGame(game));
             Assert.AreEqual((await new GameManager(options).LoadByIdAsync(state[0].Id)).Id, state[0].Id);
 
