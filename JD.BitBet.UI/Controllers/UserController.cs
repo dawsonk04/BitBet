@@ -36,6 +36,7 @@ namespace JD.BitBet.UI.Controllers
                 var authenticatedUser = JsonConvert.DeserializeObject<User>(responseContent);
                 if (authenticatedUser != null)
                 {
+                    HttpContext.Session.SetString("UserId", authenticatedUser.Id.ToString());
                     return RedirectToAction("GameIndex", "Game"); // Redirect to the game index
                 }
                 Console.WriteLine("Error: Unable to parse user details.");

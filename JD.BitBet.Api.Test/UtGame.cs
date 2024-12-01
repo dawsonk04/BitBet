@@ -23,7 +23,6 @@ namespace JD.BitBet.Api.Test
         {
             Game game = new Game
             {
-                UserId = Guid.Parse("8cb82cd3-b09f-4680-9580-0224284b0df8"),
                 GameResult = -200,
             };
             await base.InsertTestAsync<Game>(game);

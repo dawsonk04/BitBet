@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace JD.BitBet.PL.Migrations
 {
     [DbContext(typeof(BitBetEntities))]
-    [Migration("20241127030351_bitbetDb")]
+    [Migration("20241201195714_bitbetDb")]
     partial class bitbetDb
     {
         /// <inheritdoc />
@@ -55,57 +55,57 @@ namespace JD.BitBet.PL.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("0ccdcdf9-b74a-49b3-b9b5-06c76b5e71f5"),
-                            HandId = new Guid("8a6c9f10-6f4b-4394-a092-08015f6178c8"),
+                            Id = new Guid("a3207202-9deb-4d7a-816d-faffe71448fa"),
+                            HandId = new Guid("6f1a41d3-50db-40e5-b40c-349c5ba1c67e"),
                             rank = "Ten",
                             suit = "Diamonds"
                         },
                         new
                         {
-                            Id = new Guid("71337b9f-5d2c-4396-b38a-3a00ba305750"),
-                            HandId = new Guid("8a6c9f10-6f4b-4394-a092-08015f6178c8"),
+                            Id = new Guid("cacb2a0d-b7eb-4255-9ae6-3dcb88874b6b"),
+                            HandId = new Guid("6f1a41d3-50db-40e5-b40c-349c5ba1c67e"),
                             rank = "Ten",
                             suit = "Diamonds"
                         },
                         new
                         {
-                            Id = new Guid("ef5da372-500e-42bd-b361-3e1573c6baae"),
-                            HandId = new Guid("9a868bf9-d918-4aee-aed0-7a1b7e70779e"),
+                            Id = new Guid("7c428167-4d85-4766-9ee3-3801a7dfd29d"),
+                            HandId = new Guid("7b1b1bdf-08c8-41b2-af81-bd17f10e35c1"),
                             rank = "Ten",
                             suit = "Diamonds"
                         },
                         new
                         {
-                            Id = new Guid("00c1fba8-8e08-4164-9a11-8f557d4adde2"),
-                            HandId = new Guid("9a868bf9-d918-4aee-aed0-7a1b7e70779e"),
+                            Id = new Guid("851e7c5f-acd3-46c2-aa4e-f16a8abff0f4"),
+                            HandId = new Guid("7b1b1bdf-08c8-41b2-af81-bd17f10e35c1"),
                             rank = "Ten",
                             suit = "Diamonds"
                         },
                         new
                         {
-                            Id = new Guid("3dcfd3f8-655e-46fd-820d-522ef5cb907b"),
-                            HandId = new Guid("6bdd6a0a-53a8-45bd-943d-38517b396ca8"),
+                            Id = new Guid("c279034b-2146-4eea-82b2-a12877e1cc88"),
+                            HandId = new Guid("37eb5ccd-e8fa-4b79-832b-6d97152a0238"),
                             rank = "Ten",
                             suit = "Diamonds"
                         },
                         new
                         {
-                            Id = new Guid("b9cd4fe6-08cb-45f1-ba56-96be3916bc9d"),
-                            HandId = new Guid("6bdd6a0a-53a8-45bd-943d-38517b396ca8"),
+                            Id = new Guid("8cbd91ac-0288-41bd-bf5f-ccf3c574ec64"),
+                            HandId = new Guid("37eb5ccd-e8fa-4b79-832b-6d97152a0238"),
                             rank = "Ten",
                             suit = "Diamonds"
                         },
                         new
                         {
-                            Id = new Guid("4a1bef39-3bcf-4c68-9fa0-cb18910d13ab"),
-                            HandId = new Guid("7e60a080-9848-472d-b0af-e4711448fe13"),
+                            Id = new Guid("d47431a6-4680-4479-8641-9810aab7a2e0"),
+                            HandId = new Guid("e401f0aa-5810-45d2-b6f5-cd8e82e9bb75"),
                             rank = "Ten",
                             suit = "Diamonds"
                         },
                         new
                         {
-                            Id = new Guid("6efc1ca5-2b1e-4c88-a95a-e0e9bea8165c"),
-                            HandId = new Guid("7e60a080-9848-472d-b0af-e4711448fe13"),
+                            Id = new Guid("d1bb5b7d-e415-403f-bc90-d6b0aa184155"),
+                            HandId = new Guid("e401f0aa-5810-45d2-b6f5-cd8e82e9bb75"),
                             rank = "Ten",
                             suit = "Diamonds"
                         });
@@ -121,34 +121,33 @@ namespace JD.BitBet.PL.Migrations
                         .IsUnicode(false)
                         .HasColumnType("float");
 
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.HasKey("Id")
                         .HasName("Pk__tblGame_Id");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("tblGame", (string)null);
 
                     b.HasData(
                         new
                         {
-                            Id = new Guid("6db75397-018d-40db-8ff7-c83aaf522186"),
-                            GameResult = 200.0,
-                            UserId = new Guid("3ca9704e-83f4-49ff-98a5-b6e69f5c70fe")
+                            Id = new Guid("42523dbb-7f3b-43b9-a166-0c0f1608f695"),
+                            GameResult = 200.0
                         },
                         new
                         {
-                            Id = new Guid("53608fcb-21cb-42cb-9af3-8b3c67c27a3e"),
-                            GameResult = 200.0,
-                            UserId = new Guid("3ca9704e-83f4-49ff-98a5-b6e69f5c70fe")
+                            Id = new Guid("43e9efc2-0ae4-4c7d-8491-352f1baf275f"),
+                            GameResult = 200.0
                         });
                 });
 
             modelBuilder.Entity("JD.BitBet.PL.Entities.tblGameState", b =>
                 {
                     b.Property<Guid>("Id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("GameId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("UserId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("dealerHandId")
@@ -178,6 +177,10 @@ namespace JD.BitBet.PL.Migrations
                     b.HasKey("Id")
                         .HasName("Pk__tblGameState_Id");
 
+                    b.HasIndex("GameId");
+
+                    b.HasIndex("UserId");
+
                     b.HasIndex("dealerHandId");
 
                     b.HasIndex("playerHandId");
@@ -187,13 +190,15 @@ namespace JD.BitBet.PL.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("13581f5f-b35d-40ac-ac73-0cf636a1fc6e"),
-                            dealerHandId = new Guid("8a6c9f10-6f4b-4394-a092-08015f6178c8"),
+                            Id = new Guid("a211c8ae-73de-4076-b9d0-f8825e08bec4"),
+                            GameId = new Guid("42523dbb-7f3b-43b9-a166-0c0f1608f695"),
+                            UserId = new Guid("253d7856-c86c-44fa-8910-541799ba4460"),
+                            dealerHandId = new Guid("6f1a41d3-50db-40e5-b40c-349c5ba1c67e"),
                             dealerHandVal = 20,
                             isGameOver = true,
                             isPlayerTurn = true,
                             message = "Game Over",
-                            playerHandId = new Guid("9a868bf9-d918-4aee-aed0-7a1b7e70779e"),
+                            playerHandId = new Guid("7b1b1bdf-08c8-41b2-af81-bd17f10e35c1"),
                             playerHandVal = 20
                         });
                 });
@@ -226,15 +231,15 @@ namespace JD.BitBet.PL.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("3ca9704e-83f4-49ff-98a5-b6e69f5c70fe"),
+                            Id = new Guid("253d7856-c86c-44fa-8910-541799ba4460"),
                             CreateDate = new DateTime(1990, 12, 4, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "knudtdaw0000@gmail.com",
                             Password = "W6ph5Mm5Pz8GgiULbPgzG37mj9g="
                         },
                         new
                         {
-                            Id = new Guid("57d00112-de2f-4d52-b5f3-49058a20f204"),
-                            CreateDate = new DateTime(2024, 11, 26, 21, 3, 51, 419, DateTimeKind.Local).AddTicks(6773),
+                            Id = new Guid("394285e3-000d-4aea-b7f0-d044090f593c"),
+                            CreateDate = new DateTime(2024, 12, 1, 13, 57, 13, 747, DateTimeKind.Local).AddTicks(8840),
                             Email = "jbstrange2@gmail.com",
                             Password = "W6ph5Mm5Pz8GgiULbPgzG37mj9g="
                         });
@@ -268,16 +273,16 @@ namespace JD.BitBet.PL.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("92b4c771-10a4-4bbe-9777-e291d64b3214"),
+                            Id = new Guid("9a89ba31-de00-425b-a405-e63d63d76541"),
                             Balance = 0.0,
-                            UserId = new Guid("3ca9704e-83f4-49ff-98a5-b6e69f5c70fe"),
+                            UserId = new Guid("253d7856-c86c-44fa-8910-541799ba4460"),
                             WalletAddress = "0xE2dC61497FDD26F9ea285172A41F0b25373f22df"
                         },
                         new
                         {
-                            Id = new Guid("35066c4e-3898-4ee1-8e04-196541fe59cb"),
+                            Id = new Guid("89e2708f-4732-412f-ab9c-7d0ce1df7e4a"),
                             Balance = 0.0,
-                            UserId = new Guid("57d00112-de2f-4d52-b5f3-49058a20f204"),
+                            UserId = new Guid("394285e3-000d-4aea-b7f0-d044090f593c"),
                             WalletAddress = "0xE2dC61497FDD26F9eaYaBoi5373f22df"
                         });
                 });
@@ -313,19 +318,19 @@ namespace JD.BitBet.PL.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("f77fa109-ef1a-4aaa-bcb0-6c06039ff967"),
+                            Id = new Guid("5d7aa5c6-17d7-4084-9a53-2a3606407236"),
                             ErrorDateTime = new DateTime(1990, 12, 4, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             ErrorMessage = "Test",
                             ErrorType = "Login Exception",
-                            UserId = new Guid("3ca9704e-83f4-49ff-98a5-b6e69f5c70fe")
+                            UserId = new Guid("253d7856-c86c-44fa-8910-541799ba4460")
                         },
                         new
                         {
-                            Id = new Guid("873a9d35-23d8-419c-8ada-e328fa432587"),
-                            ErrorDateTime = new DateTime(2024, 11, 26, 21, 3, 51, 419, DateTimeKind.Local).AddTicks(9956),
+                            Id = new Guid("0d49535e-ed75-424c-ac99-63408d47a0ea"),
+                            ErrorDateTime = new DateTime(2024, 12, 1, 13, 57, 13, 748, DateTimeKind.Local).AddTicks(4824),
                             ErrorMessage = "Test",
                             ErrorType = "Login Exception",
-                            UserId = new Guid("57d00112-de2f-4d52-b5f3-49058a20f204")
+                            UserId = new Guid("394285e3-000d-4aea-b7f0-d044090f593c")
                         });
                 });
 
@@ -344,16 +349,11 @@ namespace JD.BitBet.PL.Migrations
                         .IsUnicode(false)
                         .HasColumnType("float");
 
-                    b.Property<Guid?>("tblGameId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<Guid?>("tblUserId")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id")
                         .HasName("Pk__tblHand_Id");
-
-                    b.HasIndex("tblGameId");
 
                     b.HasIndex("tblUserId");
 
@@ -362,25 +362,25 @@ namespace JD.BitBet.PL.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("8a6c9f10-6f4b-4394-a092-08015f6178c8"),
+                            Id = new Guid("6f1a41d3-50db-40e5-b40c-349c5ba1c67e"),
                             BetAmount = 20.0,
                             Result = 40.0
                         },
                         new
                         {
-                            Id = new Guid("9a868bf9-d918-4aee-aed0-7a1b7e70779e"),
+                            Id = new Guid("7b1b1bdf-08c8-41b2-af81-bd17f10e35c1"),
                             BetAmount = 20.0,
                             Result = -20.0
                         },
                         new
                         {
-                            Id = new Guid("6bdd6a0a-53a8-45bd-943d-38517b396ca8"),
+                            Id = new Guid("37eb5ccd-e8fa-4b79-832b-6d97152a0238"),
                             BetAmount = 20.0,
                             Result = 40.0
                         },
                         new
                         {
-                            Id = new Guid("7e60a080-9848-472d-b0af-e4711448fe13"),
+                            Id = new Guid("e401f0aa-5810-45d2-b6f5-cd8e82e9bb75"),
                             BetAmount = 20.0,
                             Result = -20.0
                         });
@@ -417,36 +417,51 @@ namespace JD.BitBet.PL.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("a873d883-bf12-402f-94ac-e9004127312a"),
+                            Id = new Guid("daaff4bc-ae01-41d5-8cee-a2c19fea0963"),
                             Amount = 1.0,
                             TransactionDate = new DateTime(1990, 12, 4, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             TransactionType = "Withdrawal",
-                            WalletId = new Guid("92b4c771-10a4-4bbe-9777-e291d64b3214")
+                            WalletId = new Guid("9a89ba31-de00-425b-a405-e63d63d76541")
                         },
                         new
                         {
-                            Id = new Guid("b7fd6cec-d00f-411f-b515-416c12510f3b"),
+                            Id = new Guid("43742bb0-d097-4bd1-b4dd-33909ab85a07"),
                             Amount = 2.0,
-                            TransactionDate = new DateTime(2024, 11, 26, 21, 3, 51, 419, DateTimeKind.Local).AddTicks(8315),
+                            TransactionDate = new DateTime(2024, 12, 1, 13, 57, 13, 748, DateTimeKind.Local).AddTicks(3180),
                             TransactionType = "Withdrawal",
-                            WalletId = new Guid("92b4c771-10a4-4bbe-9777-e291d64b3214")
+                            WalletId = new Guid("9a89ba31-de00-425b-a405-e63d63d76541")
                         },
                         new
                         {
-                            Id = new Guid("5c33dc53-6702-4f46-850a-937657ae9f3c"),
+                            Id = new Guid("ac95b2bb-6454-4490-9d9f-ca1b23a5e6c4"),
                             Amount = 1.0,
-                            TransactionDate = new DateTime(2024, 11, 26, 21, 3, 51, 419, DateTimeKind.Local).AddTicks(8332),
+                            TransactionDate = new DateTime(2024, 12, 1, 13, 57, 13, 748, DateTimeKind.Local).AddTicks(3215),
                             TransactionType = "Withdrawal",
-                            WalletId = new Guid("35066c4e-3898-4ee1-8e04-196541fe59cb")
+                            WalletId = new Guid("89e2708f-4732-412f-ab9c-7d0ce1df7e4a")
                         },
                         new
                         {
-                            Id = new Guid("18fe4836-31ff-4b58-bb1d-0fa12bebf898"),
+                            Id = new Guid("a24f36af-b4bf-48e6-8a26-b8fc2d62f3aa"),
                             Amount = 2.0,
-                            TransactionDate = new DateTime(2024, 11, 26, 21, 3, 51, 419, DateTimeKind.Local).AddTicks(8342),
+                            TransactionDate = new DateTime(2024, 12, 1, 13, 57, 13, 748, DateTimeKind.Local).AddTicks(3226),
                             TransactionType = "Withdrawal",
-                            WalletId = new Guid("35066c4e-3898-4ee1-8e04-196541fe59cb")
+                            WalletId = new Guid("89e2708f-4732-412f-ab9c-7d0ce1df7e4a")
                         });
+                });
+
+            modelBuilder.Entity("tblGametblUser", b =>
+                {
+                    b.Property<Guid>("GamesId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("UsersId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("GamesId", "UsersId");
+
+                    b.HasIndex("UsersId");
+
+                    b.ToTable("tblGametblUser");
                 });
 
             modelBuilder.Entity("JD.BitBet.PL.Entities.tblCard", b =>
@@ -461,20 +476,20 @@ namespace JD.BitBet.PL.Migrations
                     b.Navigation("hand");
                 });
 
-            modelBuilder.Entity("JD.BitBet.PL.Entities.tblGame", b =>
-                {
-                    b.HasOne("JD.BitBet.PL.Entities.tblUser", "User")
-                        .WithMany("Games")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("FK_tblGame_UserId");
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("JD.BitBet.PL.Entities.tblGameState", b =>
                 {
+                    b.HasOne("JD.BitBet.PL.Entities.tblGame", "game")
+                        .WithMany("GameStates")
+                        .HasForeignKey("GameId")
+                        .IsRequired()
+                        .HasConstraintName("FK_tblGameState_GameId");
+
+                    b.HasOne("JD.BitBet.PL.Entities.tblUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("JD.BitBet.PL.tblHand", "dealerHand")
                         .WithMany()
                         .HasForeignKey("dealerHandId")
@@ -487,7 +502,11 @@ namespace JD.BitBet.PL.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
+                    b.Navigation("User");
+
                     b.Navigation("dealerHand");
+
+                    b.Navigation("game");
 
                     b.Navigation("playerHand");
                 });
@@ -516,10 +535,6 @@ namespace JD.BitBet.PL.Migrations
 
             modelBuilder.Entity("JD.BitBet.PL.tblHand", b =>
                 {
-                    b.HasOne("JD.BitBet.PL.Entities.tblGame", null)
-                        .WithMany("Hands")
-                        .HasForeignKey("tblGameId");
-
                     b.HasOne("JD.BitBet.PL.Entities.tblUser", null)
                         .WithMany("Hands")
                         .HasForeignKey("tblUserId");
@@ -537,16 +552,29 @@ namespace JD.BitBet.PL.Migrations
                     b.Navigation("Wallet");
                 });
 
+            modelBuilder.Entity("tblGametblUser", b =>
+                {
+                    b.HasOne("JD.BitBet.PL.Entities.tblGame", null)
+                        .WithMany()
+                        .HasForeignKey("GamesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("JD.BitBet.PL.Entities.tblUser", null)
+                        .WithMany()
+                        .HasForeignKey("UsersId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("JD.BitBet.PL.Entities.tblGame", b =>
                 {
-                    b.Navigation("Hands");
+                    b.Navigation("GameStates");
                 });
 
             modelBuilder.Entity("JD.BitBet.PL.Entities.tblUser", b =>
                 {
                     b.Navigation("ErrorLogs");
-
-                    b.Navigation("Games");
 
                     b.Navigation("Hands");
 

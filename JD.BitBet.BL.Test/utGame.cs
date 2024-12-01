@@ -28,7 +28,6 @@ namespace JD.BitBet.BL.Test
             {
                 Id =Guid.NewGuid(),
                 GameResult = 20.00,
-                UserId = (await new UserManager(options).LoadAsync()).FirstOrDefault().Id
             };
 
             Guid results = await new GameManager(options).InsertAsync(game, true);
@@ -59,8 +58,12 @@ namespace JD.BitBet.BL.Test
         [TestMethod]
         public async Task StartGame()
         {
-            GameState state = (await new GameManager(options).StartNewGame());
-            Assert.AreEqual((await new GameManager(options).LoadByIdAsync(state.Id)).Id, state.Id);
+            Game game = new Game();
+            game.GameResult = 200000000000;
+            game.Users = new List<User>();
+            game.Users.Add((await new UserManager(options).LoadAsync()).FirstOrDefault());
+            List<GameState> state = (await new GameManager(options).StartNewGame(game));
+            Assert.AreEqual((await new GameManager(options).LoadByIdAsync(state[0].Id)).Id, state[0].Id);
 
         }
     }

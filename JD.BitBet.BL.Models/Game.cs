@@ -6,8 +6,7 @@ namespace JD.BitBet.BL.Models
     public class Game
     {
         public Guid Id { get; set; }
-        public Guid UserId { get; set; }
         public double GameResult { get; set; }
-        public virtual tblUser User { get; set; }
+        public List<User> Users { get; set; }
     }
 }

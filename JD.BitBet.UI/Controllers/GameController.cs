@@ -30,41 +30,18 @@ namespace JD.BitBet.UI.Controllers
 
             return View();
         }
-
-        //public async Task<IActionResult> Start()
-        //{
-        //    var response = await _apiClient.PostAsync("Game/start", null);
-        //    HttpContext.Session.SetString("GameState", JsonConvert.SerializeObject(response));
-        //    ViewBag.GameState = HttpContext.Session.GetString("GameState");
-        //    return RedirectToAction("GameIndex");
-        //}
-
-        //public async Task<IActionResult> Hit()
-        //{
-        //    //var response = await _apiClient.PostAsync("Game/hit", null);
-        //    //return RedirectToAction("GameIndex");
-        //    var gameStateJson = HttpContext.Session.GetString("GameState");
-        //    if (string.IsNullOrEmpty(gameStateJson))
-        //    {
-        //        return RedirectToAction("GameIndex");
-        //    }
-
-        //    var gameState = JsonConvert.DeserializeObject<GameState>(gameStateJson);
-
-        //    var content = new StringContent(JsonConvert.SerializeObject(gameState), Encoding.UTF8, "application/json");
-        //    var response = await _apiClient.PostAsync("Game/hit", content);
-
-        //    if (response.IsSuccessStatusCode)
-        //    {
-        //        var updatedGameStateJson = await response.Content.ReadAsStringAsync();
-        //        HttpContext.Session.SetString("GameState", updatedGameStateJson);
-        //    }
-
-        //    return RedirectToAction("GameIndex");
-        //}
         public async Task<IActionResult> Start()
         {
-            var response = await _apiClient.PostAsync("Game/start", null);
+            var userId = HttpContext.Session.GetString("UserId");
+
+            if (string.IsNullOrEmpty(userId))
+            {
+                return RedirectToAction("Login", "User");
+            }
+            var jsonContent = JsonConvert.SerializeObject(new { UserId = userId });
+            var httpContent = new StringContent(jsonContent, Encoding.UTF8, "application/json");
+
+            var response = await _apiClient.PostAsync("Game/start", httpContent);
             var gameStateJson = await response.Content.ReadAsStringAsync();
             if (response.IsSuccessStatusCode)
             {

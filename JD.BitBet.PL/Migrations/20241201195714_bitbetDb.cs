@@ -14,6 +14,18 @@ namespace JD.BitBet.PL.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
+                name: "tblGame",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    GameResult = table.Column<double>(type: "float", unicode: false, maxLength: 50, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("Pk__tblGame_Id", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "tblUser",
                 columns: table => new
                 {
@@ -48,22 +60,46 @@ namespace JD.BitBet.PL.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "tblGame",
+                name: "tblGametblUser",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    GameResult = table.Column<double>(type: "float", unicode: false, maxLength: 50, nullable: false)
+                    GamesId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UsersId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("Pk__tblGame_Id", x => x.Id);
+                    table.PrimaryKey("PK_tblGametblUser", x => new { x.GamesId, x.UsersId });
                     table.ForeignKey(
-                        name: "FK_tblGame_UserId",
-                        column: x => x.UserId,
+                        name: "FK_tblGametblUser_tblGame_GamesId",
+                        column: x => x.GamesId,
+                        principalTable: "tblGame",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_tblGametblUser_tblUser_UsersId",
+                        column: x => x.UsersId,
                         principalTable: "tblUser",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "tblHand",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    BetAmount = table.Column<double>(type: "float", unicode: false, maxLength: 50, nullable: false),
+                    Result = table.Column<double>(type: "float", unicode: false, maxLength: 50, nullable: false),
+                    tblUserId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("Pk__tblHand_Id", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_tblHand_tblUser_tblUserId",
+                        column: x => x.tblUserId,
+                        principalTable: "tblUser",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -83,52 +119,6 @@ namespace JD.BitBet.PL.Migrations
                         column: x => x.UserId,
                         principalTable: "tblUser",
                         principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "tblHand",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    BetAmount = table.Column<double>(type: "float", unicode: false, maxLength: 50, nullable: false),
-                    Result = table.Column<double>(type: "float", unicode: false, maxLength: 50, nullable: false),
-                    tblGameId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    tblUserId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("Pk__tblHand_Id", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_tblHand_tblGame_tblGameId",
-                        column: x => x.tblGameId,
-                        principalTable: "tblGame",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_tblHand_tblUser_tblUserId",
-                        column: x => x.tblUserId,
-                        principalTable: "tblUser",
-                        principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "tblTransaction",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    WalletId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    TransactionType = table.Column<string>(type: "varchar(50)", unicode: false, maxLength: 50, nullable: true),
-                    Amount = table.Column<double>(type: "float", nullable: false),
-                    TransactionDate = table.Column<DateTime>(type: "datetime2", unicode: false, maxLength: 50, nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("Pk__tblTransaction_Id", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_tblTransaction_WalletId",
-                        column: x => x.WalletId,
-                        principalTable: "tblWallet",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -156,6 +146,8 @@ namespace JD.BitBet.PL.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    GameId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     dealerHandId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     playerHandId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     playerHandVal = table.Column<int>(type: "int", nullable: false),
@@ -168,6 +160,11 @@ namespace JD.BitBet.PL.Migrations
                 {
                     table.PrimaryKey("Pk__tblGameState_Id", x => x.Id);
                     table.ForeignKey(
+                        name: "FK_tblGameState_GameId",
+                        column: x => x.GameId,
+                        principalTable: "tblGame",
+                        principalColumn: "Id");
+                    table.ForeignKey(
                         name: "FK_tblGameState_tblHand_dealerHandId",
                         column: x => x.dealerHandId,
                         principalTable: "tblHand",
@@ -177,17 +174,53 @@ namespace JD.BitBet.PL.Migrations
                         column: x => x.playerHandId,
                         principalTable: "tblHand",
                         principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_tblGameState_tblUser_UserId",
+                        column: x => x.UserId,
+                        principalTable: "tblUser",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "tblTransaction",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    WalletId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    TransactionType = table.Column<string>(type: "varchar(50)", unicode: false, maxLength: 50, nullable: true),
+                    Amount = table.Column<double>(type: "float", nullable: false),
+                    TransactionDate = table.Column<DateTime>(type: "datetime2", unicode: false, maxLength: 50, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("Pk__tblTransaction_Id", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_tblTransaction_WalletId",
+                        column: x => x.WalletId,
+                        principalTable: "tblWallet",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.InsertData(
+                table: "tblGame",
+                columns: new[] { "Id", "GameResult" },
+                values: new object[,]
+                {
+                    { new Guid("42523dbb-7f3b-43b9-a166-0c0f1608f695"), 200.0 },
+                    { new Guid("43e9efc2-0ae4-4c7d-8491-352f1baf275f"), 200.0 }
                 });
 
             migrationBuilder.InsertData(
                 table: "tblHand",
-                columns: new[] { "Id", "BetAmount", "Result", "tblGameId", "tblUserId" },
+                columns: new[] { "Id", "BetAmount", "Result", "tblUserId" },
                 values: new object[,]
                 {
-                    { new Guid("6bdd6a0a-53a8-45bd-943d-38517b396ca8"), 20.0, 40.0, null, null },
-                    { new Guid("7e60a080-9848-472d-b0af-e4711448fe13"), 20.0, -20.0, null, null },
-                    { new Guid("8a6c9f10-6f4b-4394-a092-08015f6178c8"), 20.0, 40.0, null, null },
-                    { new Guid("9a868bf9-d918-4aee-aed0-7a1b7e70779e"), 20.0, -20.0, null, null }
+                    { new Guid("37eb5ccd-e8fa-4b79-832b-6d97152a0238"), 20.0, 40.0, null },
+                    { new Guid("6f1a41d3-50db-40e5-b40c-349c5ba1c67e"), 20.0, 40.0, null },
+                    { new Guid("7b1b1bdf-08c8-41b2-af81-bd17f10e35c1"), 20.0, -20.0, null },
+                    { new Guid("e401f0aa-5810-45d2-b6f5-cd8e82e9bb75"), 20.0, -20.0, null }
                 });
 
             migrationBuilder.InsertData(
@@ -195,8 +228,8 @@ namespace JD.BitBet.PL.Migrations
                 columns: new[] { "Id", "CreateDate", "Email", "Password" },
                 values: new object[,]
                 {
-                    { new Guid("3ca9704e-83f4-49ff-98a5-b6e69f5c70fe"), new DateTime(1990, 12, 4, 0, 0, 0, 0, DateTimeKind.Unspecified), "knudtdaw0000@gmail.com", "W6ph5Mm5Pz8GgiULbPgzG37mj9g=" },
-                    { new Guid("57d00112-de2f-4d52-b5f3-49058a20f204"), new DateTime(2024, 11, 26, 21, 3, 51, 419, DateTimeKind.Local).AddTicks(6773), "jbstrange2@gmail.com", "W6ph5Mm5Pz8GgiULbPgzG37mj9g=" }
+                    { new Guid("253d7856-c86c-44fa-8910-541799ba4460"), new DateTime(1990, 12, 4, 0, 0, 0, 0, DateTimeKind.Unspecified), "knudtdaw0000@gmail.com", "W6ph5Mm5Pz8GgiULbPgzG37mj9g=" },
+                    { new Guid("394285e3-000d-4aea-b7f0-d044090f593c"), new DateTime(2024, 12, 1, 13, 57, 13, 747, DateTimeKind.Local).AddTicks(8840), "jbstrange2@gmail.com", "W6ph5Mm5Pz8GgiULbPgzG37mj9g=" }
                 });
 
             migrationBuilder.InsertData(
@@ -204,14 +237,14 @@ namespace JD.BitBet.PL.Migrations
                 columns: new[] { "Id", "HandId", "rank", "suit" },
                 values: new object[,]
                 {
-                    { new Guid("00c1fba8-8e08-4164-9a11-8f557d4adde2"), new Guid("9a868bf9-d918-4aee-aed0-7a1b7e70779e"), "Ten", "Diamonds" },
-                    { new Guid("0ccdcdf9-b74a-49b3-b9b5-06c76b5e71f5"), new Guid("8a6c9f10-6f4b-4394-a092-08015f6178c8"), "Ten", "Diamonds" },
-                    { new Guid("3dcfd3f8-655e-46fd-820d-522ef5cb907b"), new Guid("6bdd6a0a-53a8-45bd-943d-38517b396ca8"), "Ten", "Diamonds" },
-                    { new Guid("4a1bef39-3bcf-4c68-9fa0-cb18910d13ab"), new Guid("7e60a080-9848-472d-b0af-e4711448fe13"), "Ten", "Diamonds" },
-                    { new Guid("6efc1ca5-2b1e-4c88-a95a-e0e9bea8165c"), new Guid("7e60a080-9848-472d-b0af-e4711448fe13"), "Ten", "Diamonds" },
-                    { new Guid("71337b9f-5d2c-4396-b38a-3a00ba305750"), new Guid("8a6c9f10-6f4b-4394-a092-08015f6178c8"), "Ten", "Diamonds" },
-                    { new Guid("b9cd4fe6-08cb-45f1-ba56-96be3916bc9d"), new Guid("6bdd6a0a-53a8-45bd-943d-38517b396ca8"), "Ten", "Diamonds" },
-                    { new Guid("ef5da372-500e-42bd-b361-3e1573c6baae"), new Guid("9a868bf9-d918-4aee-aed0-7a1b7e70779e"), "Ten", "Diamonds" }
+                    { new Guid("7c428167-4d85-4766-9ee3-3801a7dfd29d"), new Guid("7b1b1bdf-08c8-41b2-af81-bd17f10e35c1"), "Ten", "Diamonds" },
+                    { new Guid("851e7c5f-acd3-46c2-aa4e-f16a8abff0f4"), new Guid("7b1b1bdf-08c8-41b2-af81-bd17f10e35c1"), "Ten", "Diamonds" },
+                    { new Guid("8cbd91ac-0288-41bd-bf5f-ccf3c574ec64"), new Guid("37eb5ccd-e8fa-4b79-832b-6d97152a0238"), "Ten", "Diamonds" },
+                    { new Guid("a3207202-9deb-4d7a-816d-faffe71448fa"), new Guid("6f1a41d3-50db-40e5-b40c-349c5ba1c67e"), "Ten", "Diamonds" },
+                    { new Guid("c279034b-2146-4eea-82b2-a12877e1cc88"), new Guid("37eb5ccd-e8fa-4b79-832b-6d97152a0238"), "Ten", "Diamonds" },
+                    { new Guid("cacb2a0d-b7eb-4255-9ae6-3dcb88874b6b"), new Guid("6f1a41d3-50db-40e5-b40c-349c5ba1c67e"), "Ten", "Diamonds" },
+                    { new Guid("d1bb5b7d-e415-403f-bc90-d6b0aa184155"), new Guid("e401f0aa-5810-45d2-b6f5-cd8e82e9bb75"), "Ten", "Diamonds" },
+                    { new Guid("d47431a6-4680-4479-8641-9810aab7a2e0"), new Guid("e401f0aa-5810-45d2-b6f5-cd8e82e9bb75"), "Ten", "Diamonds" }
                 });
 
             migrationBuilder.InsertData(
@@ -219,31 +252,22 @@ namespace JD.BitBet.PL.Migrations
                 columns: new[] { "Id", "ErrorDateTime", "ErrorMessage", "ErrorType", "UserId" },
                 values: new object[,]
                 {
-                    { new Guid("873a9d35-23d8-419c-8ada-e328fa432587"), new DateTime(2024, 11, 26, 21, 3, 51, 419, DateTimeKind.Local).AddTicks(9956), "Test", "Login Exception", new Guid("57d00112-de2f-4d52-b5f3-49058a20f204") },
-                    { new Guid("f77fa109-ef1a-4aaa-bcb0-6c06039ff967"), new DateTime(1990, 12, 4, 0, 0, 0, 0, DateTimeKind.Unspecified), "Test", "Login Exception", new Guid("3ca9704e-83f4-49ff-98a5-b6e69f5c70fe") }
-                });
-
-            migrationBuilder.InsertData(
-                table: "tblGame",
-                columns: new[] { "Id", "GameResult", "UserId" },
-                values: new object[,]
-                {
-                    { new Guid("53608fcb-21cb-42cb-9af3-8b3c67c27a3e"), 200.0, new Guid("3ca9704e-83f4-49ff-98a5-b6e69f5c70fe") },
-                    { new Guid("6db75397-018d-40db-8ff7-c83aaf522186"), 200.0, new Guid("3ca9704e-83f4-49ff-98a5-b6e69f5c70fe") }
+                    { new Guid("0d49535e-ed75-424c-ac99-63408d47a0ea"), new DateTime(2024, 12, 1, 13, 57, 13, 748, DateTimeKind.Local).AddTicks(4824), "Test", "Login Exception", new Guid("394285e3-000d-4aea-b7f0-d044090f593c") },
+                    { new Guid("5d7aa5c6-17d7-4084-9a53-2a3606407236"), new DateTime(1990, 12, 4, 0, 0, 0, 0, DateTimeKind.Unspecified), "Test", "Login Exception", new Guid("253d7856-c86c-44fa-8910-541799ba4460") }
                 });
 
             migrationBuilder.InsertData(
                 table: "tblGameState",
-                columns: new[] { "Id", "dealerHandId", "dealerHandVal", "isGameOver", "isPlayerTurn", "message", "playerHandId", "playerHandVal" },
-                values: new object[] { new Guid("13581f5f-b35d-40ac-ac73-0cf636a1fc6e"), new Guid("8a6c9f10-6f4b-4394-a092-08015f6178c8"), 20, true, true, "Game Over", new Guid("9a868bf9-d918-4aee-aed0-7a1b7e70779e"), 20 });
+                columns: new[] { "Id", "GameId", "UserId", "dealerHandId", "dealerHandVal", "isGameOver", "isPlayerTurn", "message", "playerHandId", "playerHandVal" },
+                values: new object[] { new Guid("a211c8ae-73de-4076-b9d0-f8825e08bec4"), new Guid("42523dbb-7f3b-43b9-a166-0c0f1608f695"), new Guid("253d7856-c86c-44fa-8910-541799ba4460"), new Guid("6f1a41d3-50db-40e5-b40c-349c5ba1c67e"), 20, true, true, "Game Over", new Guid("7b1b1bdf-08c8-41b2-af81-bd17f10e35c1"), 20 });
 
             migrationBuilder.InsertData(
                 table: "tblWallet",
                 columns: new[] { "Id", "Balance", "UserId", "WalletAddress" },
                 values: new object[,]
                 {
-                    { new Guid("35066c4e-3898-4ee1-8e04-196541fe59cb"), 0.0, new Guid("57d00112-de2f-4d52-b5f3-49058a20f204"), "0xE2dC61497FDD26F9eaYaBoi5373f22df" },
-                    { new Guid("92b4c771-10a4-4bbe-9777-e291d64b3214"), 0.0, new Guid("3ca9704e-83f4-49ff-98a5-b6e69f5c70fe"), "0xE2dC61497FDD26F9ea285172A41F0b25373f22df" }
+                    { new Guid("89e2708f-4732-412f-ab9c-7d0ce1df7e4a"), 0.0, new Guid("394285e3-000d-4aea-b7f0-d044090f593c"), "0xE2dC61497FDD26F9eaYaBoi5373f22df" },
+                    { new Guid("9a89ba31-de00-425b-a405-e63d63d76541"), 0.0, new Guid("253d7856-c86c-44fa-8910-541799ba4460"), "0xE2dC61497FDD26F9ea285172A41F0b25373f22df" }
                 });
 
             migrationBuilder.InsertData(
@@ -251,10 +275,10 @@ namespace JD.BitBet.PL.Migrations
                 columns: new[] { "Id", "Amount", "TransactionDate", "TransactionType", "WalletId" },
                 values: new object[,]
                 {
-                    { new Guid("18fe4836-31ff-4b58-bb1d-0fa12bebf898"), 2.0, new DateTime(2024, 11, 26, 21, 3, 51, 419, DateTimeKind.Local).AddTicks(8342), "Withdrawal", new Guid("35066c4e-3898-4ee1-8e04-196541fe59cb") },
-                    { new Guid("5c33dc53-6702-4f46-850a-937657ae9f3c"), 1.0, new DateTime(2024, 11, 26, 21, 3, 51, 419, DateTimeKind.Local).AddTicks(8332), "Withdrawal", new Guid("35066c4e-3898-4ee1-8e04-196541fe59cb") },
-                    { new Guid("a873d883-bf12-402f-94ac-e9004127312a"), 1.0, new DateTime(1990, 12, 4, 0, 0, 0, 0, DateTimeKind.Unspecified), "Withdrawal", new Guid("92b4c771-10a4-4bbe-9777-e291d64b3214") },
-                    { new Guid("b7fd6cec-d00f-411f-b515-416c12510f3b"), 2.0, new DateTime(2024, 11, 26, 21, 3, 51, 419, DateTimeKind.Local).AddTicks(8315), "Withdrawal", new Guid("92b4c771-10a4-4bbe-9777-e291d64b3214") }
+                    { new Guid("43742bb0-d097-4bd1-b4dd-33909ab85a07"), 2.0, new DateTime(2024, 12, 1, 13, 57, 13, 748, DateTimeKind.Local).AddTicks(3180), "Withdrawal", new Guid("9a89ba31-de00-425b-a405-e63d63d76541") },
+                    { new Guid("a24f36af-b4bf-48e6-8a26-b8fc2d62f3aa"), 2.0, new DateTime(2024, 12, 1, 13, 57, 13, 748, DateTimeKind.Local).AddTicks(3226), "Withdrawal", new Guid("89e2708f-4732-412f-ab9c-7d0ce1df7e4a") },
+                    { new Guid("ac95b2bb-6454-4490-9d9f-ca1b23a5e6c4"), 1.0, new DateTime(2024, 12, 1, 13, 57, 13, 748, DateTimeKind.Local).AddTicks(3215), "Withdrawal", new Guid("89e2708f-4732-412f-ab9c-7d0ce1df7e4a") },
+                    { new Guid("daaff4bc-ae01-41d5-8cee-a2c19fea0963"), 1.0, new DateTime(1990, 12, 4, 0, 0, 0, 0, DateTimeKind.Unspecified), "Withdrawal", new Guid("9a89ba31-de00-425b-a405-e63d63d76541") }
                 });
 
             migrationBuilder.CreateIndex(
@@ -268,14 +292,14 @@ namespace JD.BitBet.PL.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_tblGame_UserId",
-                table: "tblGame",
-                column: "UserId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_tblGameState_dealerHandId",
                 table: "tblGameState",
                 column: "dealerHandId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_tblGameState_GameId",
+                table: "tblGameState",
+                column: "GameId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_tblGameState_playerHandId",
@@ -283,9 +307,14 @@ namespace JD.BitBet.PL.Migrations
                 column: "playerHandId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_tblHand_tblGameId",
-                table: "tblHand",
-                column: "tblGameId");
+                name: "IX_tblGameState_UserId",
+                table: "tblGameState",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_tblGametblUser_UsersId",
+                table: "tblGametblUser",
+                column: "UsersId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_tblHand_tblUserId",
@@ -316,16 +345,19 @@ namespace JD.BitBet.PL.Migrations
                 name: "tblGameState");
 
             migrationBuilder.DropTable(
+                name: "tblGametblUser");
+
+            migrationBuilder.DropTable(
                 name: "tblTransaction");
 
             migrationBuilder.DropTable(
                 name: "tblHand");
 
             migrationBuilder.DropTable(
-                name: "tblWallet");
+                name: "tblGame");
 
             migrationBuilder.DropTable(
-                name: "tblGame");
+                name: "tblWallet");
 
             migrationBuilder.DropTable(
                 name: "tblUser");
