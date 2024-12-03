@@ -21,7 +21,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "JD.BitBet.API", "JD.BitBet.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "JD.Utility", "JD.Utility\JD.Utility.csproj", "{54805C26-CC1B-4332-801E-4C60AC4BD4EF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JD.BitBet.Api.Test", "JD.BitBet.Api.Test\JD.BitBet.Api.Test.csproj", "{5D1FBCDF-D7F8-4828-AC29-8D9B8BE7B083}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "JD.BitBet.Api.Test", "JD.BitBet.Api.Test\JD.BitBet.Api.Test.csproj", "{5D1FBCDF-D7F8-4828-AC29-8D9B8BE7B083}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JD.BitBet.Console", "JD.BitBet.Console\JD.BitBet.Console.csproj", "{7C0A17E2-6BB9-4718-8E74-8A259A5DBEE7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -69,6 +71,10 @@ Global
 		{5D1FBCDF-D7F8-4828-AC29-8D9B8BE7B083}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5D1FBCDF-D7F8-4828-AC29-8D9B8BE7B083}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5D1FBCDF-D7F8-4828-AC29-8D9B8BE7B083}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7C0A17E2-6BB9-4718-8E74-8A259A5DBEE7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7C0A17E2-6BB9-4718-8E74-8A259A5DBEE7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7C0A17E2-6BB9-4718-8E74-8A259A5DBEE7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7C0A17E2-6BB9-4718-8E74-8A259A5DBEE7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

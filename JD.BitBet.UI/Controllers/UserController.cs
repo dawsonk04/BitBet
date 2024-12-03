@@ -1,11 +1,7 @@
-﻿using DocumentFormat.OpenXml.Spreadsheet;
-using JD.BitBet.BL;
-using JD.BitBet.BL.Models;
-using JD.BitBet.UI.Extensions;
+﻿using JD.BitBet.BL.Models;
 using JD.Utility;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using System.Net;
 using System.Text;
 
 namespace JD.BitBet.UI.Controllers
@@ -37,7 +33,7 @@ namespace JD.BitBet.UI.Controllers
                 if (authenticatedUser != null)
                 {
                     HttpContext.Session.SetString("UserId", authenticatedUser.Id.ToString());
-                    return RedirectToAction("AllGames", "Game"); // Redirect to the game index
+                    return RedirectToAction("GameList", "Game"); // Redirect to the game index
                 }
                 Console.WriteLine("Error: Unable to parse user details.");
             }
@@ -45,7 +41,7 @@ namespace JD.BitBet.UI.Controllers
             {
                 Console.WriteLine($"Login failed. {response.StatusCode}: {responseContent}");
             }
-            return View(user); 
+            return View(user);
         }
     }
 }
