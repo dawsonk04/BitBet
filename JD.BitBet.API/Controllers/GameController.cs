@@ -147,7 +147,7 @@ namespace JD.BitBet.API.Controllers
         }
 
         // for inital screen loading the games onto the UI
-        [HttpGet]
+        [HttpGet("getgames")]
         public async Task<IActionResult> GetGames()
         {
             try
