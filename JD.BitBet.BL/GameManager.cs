@@ -79,6 +79,50 @@ namespace JD.BitBet.BL
                 throw;
             }
         }
+
+        public async Task<Game> JoinGame(Guid gameId, Guid userId)
+        {
+            // need stuff for if a gamestarted / timer for a game somewhere?
+            try
+            {
+                Game game = await LoadByIdAsync(gameId);
+                if(game == null)
+                {
+                    logger.LogError($"game is null");
+                }
+
+                // load user's? - instead of a single user.. come back to
+
+                UserManager userManager = new UserManager(options);
+                User users = await userManager.LoadByIdAsync(userId);
+                
+                if (users == null)
+                {
+                    logger.LogError("no users returned");
+                }
+
+                users.gameId = gameId;
+                await userManager.UpdateAsync(users);
+
+                if(game.Users == null)
+                {
+                    game.Users = new List<User>();
+                }
+                game.Users.Add(users);
+
+                await UpdateAsync(game);
+
+                return game;
+
+            }
+            catch (Exception ex)
+            {
+                logger.LogCritical($"Error Joining Game : {ex.Message}, GameManagerBL - JoinGame");              
+            }
+            // we would want to return null if it gets past everything and doesnt work (I think)
+            return null;
+        }
+
         public async Task<List<GameState>> StartNewGame(Game game)
         {
             List<GameState> states = new List<GameState>();

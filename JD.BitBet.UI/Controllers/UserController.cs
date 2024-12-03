@@ -33,7 +33,7 @@ namespace JD.BitBet.UI.Controllers
                 if (authenticatedUser != null)
                 {
                     HttpContext.Session.SetString("UserId", authenticatedUser.Id.ToString());
-                    return RedirectToAction("GameList", "Game"); // Redirect to the game index
+                    return RedirectToAction("GameIndex", "Game"); // Redirect to the game index
                 }
                 Console.WriteLine("Error: Unable to parse user details.");
             }
