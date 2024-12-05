@@ -30,14 +30,15 @@ namespace JD.BitBet.UI.Controllers
 
             return View();
         }
-        public async Task<IActionResult> AllGames()
+        public async Task<IActionResult> GameList()
         {
-            var response = await _apiClient.GetAsync("Game/"); 
+            var response = await _apiClient.GetAsync("Game/");
 
             if (response.IsSuccessStatusCode)
             {
-                var games = await response.Content.ReadAsStringAsync();
-                return View(games);
+                var gamesJson = await response.Content.ReadAsStringAsync();
+                var games = JsonConvert.DeserializeObject<List<Game>>(gamesJson);
+                return View("GameList", games);
             }
             else
             {
