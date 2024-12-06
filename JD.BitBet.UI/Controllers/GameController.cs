@@ -59,6 +59,7 @@ namespace JD.BitBet.UI.Controllers
 
                 if (response.IsSuccessStatusCode)
                 {
+                    HttpContext.Session.SetString("CurrentGameId", gameId.ToString());
                     return RedirectToAction("GameIndex", new { gameId });
                 }
                 else
@@ -83,13 +84,15 @@ namespace JD.BitBet.UI.Controllers
             var jsonContent = JsonConvert.SerializeObject(new { UserId = userId });
             var httpContent = new StringContent(jsonContent, Encoding.UTF8, "application/json");
 
-            var response = await _apiClient.PostAsync("Game/start", httpContent);
+            var gameId = HttpContext.Session.GetString("CurrentGameId");
+
+            var response = await _apiClient.PostAsync($"Game/start/{gameId}", null);
             var gameStateJson = await response.Content.ReadAsStringAsync();
             if (response.IsSuccessStatusCode)
             {
                 HttpContext.Session.SetString("GameState", gameStateJson);
-                var gameState = JsonConvert.DeserializeObject<GameState>(gameStateJson);
-                return View("GameIndex", gameState);
+                var gameStates = JsonConvert.DeserializeObject<List<GameState>>(gameStateJson);
+                return View("GameIndex", gameStates);
             }
             else
             {
@@ -106,22 +109,22 @@ namespace JD.BitBet.UI.Controllers
                 return RedirectToAction("GameIndex");
             }
 
-            var gameState = JsonConvert.DeserializeObject<GameState>(gameStateJson);
-            var content = new StringContent(JsonConvert.SerializeObject(gameState), Encoding.UTF8, "application/json");
+            var gameStates = JsonConvert.DeserializeObject<List<GameState>>(gameStateJson);
+            var content = new StringContent(JsonConvert.SerializeObject(gameStates), Encoding.UTF8, "application/json");
             var response = await _apiClient.PostAsync("Game/hit", content);
 
             if (response.IsSuccessStatusCode)
             {
                 var updatedGameStateJson = await response.Content.ReadAsStringAsync();
                 HttpContext.Session.SetString("GameState", updatedGameStateJson);
-                gameState = JsonConvert.DeserializeObject<GameState>(updatedGameStateJson);
+                gameStates = JsonConvert.DeserializeObject<List<GameState>>(gameStateJson);
             }
             else
             {
                 ViewBag.Error = "Failed to perform hit action.";
             }
 
-            return View("GameIndex", gameState);
+            return View("GameIndex", gameStates);
         }
         public async Task<IActionResult> Double()
         {
@@ -131,22 +134,22 @@ namespace JD.BitBet.UI.Controllers
                 return RedirectToAction("GameIndex");
             }
 
-            var gameState = JsonConvert.DeserializeObject<GameState>(gameStateJson);
-            var content = new StringContent(JsonConvert.SerializeObject(gameState), Encoding.UTF8, "application/json");
+            var gameStates = JsonConvert.DeserializeObject<List<GameState>>(gameStateJson);
+            var content = new StringContent(JsonConvert.SerializeObject(gameStates), Encoding.UTF8, "application/json");
             var response = await _apiClient.PostAsync("Game/double", content);
 
             if (response.IsSuccessStatusCode)
             {
                 var updatedGameStateJson = await response.Content.ReadAsStringAsync();
                 HttpContext.Session.SetString("GameState", updatedGameStateJson);
-                gameState = JsonConvert.DeserializeObject<GameState>(updatedGameStateJson);
+                gameStates = JsonConvert.DeserializeObject<List<GameState>>(gameStateJson);
             }
             else
             {
                 ViewBag.Error = "Failed to perform double action.";
             }
 
-            return View("GameIndex", gameState);
+            return View("GameIndex", gameStates);
         }
         public async Task<IActionResult> Stand()
         {
@@ -156,22 +159,29 @@ namespace JD.BitBet.UI.Controllers
                 return RedirectToAction("GameIndex");
             }
 
-            var gameState = JsonConvert.DeserializeObject<GameState>(gameStateJson);
-            var content = new StringContent(JsonConvert.SerializeObject(gameState), Encoding.UTF8, "application/json");
-            var response = await _apiClient.PostAsync("Game/stand", content);
+            var gameStates = JsonConvert.DeserializeObject<List<GameState>>(gameStateJson);
+
+            var userId = HttpContext.Session.GetString("UserId");
+
+            if (string.IsNullOrEmpty(userId))
+            {
+                return RedirectToAction("Login", "User");
+            }
+
+            var response = await _apiClient.PostAsync($"Game/stand/{userId}", null);
 
             if (response.IsSuccessStatusCode)
             {
                 var updatedGameStateJson = await response.Content.ReadAsStringAsync();
                 HttpContext.Session.SetString("GameState", updatedGameStateJson);
-                gameState = JsonConvert.DeserializeObject<GameState>(updatedGameStateJson);
+                gameStates = JsonConvert.DeserializeObject<List<GameState>>(gameStateJson);
             }
             else
             {
                 ViewBag.Error = "Failed to perform stand action.";
             }
 
-            return View("GameIndex", gameState);
+            return View("GameIndex", gameStates);
         }
 
     }

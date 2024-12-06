@@ -13,6 +13,7 @@ namespace JD.BitBet.API.Controllers
     public class GameController : GenericController<Game, GameManager, BitBetEntities>
     {
         GameManager gameManager;
+        GameStateManager gameStateManager;
         UserManager userManager;
         IHubContext<BlackJackHub> _hubContext;
         public GameController(ILogger<GameController> logger, DbContextOptions<BitBetEntities> options, IHubContext<BlackJackHub> hubContext) : base(logger, options)
@@ -20,13 +21,15 @@ namespace JD.BitBet.API.Controllers
             _hubContext = hubContext;
         }
 
-        [HttpPost("start")]
-        public async Task<IActionResult> StartNewGame(Game game)
+        [HttpPost("start/{gameId}")]
+        public async Task<IActionResult> StartNewGame([FromRoute] Guid gameId)
         {
             try
             {
                 gameManager = new GameManager(options);
-                await gameManager.InsertAsync(game);
+                userManager = new UserManager(options);
+                Game game = await gameManager.LoadByIdAsync(gameId);
+                game.Users = await userManager.LoadByGameAsync(gameId);
                 List<GameState> gameState = await gameManager.StartNewGame(game);
                 await _hubContext.Clients.Group(game.Id.ToString()).SendAsync("GameStateUpdated", gameState);
                 return Ok(gameState);
@@ -66,28 +69,6 @@ namespace JD.BitBet.API.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
-
-        //[HttpPost("join/{gameId}/{UserId}")]
-        //public async Task<IActionResult> JoinGame([FromRoute] Guid gameId, [FromRoute] Guid userId)
-        //{
-        //    try
-        //    {
-        //        gameManager = new GameManager(options);
-
-        //        var game = await gameManager.JoinGame(gameId, userId);
-
-        //        // notify signalR
-
-        //        await _hubContext.Clients.Group(gameId.ToString()).SendAsync("user joined", new { UserId = userId });
-
-        //        return Ok(game);    
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-        //    }
-        //}
-
         [HttpPost("hit")]
         public async Task<IActionResult> HitPlayerHand(GameState state)
         {
@@ -103,12 +84,15 @@ namespace JD.BitBet.API.Controllers
             }
 
         }
-        [HttpPost("stand")]
-        public async Task<IActionResult> StandPlayerHand(GameState state)
+        [HttpPost("stand/{userId}")]
+        public async Task<IActionResult> StandPlayerHand([FromRoute] Guid UserId)
         {
             try
             {
+                gameStateManager = new GameStateManager(options);
                 gameManager = new GameManager(options);
+
+                GameState state = await gameStateManager.LoadByUserIdAsync(UserId);
                 GameState gameState = await gameManager.Stand(state);
                 return Ok(gameState);
             }

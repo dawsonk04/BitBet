@@ -267,20 +267,20 @@ namespace JD.BitBet.BL
 
         public async Task<GameState> Hit(GameState state)
         {
-            if (state.isGameOver || !state.isPlayerTurn)
-            {
-                state.message = "Invalid action. The game is over or it's not your turn.";
-                return state;
-            }
+                if (state.isGameOver || !state.isPlayerTurn)
+                {
+                    state.message = "Invalid action. The game is over or it's not your turn.";
+                    await gameStateManager.UpdateAsync(state);
+                    return state;
+                }
 
-            Card newCard = _deck.Deal();
-            newCard.Id = Guid.NewGuid();
-            newCard.HandId = state.playerHandId;
-            state.playerHand.Cards.Add(newCard);
+                Card newCard = _deck.Deal();
+                newCard.Id = Guid.NewGuid();
+                newCard.HandId = state.playerHandId;
+                state.playerHand.Cards.Add(newCard);
 
-            await cardManager.InsertAsync(newCard);
-            await gameStateManager.UpdateAsync(state);
-
+                await cardManager.InsertAsync(newCard);
+                await gameStateManager.UpdateAsync(state);
             return await populateGameState(state);
         }
         public async Task<GameState> Stand(GameState state)
@@ -288,25 +288,26 @@ namespace JD.BitBet.BL
             if (state.isGameOver || !state.isPlayerTurn)
             {
                 state.message = "Invalid action. The game is over or it's not your turn.";
+                await gameStateManager.UpdateAsync(state);
                 return state;
-            }
-
-            state.isPlayerTurn = false;
-            return await PerformDealerTurn(state);
+            } 
+            state.isGameOver = true;
+            await gameStateManager.UpdateAsync(state);
+            return state;
         }
 
         public async Task<GameState> PerformDealerTurn(GameState state)
         {
-            state.message = "Dealer's turn.";
+                state.message = "Dealer's turn.";
 
-            while (state.dealerHandVal < 17)
-            {
-                Card card = _deck.Deal();
-                state.dealerHand.Cards.Add(card);
-                card.HandId = state.dealerHandId;
-                await cardManager.InsertAsync(card);
-                state.dealerHandVal = CalculateHandValue(await cardManager.LoadByHandId(state.dealerHandId));
-            }
+                while (state.dealerHandVal < 17)
+                {
+                    Card card = _deck.Deal();
+                    state.dealerHand.Cards.Add(card);
+                    card.HandId = state.dealerHandId;
+                    await cardManager.InsertAsync(card);
+                    state.dealerHandVal = CalculateHandValue(await cardManager.LoadByHandId(state.dealerHandId));
+                }
             return await DetermineWinner(state);
         }
 
