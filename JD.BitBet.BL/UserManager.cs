@@ -192,6 +192,52 @@ namespace JD.BitBet.BL
         }
 
 
+        public async Task<int> UpdateGameId(User user, bool rollback = false)
+        {
+            try
+            {
+                int results = 0;
+
+                using (BitBetEntities dc = new BitBetEntities(options))
+                {
+                    // Check if username already exists - do not allow ....
+                    tblUser existingUser = dc.tblUser.Where(u => u.Email.Trim().ToUpper() == user.Email.Trim().ToUpper()).FirstOrDefault();
+
+                    if (existingUser != null && existingUser.Id != user.Id && rollback == false)
+                    {
+                        throw new Exception("This User Name already exists.");
+                    }
+                    else
+                    {
+                        IDbContextTransaction transaction = null;
+                        if (rollback) transaction = dc.Database.BeginTransaction();
+
+                        tblUser upDateRow = dc.tblUser.FirstOrDefault(r => r.Id == user.Id);
+
+                        if (upDateRow != null)
+                        {
+                            upDateRow.gameId = user.gameId;
+                            dc.tblUser.Update(upDateRow);
+
+                            results = dc.SaveChanges();
+
+                            if (rollback) transaction.Rollback();
+                        }
+                        else
+                        {
+                            throw new Exception("Row was not found.");
+                        }
+                    }
+                }
+                return results;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+
         public async Task<int> UpdateAsync(User user, bool rollback = false)
         {
             try

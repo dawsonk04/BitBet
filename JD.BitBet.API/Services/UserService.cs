@@ -35,11 +35,12 @@ public class UserService : IUserService
 
     public AuthenticateResponse Authenticate(AuthenticateRequest model)
     {
+        model.Password = UserManager.GetHash(model.Password);
         var user = new UserManager(dbOptions)
                         .LoadAsync()
                         .Result
                         .SingleOrDefault(x => x.Email == model.Email
-                                        && x.Password == UserManager.GetHash(model.Password));
+                                        && x.Password == model.Password);
 
         // return null if user not found
         if (user == null) return null;

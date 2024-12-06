@@ -46,7 +46,7 @@ namespace JD.BitBet.API.Controllers
                 User user = await userManager.LoadByIdAsync(UserId);
                 var game = await gameManager.LoadByIdAsync(gameId);
                 user.gameId = gameId;
-                await userManager.UpdateAsync(user);
+                await userManager.UpdateGameId(user);
                 game.Users = await userManager.LoadByGameAsync(game.Id);
                 if (game == null)
                 {
