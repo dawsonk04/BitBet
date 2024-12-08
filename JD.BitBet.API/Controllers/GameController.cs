@@ -27,7 +27,7 @@ namespace JD.BitBet.API.Controllers
             {
                 gameStateManager = new GameStateManager(options);
                 List<GameState> gameStates = await gameStateManager.LoadByGameIdAsync(gameId);
-                if(gameStates != null)
+                if (gameStates != null)
                 {
                     return Ok(gameStates);
                 }
@@ -97,6 +97,21 @@ namespace JD.BitBet.API.Controllers
                 gameManager = new GameManager(options);
                 GameState gameState = await gameManager.Hit(state);
                 return Ok(gameState);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+
+        }
+        [HttpPut("updategame/{gameId}")]
+        public async Task<IActionResult> UpdateCurrentGame([FromRoute] Guid gameId, [FromBody] Game game)
+        {
+            try
+            {
+                gameManager = new GameManager(options);
+                int rowAffected = await gameManager.UpdateAsync(game);
+                return Ok(rowAffected);
             }
             catch (Exception ex)
             {

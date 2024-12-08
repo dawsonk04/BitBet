@@ -247,9 +247,10 @@ namespace JD.BitBet.UI.Controllers
             if (gameStates.All(g => g.isGameOver))
             {
                 var currentGameJson = HttpContext.Session.GetString("CurrentGame");
-                var currentGame = JsonConvert.DeserializeObject<Game>(currentGameJson);
+                Game currentGame = JsonConvert.DeserializeObject<Game>(currentGameJson);
                 currentGame.isGameOver = true;
-                var response2 = _apiClient.Put<Game>(currentGame, "Game", currentGame.Id);
+                var content = new StringContent(JsonConvert.SerializeObject(currentGame), Encoding.UTF8, "application/json");
+                var response2 = await _apiClient.PutAsync($"Game/updateGame/{currentGame.Id}", content);
                 HttpContext.Session.SetString("CurrentGame", JsonConvert.SerializeObject(currentGame));
                 ViewBag.GameDetails = currentGame;
             }
