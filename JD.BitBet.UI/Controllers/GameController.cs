@@ -49,33 +49,6 @@ namespace JD.BitBet.UI.Controllers
                 return View();
             }
         }
-        //public async Task<IActionResult> JoinGame(Guid gameId)
-        //{
-        //    try
-        //    {
-        //        var userId = HttpContext.Session.GetString("UserId");
-        //        if (string.IsNullOrEmpty(userId))
-        //        {
-        //            return RedirectToAction("Login", "Account");
-        //        }
-        //        var response = await _apiClient.PostAsync($"Game/join/{gameId}/{userId}", null);
-
-        //        if (response.IsSuccessStatusCode)
-        //        {
-        //            HttpContext.Session.SetString("CurrentGameId", gameId.ToString());
-        //            return RedirectToAction("GameIndex", new { gameId });
-        //        }
-        //        else
-        //        {
-        //            ViewBag.Error = "Unable to join the game.";
-        //            return RedirectToAction("GameList", "Game");
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-        //    }
-        //}
         public async Task<IActionResult> JoinGame(Guid gameId)
         {
             try
@@ -85,6 +58,13 @@ namespace JD.BitBet.UI.Controllers
                 {
                     return RedirectToAction("Login", "Account");
                 }
+
+                ViewBag.UserId = userId;
+                var gameDetailsResponse = await _apiClient.GetAsync($"Game/{gameId}");
+                var gameDetails = await gameDetailsResponse.Content.ReadAsStringAsync();
+                var game = JsonConvert.DeserializeObject<Game>(gameDetails);
+                HttpContext.Session.SetString("CurrentGame", JsonConvert.SerializeObject(game));
+                ViewBag.GameDetails = game;
 
                 var loadStateResponse = await _apiClient.GetAsync($"Game/loadstate/{gameId}");
 
