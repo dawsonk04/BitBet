@@ -119,7 +119,7 @@ namespace JD.BitBet.UI.Controllers
                             }
                         }
 
-                        return View("GameList", gameStates);
+                        return View("GameIndex", gameStates);
                     }
                 }
                 else

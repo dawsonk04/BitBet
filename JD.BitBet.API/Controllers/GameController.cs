@@ -20,7 +20,7 @@ namespace JD.BitBet.API.Controllers
         {
             _hubContext = hubContext;
         }
-        [HttpPost("loadstate/{gameId}")]
+        [HttpGet("loadstate/{gameId}")]
         public async Task<IActionResult> LoadCurrentGame([FromRoute] Guid gameId)
         {
             try

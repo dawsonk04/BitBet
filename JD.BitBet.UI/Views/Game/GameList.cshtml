@@ -1,5 +1,8 @@
 ﻿@model List<JD.BitBet.BL.Models.Game>
-
+@if (ViewBag.Error != null)
+{
+    <p class="error-message">@ViewBag.Error</p>
+}
 <div class="row">
     @foreach (var game in Model)
     {
