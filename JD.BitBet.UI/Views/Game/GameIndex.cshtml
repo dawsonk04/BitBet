@@ -48,13 +48,37 @@ else if (Model != null && Model.Any())
                             </form>
                         }
                         @if(game.isGameOver){
-                            <!--Todo:Leave game button-->
-                            <!--Todo:Bet amount incrementer-->
-                            <!--Todo:Leave game button-->
                             <p class="game-over">Game over! Click below to start a new game:</p>
+
                             <form asp-action="Start" method="post" class="action-form">
                                 <button type="submit" class="action-button start-button">Start New Game</button>
                             </form>
+
+                            <!-- Leave Game Button -->
+                            <form asp-action="LeaveGame" method="post" class="action-form">
+                                <button type="submit" class="action-button leave-button">Leave Game</button>
+                            </form>
+
+                            <!-- Bet Amount Incrementer -->
+                            <div class="bet-amount">
+                                <label for="betAmount">Bet Amount: </label>
+                                <button type="button" class="bet-incrementer" onclick="adjustBet(1)">+1</button>
+                                <button type="button" class="bet-incrementer" onclick="adjustBet(5)">+5</button>
+                                <button type="button" class="bet-incrementer" onclick="adjustBet(10)">+10</button>
+                                <button type="button" class="bet-incrementer" onclick="adjustBet(50)">+50</button>
+                                <button type="button" class="bet-incrementer" onclick="adjustBet(100)">+100</button>
+
+                                <input type="number" id="betAmount" name="betAmount" value="0" min="0" step="1" readonly />
+                            </div>
+
+                            <script>
+                                let betAmount = 0;
+
+                                function adjustBet(amount) {
+                                    betAmount += amount;
+                                    document.getElementById("betAmount").value = betAmount;
+                                }
+                            </script>
                         }
                     }
                 </div>

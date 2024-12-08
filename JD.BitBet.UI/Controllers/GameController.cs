@@ -1,6 +1,8 @@
-﻿using Humanizer;
+﻿using Azure;
+using Humanizer;
 using JD.BitBet.BL.Models;
 using JD.Utility;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Serilog.Filters;
@@ -70,8 +72,11 @@ namespace JD.BitBet.UI.Controllers
 
                 if (loadStateResponse.IsSuccessStatusCode)
                 {
+
                     var responseData = await loadStateResponse.Content.ReadAsStringAsync();
                     var gameStates = JsonConvert.DeserializeObject<List<GameState>>(responseData);
+                    var userGameState = gameStates.FirstOrDefault(gs => gs.UserId.ToString() == userId);
+                    HttpContext.Session.SetString("GameState", JsonConvert.SerializeObject(userGameState));
 
                     if (gameStates == null || !gameStates.Any())
                     {
@@ -98,7 +103,6 @@ namespace JD.BitBet.UI.Controllers
                                 return RedirectToAction("GameList", "Game");
                             }
                         }
-
                         return View("GameIndex", gameStates);
                     }
                 }
@@ -122,7 +126,10 @@ namespace JD.BitBet.UI.Controllers
                 return RedirectToAction("Login", "User");
             }
             ViewBag.UserId = userId;
-            var gameId = HttpContext.Session.GetString("CurrentGameId");
+            var gameJson = HttpContext.Session.GetString("CurrentGame");
+            var game = JsonConvert.DeserializeObject<Game>(gameJson);
+            ViewBag.GameDetails = game;
+            var gameId = game.Id;
 
             var response = await _apiClient.PostAsync($"Game/start/{gameId}", null);
             var gameStateJson = await response.Content.ReadAsStringAsync();
@@ -225,7 +232,6 @@ namespace JD.BitBet.UI.Controllers
 
         public async Task<IActionResult> Stand()
         {
-            // Retrieve the list of game states from the session
             var gameStateJson = HttpContext.Session.GetString("GameState");
             if (string.IsNullOrEmpty(gameStateJson))
             {
@@ -240,24 +246,18 @@ namespace JD.BitBet.UI.Controllers
             {
                 return RedirectToAction("Login", "User");
             }
-
-            // Call the API to perform the 'stand' action
             var response = await _apiClient.PostAsync($"Game/stand/{userId}", null);
 
             if (response.IsSuccessStatusCode)
             {
-                // Deserialize the updated GameState from the API response
                 var updatedGameStateJson = await response.Content.ReadAsStringAsync();
                 var updatedGameState = JsonConvert.DeserializeObject<GameState>(updatedGameStateJson);
 
-                // Update the specific GameState in the list
                 var index = gameStates.FindIndex(gs => gs.UserId == updatedGameState.UserId);
                 if (index >= 0)
                 {
-                    gameStates[index] = updatedGameState; // Replace the matching state
+                    gameStates[index] = updatedGameState; 
                 }
-
-                // Save the updated list back to the session
                 HttpContext.Session.SetString("GameState", JsonConvert.SerializeObject(gameStates));
             }
             else

@@ -248,6 +248,7 @@ namespace JD.BitBet.BL
                 return state;
             } 
             state.isGameOver = true;
+            state.isPlayerTurn = false;
             await gameStateManager.UpdateAsync(state);
             return state;
         }

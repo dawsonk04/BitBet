@@ -137,19 +137,6 @@ namespace JD.BitBet.API.Controllers
             }
         }
 
-        [HttpGet("state")]
-        public IActionResult GetGameState()
-        {
-            try
-            {
-                return Ok();
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-            }
-        }
-
         // for inital screen loading the games onto the UI
         [HttpGet("getgames")]
         public async Task<IActionResult> GetGames()
