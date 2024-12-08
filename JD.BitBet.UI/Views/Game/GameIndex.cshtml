@@ -9,87 +9,18 @@
 {
     <p class="error-message">@ViewBag.Error</p>
 }
-else if (Model != null)
-{
-    <div class="game-container">
-        <h2 class="game-status">Current Game Status: @Model.message</h2>
-
-        <div class="game-section">
-            <h3 class="section-title">Dealer's Hand</h3>
-            <p class="score"><strong>Dealer's Score:</strong> @Model.dealerHandVal</p>
-        </div>
-
-        <div class="game-section">
-            <h3 class="section-title">Your Hand</h3>
-            <p class="score"><strong>Your Score:</strong> @Model.playerHandVal</p>
-        </div>
-
-        <div class="action-buttons">
-            @if (Model.isPlayerTurn == true)
-            {
-                <form asp-action="Hit" method="post" class="action-form">
-                    <button type="submit" class="action-button hit-button">Hit</button>
-                </form>
-
-                <form asp-action="Stand" method="post" class="action-form">
-                    <button type="submit" class="action-button stand-button">Stand</button>
-                </form>
-                <form asp-action="Double" method="post" class="action-form">
-                    <button type="submit" class="action-button stand-button">Double</button>
-                </form>
-            }
-            else
-            {
-                <p class="game-over">Game over! Click below to start a new game:</p>
-                <form asp-action="Start" method="post" class="action-form">
-                    <button type="submit" class="action-button start-button">Start New Game</button>
-                </form>
-            }
-            @if (Model.isGameOver)
-            {
-                <div class="game-container">
-                    <p class="welcome-message">Welcome to Blackjack! Click below to start a new game:</p>
-                    <form asp-action="Start" method="post" class="action-form">
-                        <button type="submit" class="action-button start-button">Start Game</button>
-                    </form>
-                </div>
-            }
-        </div>
-    </div>
-}
-else
-{
-    <div class="game-container">
-        <p class="welcome-message">Welcome to Blackjack! Click below to start a new game:</p>
-        <form asp-action="Start" method="post" class="action-form">
-            <button type="submit" class="action-button start-button">Start Game</button>
-        </form>
-    </div>
-} *@
-
-
-@model List<JD.BitBet.BL.Models.GameState>
-@{
-    ViewBag.Title = "Blackjack Game";
-}
-
-<h1 class="game-title">Blackjack Game</h1>
-
-@if (ViewBag.Error != null)
-{
-    <p class="error-message">@ViewBag.Error</p>
-}
 else if (Model != null && Model.Any())
 {
+
+    <div class="game-section">
+        <h3 class="section-title">Dealer's Hand</h3>
+        <p class="score"><strong>Dealer's Score:</strong> @Model[0].dealerHandVal</p>
+    </div>
+
     @foreach (var gameState in Model)
     {
         <div class="game-container">
             <h2 class="game-status">Current Game Status: @gameState.message</h2>
-
-            <div class="game-section">
-                <h3 class="section-title">Dealer's Hand</h3>
-                <p class="score"><strong>Dealer's Score:</strong> @gameState.dealerHandVal</p>
-            </div>
 
             <div class="game-section">
                 <h3 class="section-title">Your Hand</h3>
@@ -119,6 +50,76 @@ else if (Model != null && Model.Any())
                     </form>
                 }
             </div>
+        </div>
+    }
+}
+else
+{
+    <div class="game-container">
+        <p class="welcome-message">Welcome to Blackjack! Click below to start a new game:</p>
+        <form asp-action="Start" method="post" class="action-form">
+            <button type="submit" class="action-button start-button">Start Game</button>
+        </form>
+    </div>
+} *@
+@model List<JD.BitBet.BL.Models.GameState>
+@{
+    ViewBag.Title = "Blackjack Game";
+    var loggedInUserId = ViewBag.UserId as string;
+}
+
+<h1 class="game-title">Blackjack Game</h1>
+
+@if (ViewBag.Error != null)
+{
+    <p class="error-message">@ViewBag.Error</p>
+}
+else if (Model != null && Model.Any())
+{
+    <div class="game-section">
+        <h3 class="section-title">Dealer's Hand</h3>
+        <!-- Display only one dealerHandVal -->
+        <p class="score"><strong>Dealer's Score:</strong> @Model[0].dealerHandVal</p>
+    </div>
+
+    @foreach (var gameState in Model)
+    {
+        <!-- Only display content for the logged-in user -->
+            <div class="game-container">
+                <h2 class="game-status">Current Game Status: @gameState.message</h2>
+
+                <div class="game-section">
+                    <h3 class="section-title">Your Hand</h3>
+                    <p class="score"><strong>Your Score:</strong> @gameState.playerHandVal</p>
+                </div>
+                <div class="action-buttons">
+                    @if (gameState.UserId.ToString() == loggedInUserId)
+                    {
+                        @if(gameState.isPlayerTurn)
+                        {
+                            <form asp-action="Hit" method="post" class="action-form">
+                                <button type="submit" class="action-button hit-button">Hit</button>
+                            </form>
+
+                            <form asp-action="Stand" method="post" class="action-form">
+                                <button type="submit" class="action-button stand-button">Stand</button>
+                            </form>
+
+                            <form asp-action="Double" method="post" class="action-form">
+                                <button type="submit" class="action-button double-button">Double</button>
+                            </form>
+                        }
+                        else{
+                            <!--Todo:Leave game button-->
+                            <!--Todo:Bet amount incrementer-->
+                            <!--Todo:Leave game button-->
+                            <p class="game-over">Game over! Click below to start a new game:</p>
+                            <form asp-action="Start" method="post" class="action-form">
+                                <button type="submit" class="action-button start-button">Start New Game</button>
+                            </form>
+                        }
+                    }
+                </div>
         </div>
     }
 }

@@ -20,7 +20,27 @@ namespace JD.BitBet.API.Controllers
         {
             _hubContext = hubContext;
         }
-
+        [HttpPost("loadstate/{gameId}")]
+        public async Task<IActionResult> LoadCurrentGame([FromRoute] Guid gameId)
+        {
+            try
+            {
+                gameStateManager = new GameStateManager(options);
+                List<GameState> gameStates = await gameStateManager.LoadByGameIdAsync(gameId);
+                if(gameStates != null)
+                {
+                    return Ok(gameStates);
+                }
+                else
+                {
+                    return Ok();
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
         [HttpPost("start/{gameId}")]
         public async Task<IActionResult> StartNewGame([FromRoute] Guid gameId)
         {

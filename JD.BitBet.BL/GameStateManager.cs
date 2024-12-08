@@ -70,6 +70,21 @@ namespace JD.BitBet.BL
                 throw;
             }
         }
+        public async Task<List<GameState>> LoadByGameIdAsync(Guid gameId)
+        {
+            try
+            {
+                List<tblGameState> rows = await base.LoadAsync(e => e.GameId == gameId);
+                List<GameState> gameStates = rows.Select(row => Map<tblGameState, GameState>(row)).ToList();
+
+                return gameStates;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
         public async Task<GameState> LoadByUserIdAsync(Guid userId)
         {
             try
