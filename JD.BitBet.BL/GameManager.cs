@@ -1,4 +1,5 @@
 ﻿using JD.BitBet.BL.Models;
+using Mono.TextTemplating;
 using System.Diagnostics.Metrics;
 using static JD.BitBet.PL.Entities.tblCard;
 
@@ -257,8 +258,10 @@ namespace JD.BitBet.BL
             return state;
         }
 
-        public async Task<GameState> PerformDealerTurn(GameState state)
+        public async Task<List<GameState>> PerformDealerTurn(List<GameState> states)
         {
+            foreach(GameState state in states)
+            {
                 state.message = "Dealer's turn.";
 
                 while (state.dealerHandVal < 17)
@@ -269,39 +272,40 @@ namespace JD.BitBet.BL
                     await cardManager.InsertAsync(card);
                     state.dealerHandVal = CalculateHandValue(await cardManager.LoadByHandId(state.dealerHandId));
                 }
-            return await DetermineWinner(state);
+            }
+            return await DetermineWinner(states);
         }
 
-        public async Task<GameState> DetermineWinner(GameState state)
+        public async Task<List<GameState>> DetermineWinner(List<GameState> states)
         {
-            if (state.dealerHandVal > 21)
+            foreach(GameState state in states)
             {
-                state.isGameOver = true;
-                state.message = "Dealer busts! Player wins.";
-                await gameStateManager.UpdateAsync(state);
-                return state;
+                if (state.dealerHandVal > 21)
+                {
+                    state.isGameOver = true;
+                    state.message = "Dealer busts! Player wins.";
+                    await gameStateManager.UpdateAsync(state);
+                }
+                if (state.playerHandVal > state.dealerHandVal)
+                {
+                    state.isGameOver = true;
+                    state.message = "Player wins!";
+                    await gameStateManager.UpdateAsync(state);
+                }
+                else if (state.playerHandVal < state.dealerHandVal)
+                {
+                    state.isGameOver = true;
+                    state.message = "Dealer wins!";
+                    await gameStateManager.UpdateAsync(state);
+                }
+                else
+                {
+                    state.isGameOver = true;
+                    state.message = "Push! It's a tie.";
+                    await gameStateManager.UpdateAsync(state);
+                }
             }
-            if (state.playerHandVal > state.dealerHandVal)
-            {
-                state.isGameOver = true;
-                state.message = "Player wins!";
-                await gameStateManager.UpdateAsync(state);
-                return state;
-            }
-            else if (state.playerHandVal < state.dealerHandVal)
-            {
-                state.isGameOver = true;
-                state.message = "Dealer wins!";
-                await gameStateManager.UpdateAsync(state);
-                return state;
-            }
-            else
-            {
-                state.isGameOver = true;
-                state.message = "Push! It's a tie.";
-                await gameStateManager.UpdateAsync(state);
-                return state;
-            }
+            return states;
         }
 
         public async Task<GameState> Double(GameState state)

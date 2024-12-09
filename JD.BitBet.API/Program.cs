@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Serilog;
 using Serilog.Ui.MsSqlServerProvider;
 using Serilog.Ui.Web;
+using System.Text.Json;
 using WebApi;
 using WebApi.Services;
 
@@ -76,7 +77,7 @@ public class Program
             .AddLogging(c => c.AddSerilog())
             .AddLogging(c => c.AddEventLog())
             .AddLogging(c => c.AddConsole());
-
+        builder.Services.AddControllers();
 
         var app = builder.Build();
 

@@ -154,7 +154,26 @@ namespace JD.BitBet.API.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
-
+        [HttpPost("dealerTurn")]
+        public async Task<IActionResult> PlayDealerTurn([FromBody] List<GameState> states)
+        {
+            try
+            {
+                if(states.Any(e => e.dealerHandVal == e.dealerHandVal))
+                {
+                    var gameStates = await gameManager.PerformDealerTurn(states);
+                    return Ok(gameStates);
+                }
+                else 
+                {
+                    return Ok();
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
         // for inital screen loading the games onto the UI
         [HttpGet("getgames")]
         public async Task<IActionResult> GetGames()

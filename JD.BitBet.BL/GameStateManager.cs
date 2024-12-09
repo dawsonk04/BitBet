@@ -89,7 +89,7 @@ namespace JD.BitBet.BL
         {
             try
             {
-                List<tblGameState> row = await base.LoadAsync(e => e.UserId == userId);
+                List<tblGameState> row = await base.LoadAsync(e => e.UserId == userId && !e.isGameOver);
                 if (row[0] != null)
                     return Map<tblGameState, GameState>(row[0]);
                 else

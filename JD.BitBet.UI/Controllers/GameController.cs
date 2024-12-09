@@ -65,8 +65,8 @@ namespace JD.BitBet.UI.Controllers
                 ViewBag.UserId = userId;
                 var gameDetailsResponse = await _apiClient.GetAsync($"Game/{gameId}");
                 var gameDetails = await gameDetailsResponse.Content.ReadAsStringAsync();
+                HttpContext.Session.SetString("CurrentGame", gameDetails);
                 var game = JsonConvert.DeserializeObject<Game>(gameDetails);
-                HttpContext.Session.SetString("CurrentGame", JsonConvert.SerializeObject(game));
                 ViewBag.GameDetails = game;
 
                 var loadStateResponse = await _apiClient.GetAsync($"Game/loadstate/{gameId}");
@@ -75,37 +75,24 @@ namespace JD.BitBet.UI.Controllers
                 {
 
                     var responseData = await loadStateResponse.Content.ReadAsStringAsync();
-                    var gameStates = JsonConvert.DeserializeObject<List<GameState>>(responseData);
-                    HttpContext.Session.SetString("GameStates", JsonConvert.SerializeObject(gameStates));
-                    var userGameState = gameStates.FirstOrDefault(gs => gs.UserId.ToString() == userId);
+                    var allGameStates = JsonConvert.DeserializeObject<List<GameState>>(responseData);
+
+                    var activeGameStates = allGameStates.Where(g => !g.isGameOver).ToList();
+                    HttpContext.Session.SetString("GameStates", JsonConvert.SerializeObject(activeGameStates));
+
+                    var userGameState = activeGameStates.FirstOrDefault(gs => gs.UserId.ToString() == userId);
                     HttpContext.Session.SetString("GameState", JsonConvert.SerializeObject(userGameState));
 
-                    if (gameStates == null || !gameStates.Any())
+                    var joinResponse = await _apiClient.PostAsync($"Game/join/{gameId}/{userId}", null);
+                    if (joinResponse.IsSuccessStatusCode)
                     {
-                        var joinResponse = await _apiClient.PostAsync($"Game/join/{gameId}/{userId}", null);
-                        if (joinResponse.IsSuccessStatusCode)
-                        {
-                            ViewBag.Message = "You have successfully joined the game!";
-                            return View("GameIndex", gameStates);
-                        }
-                        else
-                        {
-                            ViewBag.Error = "Unable to join the game.";
-                            return RedirectToAction("GameList", "Game");
-                        }
+                        ViewBag.Message = "You have successfully joined the game!";
+                        return View("GameIndex", activeGameStates);
                     }
                     else
                     {
-                        if (!gameStates.Any(gs => gs.UserId.ToString() == userId))
-                        {
-                            var joinResponse = await _apiClient.PostAsync($"Game/join/{gameId}/{userId}", null);
-                            if (!joinResponse.IsSuccessStatusCode)
-                            {
-                                ViewBag.Error = "Unable to join the game.";
-                                return RedirectToAction("GameList", "Game");
-                            }
-                        }
-                        return View("GameIndex", gameStates);
+                        ViewBag.Error = "Unable to join the game.";
+                        return RedirectToAction("GameList", "Game");
                     }
                 }
                 else
@@ -122,7 +109,6 @@ namespace JD.BitBet.UI.Controllers
         public async Task<IActionResult> Start()
         {
             var userId = HttpContext.Session.GetString("UserId");
-
             if (string.IsNullOrEmpty(userId))
             {
                 return RedirectToAction("Login", "User");
@@ -218,16 +204,13 @@ namespace JD.BitBet.UI.Controllers
             {
                 return RedirectToAction("GameIndex");
             }
-
             var gameStates = JsonConvert.DeserializeObject<List<GameState>>(gameStateJson);
-
             var userId = HttpContext.Session.GetString("UserId");
 
             if (string.IsNullOrEmpty(userId))
             {
                 return RedirectToAction("Login", "User");
             }
-
             ViewBag.UserId = userId;
             var response = await _apiClient.PostAsync($"Game/stand/{userId}", null);
 
@@ -235,21 +218,62 @@ namespace JD.BitBet.UI.Controllers
             {
                 var updatedGameStateJson = await response.Content.ReadAsStringAsync();
                 var updatedGameState = JsonConvert.DeserializeObject<GameState>(updatedGameStateJson);
-
                 var index = gameStates.FindIndex(gs => gs.UserId == updatedGameState.UserId);
                 if (index >= 0)
                 {
                     gameStates[index] = updatedGameState;
                 }
+
                 HttpContext.Session.SetString("GameStates", JsonConvert.SerializeObject(gameStates));
             }
             else
             {
                 ViewBag.Error = "Failed to perform stand action.";
             }
+            if(gameStates.All(e => e.isGameOver == true))
+            {
+                await PerformDealerTurn();
+            }
             await checkGameStatus();
             return View("GameIndex", gameStates);
         }
+        public async Task PerformDealerTurn()
+        {
+            var gameStates = HttpContext.Session.GetString("GameStates");
+            var gameStateJson = JsonConvert.SerializeObject(gameStates);
+            var content = new StringContent(gameStateJson, Encoding.UTF8, "application/json");
+            var response = await _apiClient.PostAsync($"Game/dealerTurn", content);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var updatedGameStateJson = await response.Content.ReadAsStringAsync();
+                var updatedGameState = JsonConvert.DeserializeObject<GameState>(updatedGameStateJson);
+
+                HttpContext.Session.SetString("GameStates", JsonConvert.SerializeObject(gameStates));
+            }
+            else
+            {
+                ViewBag.Error = "Failed to perform dealer's turn.";
+            }
+        }
+        //public async Task checkGameStatus()
+        //{
+        //    var gameStateJson = HttpContext.Session.GetString("GameStates");
+        //    if (string.IsNullOrEmpty(gameStateJson))
+        //    {
+        //        return;
+        //    }
+
+        //    var gameStates = JsonConvert.DeserializeObject<List<GameState>>(gameStateJson);
+        //    var currentGameJson = HttpContext.Session.GetString("CurrentGame");
+        //    Game currentGame = JsonConvert.DeserializeObject<Game>(currentGameJson);
+        //    if (gameStates.All(g => g.isGameOver))
+        //    {
+        //        currentGame.isGameOver = true;
+        //        HttpContext.Session.SetString("CurrentGame", JsonConvert.SerializeObject(currentGame));
+        //    }
+        //    ViewBag.GameDetails = currentGame;
+        //}
         public async Task checkGameStatus()
         {
             var gameStateJson = HttpContext.Session.GetString("GameStates");
@@ -259,9 +283,13 @@ namespace JD.BitBet.UI.Controllers
             }
 
             var gameStates = JsonConvert.DeserializeObject<List<GameState>>(gameStateJson);
+            var activeGames = gameStates.Where(g => !g.isGameOver).ToList();
+            HttpContext.Session.SetString("GameStates", JsonConvert.SerializeObject(activeGames));
+
             var currentGameJson = HttpContext.Session.GetString("CurrentGame");
             Game currentGame = JsonConvert.DeserializeObject<Game>(currentGameJson);
-            if (gameStates.All(g => g.isGameOver))
+
+            if (activeGames.Any())
             {
                 currentGame.isGameOver = true;
                 HttpContext.Session.SetString("CurrentGame", JsonConvert.SerializeObject(currentGame));
