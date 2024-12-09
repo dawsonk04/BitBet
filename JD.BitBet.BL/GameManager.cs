@@ -223,20 +223,24 @@ namespace JD.BitBet.BL
 
         public async Task<GameState> Hit(GameState state)
         {
-                if (state.isGameOver || !state.isPlayerTurn)
-                {
-                    state.message = "Invalid action. The game is over or it's not your turn.";
-                    await gameStateManager.UpdateAsync(state);
-                    return state;
-                }
+            _deck = new Deck();
 
-                Card newCard = _deck.Deal();
-                newCard.Id = Guid.NewGuid();
-                newCard.HandId = state.playerHandId;
-                state.playerHand.Cards.Add(newCard);
-
-                await cardManager.InsertAsync(newCard);
+            if (state.isGameOver || !state.isPlayerTurn)
+            {
+                state.message = "Invalid action. The game is over or it's not your turn.";
                 await gameStateManager.UpdateAsync(state);
+                return state;
+            }
+
+            Card newCard = new Card();
+            newCard = _deck.Deal();
+            newCard.Id = Guid.NewGuid();
+            newCard.HandId = state.playerHandId;
+            state.playerHand = await handManager.LoadByIdAsync(state.playerHandId);
+            state.playerHand.Cards = await cardManager.LoadByHandId(state.playerHandId);
+            state.playerHand.Cards.Add(newCard);
+            await cardManager.InsertAsync(newCard);
+            await gameStateManager.UpdateAsync(state);
             return await populateGameState(state);
         }
         public async Task<GameState> Stand(GameState state)

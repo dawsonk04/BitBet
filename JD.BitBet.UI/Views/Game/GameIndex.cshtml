@@ -8,6 +8,11 @@
 
 <h1 class="game-title">Blackjack Game</h1>
 
+@if(ViewBag.GameDetails == null)
+{
+    <p class="error-message">Game details null</p>
+
+}
 @if (ViewBag.Error != null)
 {
     <p class="error-message">@ViewBag.Error</p>

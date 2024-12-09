@@ -89,12 +89,14 @@ namespace JD.BitBet.API.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
-        [HttpPost("hit")]
-        public async Task<IActionResult> HitPlayerHand(GameState state)
+        [HttpPost("hit/{UserId}")]
+        public async Task<IActionResult> HitPlayerHand([FromRoute] Guid userId)
         {
             try
             {
+                gameStateManager = new GameStateManager(options);
                 gameManager = new GameManager(options);
+                GameState state = await gameStateManager.LoadByUserIdAsync(userId);
                 GameState gameState = await gameManager.Hit(state);
                 return Ok(gameState);
             }
@@ -104,21 +106,23 @@ namespace JD.BitBet.API.Controllers
             }
 
         }
-        [HttpPut("updategame/{gameId}")]
-        public async Task<IActionResult> UpdateCurrentGame([FromRoute] Guid gameId, [FromBody] Game game)
-        {
-            try
-            {
-                gameManager = new GameManager(options);
-                int rowAffected = await gameManager.UpdateAsync(game);
-                return Ok(rowAffected);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-            }
+        //[HttpPut("updategame/{gameId}/{IsGameOver}")]
+        //public async Task<IActionResult> UpdateCurrentGame([FromRoute] Guid gameId, [FromRoute] bool isGameOver)
+        //{
+        //    try
+        //    {
+        //        gameManager = new GameManager(options);
+        //        Game game = await gameManager.LoadByIdAsync(gameId);
+        //        game.isGameOver = isGameOver;
+        //        int rowAffected = await gameManager.UpdateAsync(game);
+        //        return Ok(rowAffected);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+        //    }
 
-        }
+        //}
         [HttpPost("stand/{userId}")]
         public async Task<IActionResult> StandPlayerHand([FromRoute] Guid UserId)
         {
@@ -126,7 +130,6 @@ namespace JD.BitBet.API.Controllers
             {
                 gameStateManager = new GameStateManager(options);
                 gameManager = new GameManager(options);
-
                 GameState state = await gameStateManager.LoadByUserIdAsync(UserId);
                 GameState gameState = await gameManager.Stand(state);
                 return Ok(gameState);
@@ -137,7 +140,7 @@ namespace JD.BitBet.API.Controllers
             }
         }
 
-        [HttpPost("double")]
+        [HttpPost("double/{UserId}")]
         public async Task<IActionResult> DoublePlayerHand(GameState state)
         {
             try
