@@ -85,7 +85,9 @@ namespace JD.BitBet.BL
             gameStateManager = new GameStateManager(options);
             handManager = new HandManager(options);
             cardManager = new CardManager(options);
+
             _deck = new Deck();
+            _deck.Shuffle();
             GameState State = new GameState();
 
             Hand dealerHand = new Hand
@@ -95,8 +97,8 @@ namespace JD.BitBet.BL
                 Result = 0,
                 Cards = new List<Card>()
             };
+
             Card dealerCard = new Card();
-            _deck.Shuffle();
             dealerCard = _deck.Deal();
             dealerCard.HandId = dealerHand.Id;
             State.dealerHandId = dealerHand.Id;
@@ -112,7 +114,7 @@ namespace JD.BitBet.BL
                 State.GameId = game.Id;
                 State.UserId = user.Id;
                 State.Id = Guid.NewGuid();
-                // Create Player and Dealer Hands
+
                 Hand playerHand = new Hand
                 {
                     Id = Guid.NewGuid(),
@@ -120,27 +122,23 @@ namespace JD.BitBet.BL
                     Result = 0,
                     Cards = new List<Card>()
                 };
-                // Assign to State
+
                 State.playerHand = playerHand;
                 State.playerHandId = playerHand.Id;
                 State.isGameOver = false;
                 State.isPlayerTurn = true;
 
-                // Deal Cards
                 Card playerCard1 = _deck.Deal();
                 Card playerCard2 = _deck.Deal();
 
-                // Assign Hand IDs
                 playerCard1.HandId = playerHand.Id;
                 playerCard2.HandId = playerHand.Id;
 
-                // Add Cards to State
                 State.playerHand.Cards.Add(playerCard1);
                 State.playerHand.Cards.Add(playerCard2);
 
-                // Calculate Hand Values
                 State.playerHandVal = CalculateHandValue(State.playerHand.Cards);
-                // Check for Blackjack
+
                 if (State.playerHandVal == 21)
                 {
                     State.message = "Blackjack! Player wins.";
