@@ -154,6 +154,7 @@ namespace JD.BitBet.BL
                 await gameStateManager.InsertAsync(State);
                 states.Add(await populateGameState(State));
             }
+
             return states;
         }
 
@@ -198,19 +199,23 @@ namespace JD.BitBet.BL
             dbGamestate.playerHand.Cards = await cardManager.LoadByHandId(state.playerHandId);
             dbGamestate.dealerHand.Cards = await cardManager.LoadByHandId(state.dealerHandId);
             dbGamestate.playerHandVal = CalculateHandValue(await cardManager.LoadByHandId(state.playerHandId));
+            await gameStateManager.UpdateAsync(dbGamestate);
 
             if (dbGamestate.playerHandVal > 21)
             {
                 dbGamestate.isGameOver = true;
                 dbGamestate.message = "Player busts! Dealer wins.";
+                await gameStateManager.UpdateAsync(dbGamestate);
             }
             else if (dbGamestate.playerHandVal == 21)
             {
                 dbGamestate.message = "Player hits 21!";
+                await gameStateManager.UpdateAsync(dbGamestate);
             }
             else
             {
                 dbGamestate.message = "Player hits.";
+                await gameStateManager.UpdateAsync(dbGamestate);
             }
             return dbGamestate;
         }
@@ -230,6 +235,7 @@ namespace JD.BitBet.BL
             }
 
             Card newCard = new Card();
+            _deck.Shuffle();
             newCard = _deck.Deal();
             newCard.Id = Guid.NewGuid();
             newCard.HandId = state.playerHandId;
@@ -237,7 +243,6 @@ namespace JD.BitBet.BL
             state.playerHand.Cards = await cardManager.LoadByHandId(state.playerHandId);
             state.playerHand.Cards.Add(newCard);
             await cardManager.InsertAsync(newCard);
-            await gameStateManager.UpdateAsync(state);
             return await populateGameState(state);
         }
         public async Task<GameState> Stand(GameState state)
@@ -252,7 +257,7 @@ namespace JD.BitBet.BL
             state.isPlayerTurn = false;
             await gameStateManager.UpdateAsync(state);
 
-            return state;
+            return await populateGameState(state);
         }
 
         public async Task<List<GameState>> PerformDealerTurn(List<GameState> states)

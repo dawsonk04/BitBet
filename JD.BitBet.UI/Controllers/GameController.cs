@@ -1,14 +1,8 @@
-﻿using Azure;
-using DocumentFormat.OpenXml.Spreadsheet;
-using Humanizer;
-using JD.BitBet.BL.Models;
+﻿using JD.BitBet.BL.Models;
 using JD.Utility;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using Serilog.Filters;
 using System.Text;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace JD.BitBet.UI.Controllers
 {
@@ -126,10 +120,12 @@ namespace JD.BitBet.UI.Controllers
             {
                 currentGame.isGameOver = false;
                 HttpContext.Session.SetString("CurrentGame", JsonConvert.SerializeObject(currentGame));
+                ViewBag.GameDetails = currentGame;
             }
 
             var response = await _apiClient.PostAsync($"Game/start/{gameId}", null);
             var gameStateJson = await response.Content.ReadAsStringAsync();
+
 
             if (response.IsSuccessStatusCode)
             {
@@ -240,7 +236,7 @@ namespace JD.BitBet.UI.Controllers
             {
                 ViewBag.Error = "Failed to perform stand action.";
             }
-            if(gameStates.All(e => e.isGameOver == true))
+            if (gameStates.All(e => e.isGameOver == true))
             {
                 await PerformDealerTurn();
                 var gameStatescontent = HttpContext.Session.GetString("GameStates");
@@ -268,24 +264,6 @@ namespace JD.BitBet.UI.Controllers
                 ViewBag.Error = "Failed to perform dealer's turn.";
             }
         }
-        //public async Task checkGameStatus()
-        //{
-        //    var gameStateJson = HttpContext.Session.GetString("GameStates");
-        //    if (string.IsNullOrEmpty(gameStateJson))
-        //    {
-        //        return;
-        //    }
-
-        //    var gameStates = JsonConvert.DeserializeObject<List<GameState>>(gameStateJson);
-        //    var currentGameJson = HttpContext.Session.GetString("CurrentGame");
-        //    Game currentGame = JsonConvert.DeserializeObject<Game>(currentGameJson);
-        //    if (gameStates.All(g => g.isGameOver))
-        //    {
-        //        currentGame.isGameOver = true;
-        //        HttpContext.Session.SetString("CurrentGame", JsonConvert.SerializeObject(currentGame));
-        //    }
-        //    ViewBag.GameDetails = currentGame;
-        //}
         public async Task checkGameStatus()
         {
             var gameStateJson = HttpContext.Session.GetString("GameStates");
