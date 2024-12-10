@@ -242,8 +242,6 @@ namespace JD.BitBet.BL
         }
         public async Task<GameState> Stand(GameState state)
         {
-            state = await gameStateManager.LoadByIdAsync(state.Id);
-
             if (state.isGameOver || !state.isPlayerTurn)
             {
                 state.message = "Invalid action. The game is over or it's not your turn.";
@@ -254,7 +252,7 @@ namespace JD.BitBet.BL
             state.isPlayerTurn = false;
             await gameStateManager.UpdateAsync(state);
 
-            return await populateGameState(state);
+            return state;
         }
 
         public async Task<List<GameState>> PerformDealerTurn(List<GameState> states)

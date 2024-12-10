@@ -117,8 +117,6 @@ namespace JD.BitBet.API.Controllers
                 GameState state = await gameStateManager.LoadByUserIdAsync(UserId);
                 GameState gameState = await gameManager.Stand(state);
 
-                gameState = await gameManager.populateGameState(gameState);
-
                 return Ok(gameState);
             }
             catch (Exception ex)
