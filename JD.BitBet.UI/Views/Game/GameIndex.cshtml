@@ -38,7 +38,7 @@ else if (Model != null && Model.Any())
                 <div class="action-buttons">
                     @if (gameState.UserId.ToString() == loggedInUserId)
                     {
-                        @if(gameState.isGameOver)
+                        @if(!gameState.isGameOver)
                         {
                             <form asp-action="Hit" method="post" class="action-form">
                                 <button type="submit" class="action-button hit-button">Hit</button>
