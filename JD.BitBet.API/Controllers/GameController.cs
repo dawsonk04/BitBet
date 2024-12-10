@@ -106,23 +106,7 @@ namespace JD.BitBet.API.Controllers
             }
 
         }
-        //[HttpPut("updategame/{gameId}/{IsGameOver}")]
-        //public async Task<IActionResult> UpdateCurrentGame([FromRoute] Guid gameId, [FromRoute] bool isGameOver)
-        //{
-        //    try
-        //    {
-        //        gameManager = new GameManager(options);
-        //        Game game = await gameManager.LoadByIdAsync(gameId);
-        //        game.isGameOver = isGameOver;
-        //        int rowAffected = await gameManager.UpdateAsync(game);
-        //        return Ok(rowAffected);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-        //    }
 
-        //}
         [HttpPost("stand/{userId}")]
         public async Task<IActionResult> StandPlayerHand([FromRoute] Guid UserId)
         {
@@ -132,6 +116,9 @@ namespace JD.BitBet.API.Controllers
                 gameManager = new GameManager(options);
                 GameState state = await gameStateManager.LoadByUserIdAsync(UserId);
                 GameState gameState = await gameManager.Stand(state);
+
+                gameState = await gameManager.populateGameState(gameState);
+
                 return Ok(gameState);
             }
             catch (Exception ex)
@@ -155,19 +142,19 @@ namespace JD.BitBet.API.Controllers
             }
         }
         [HttpPost("dealerTurn/{handId}")]
-        public async Task<IActionResult> PlayDealerTurn([FromRoute] Guid handId) 
+        public async Task<IActionResult> PlayDealerTurn([FromRoute] Guid handId)
         {
             try
             {
                 gameManager = new GameManager(options);
                 gameStateManager = new GameStateManager(options);
                 var states = await gameStateManager.LoadByDealerHandIdAsync(handId);
-                if(states.Any(e => e.dealerHandVal == e.dealerHandVal))
+                if (states.Any(e => e.dealerHandVal == e.dealerHandVal))
                 {
                     var gameStates = await gameManager.PerformDealerTurn(states);
                     return Ok(gameStates);
                 }
-                else 
+                else
                 {
                     return Ok();
                 }
@@ -177,7 +164,6 @@ namespace JD.BitBet.API.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
-        // for inital screen loading the games onto the UI
         [HttpGet("getgames")]
         public async Task<IActionResult> GetGames()
         {
@@ -189,7 +175,7 @@ namespace JD.BitBet.API.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);                
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
 

@@ -1,6 +1,4 @@
 ﻿using JD.BitBet.BL.Models;
-using Mono.TextTemplating;
-using System.Diagnostics.Metrics;
 using static JD.BitBet.PL.Entities.tblCard;
 
 namespace JD.BitBet.BL
@@ -99,7 +97,7 @@ namespace JD.BitBet.BL
             };
             Card dealerCard = new Card();
             _deck.Shuffle();
-            dealerCard = _deck.Deal();          
+            dealerCard = _deck.Deal();
             dealerCard.HandId = dealerHand.Id;
             State.dealerHandId = dealerHand.Id;
             State.dealerHand = dealerHand;
@@ -246,16 +244,19 @@ namespace JD.BitBet.BL
         }
         public async Task<GameState> Stand(GameState state)
         {
+            state = await gameStateManager.LoadByIdAsync(state.Id);
+
             if (state.isGameOver || !state.isPlayerTurn)
             {
                 state.message = "Invalid action. The game is over or it's not your turn.";
                 await gameStateManager.UpdateAsync(state);
                 return state;
-            } 
+            }
             state.isGameOver = true;
             state.isPlayerTurn = false;
             await gameStateManager.UpdateAsync(state);
-            return state;
+
+            return await populateGameState(state);
         }
 
         public async Task<List<GameState>> PerformDealerTurn(List<GameState> states)
@@ -280,7 +281,7 @@ namespace JD.BitBet.BL
 
         public async Task<List<GameState>> DetermineWinner(List<GameState> states)
         {
-            foreach(GameState state in states)
+            foreach (GameState state in states)
             {
                 if (state.dealerHandVal > 21)
                 {
