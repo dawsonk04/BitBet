@@ -16,6 +16,7 @@ namespace JD.BitBet.BL
         private const string NOTFOUND_message = "Row does not exist";
         public GameManager(ILogger logger, DbContextOptions<BitBetEntities> options) : base(options, logger)
         {
+            _deck = new Deck();
             gameStateManager = new GameStateManager(logger, options);
             handManager = new HandManager(logger, options);
             cardManager = new CardManager(logger, options);
@@ -224,7 +225,6 @@ namespace JD.BitBet.BL
 
         public async Task<GameState> Hit(GameState state)
         {
-            _deck = new Deck();
 
             if (state.isGameOver || !state.isPlayerTurn)
             {
@@ -260,17 +260,19 @@ namespace JD.BitBet.BL
 
         public async Task<List<GameState>> PerformDealerTurn(List<GameState> states)
         {
-            foreach(GameState state in states)
+            while (states[0].dealerHandVal < 17)
             {
-                state.message = "Dealer's turn.";
+                Card newCard = new Card();
+                newCard = _deck.Deal();
+                newCard.HandId = states[0].dealerHandId;
+                await cardManager.InsertAsync(newCard);
 
-                while (state.dealerHandVal < 17)
+                foreach (GameState state in states)
                 {
-                    Card card = _deck.Deal();
-                    state.dealerHand.Cards.Add(card);
-                    card.HandId = state.dealerHandId;
-                    await cardManager.InsertAsync(card);
+                    state.dealerHand = await handManager.LoadByIdAsync(state.dealerHandId);
+                    state.dealerHand.Cards = await cardManager.LoadByHandId(state.dealerHandId);
                     state.dealerHandVal = CalculateHandValue(await cardManager.LoadByHandId(state.dealerHandId));
+                    state.message = "Dealer's turn.";
                 }
             }
             return await DetermineWinner(states);
