@@ -5,7 +5,6 @@
     x:Class="JD.BitBet.Maui.MainPage"
     Shell.NavBarIsVisible="False">
 
-    <!-- Set the background to a similar gradient -->
     <ContentPage.Background>
         <LinearGradientBrush EndPoint="1,0">
             <GradientStop Color="#4e54c8" Offset="0.0"/>
@@ -25,7 +24,6 @@
 
             <VerticalStackLayout Spacing="20">
 
-                <!-- Title -->
                 <Label Text="Welcome to BitBet!" 
                        FontSize="24" 
                        HorizontalOptions="Center" 
@@ -35,12 +33,10 @@
                        HorizontalOptions="Center"
                        TextColor="#333" />
 
-                <!-- Error message (if needed, initially hidden) -->
                 <Label x:Name="ErrorMessage" 
                        TextColor="Red" 
                        IsVisible="False"/>
 
-                <!-- Email Field -->
                 <VerticalStackLayout Spacing="5">
                     <Label Text="Email" 
                            FontAttributes="Bold"
@@ -52,7 +48,6 @@
                            HorizontalOptions="FillAndExpand"/>
                 </VerticalStackLayout>
 
-                <!-- Password Field -->
                 <VerticalStackLayout Spacing="5">
                     <Label Text="Password" 
                            FontAttributes="Bold" 
@@ -64,14 +59,12 @@
                            HorizontalOptions="FillAndExpand"/>
                 </VerticalStackLayout>
 
-                <!-- Login Button -->
                 <Button Text="Log In"
                         BackgroundColor="#4e54c8"
                         TextColor="White"
                         CornerRadius="5"
                         Clicked="OnLoginClicked"/>
 
-                <!-- Additional Links -->
                 <VerticalStackLayout Spacing="10" HorizontalOptions="Center">
                     <Label Text="Forgot your password?"
                            TextColor="#4e54c8">
