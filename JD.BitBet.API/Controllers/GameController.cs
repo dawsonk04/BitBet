@@ -106,7 +106,6 @@ namespace JD.BitBet.API.Controllers
             }
 
         }
-
         [HttpPost("stand/{userId}")]
         public async Task<IActionResult> StandPlayerHand([FromRoute] Guid UserId)
         {
@@ -124,13 +123,14 @@ namespace JD.BitBet.API.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
-
         [HttpPost("double/{UserId}")]
-        public async Task<IActionResult> DoublePlayerHand(GameState state)
+        public async Task<IActionResult> DoublePlayerHand([FromRoute] Guid UserId)
         {
             try
             {
+                gameStateManager = new GameStateManager(options);    
                 gameManager = new GameManager(options);
+                GameState state = await gameStateManager.LoadByUserIdAsync(UserId);
                 GameState gameState = await gameManager.Double(state);
                 return Ok(gameState);
             }
@@ -176,6 +176,5 @@ namespace JD.BitBet.API.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
-
     }
 }

@@ -131,6 +131,12 @@ namespace JD.BitBet.UI.Controllers
             {
                 HttpContext.Session.SetString("GameStates", gameStateJson);
                 var gameStates = JsonConvert.DeserializeObject<List<GameState>>(gameStateJson);
+                if (gameStates.All(game => game.isGameOver))
+                {
+                    currentGame.isGameOver = true;
+                    HttpContext.Session.SetString("CurrentGame", JsonConvert.SerializeObject(currentGame));
+                    ViewBag.GameDetails = currentGame;
+                }
                 return View("GameIndex", gameStates);
             }
             else
@@ -179,21 +185,34 @@ namespace JD.BitBet.UI.Controllers
         }
         public async Task<IActionResult> Double()
         {
-            var gameStateJson = HttpContext.Session.GetString("GameState");
+            var gameStateJson = HttpContext.Session.GetString("GameStates");
             if (string.IsNullOrEmpty(gameStateJson))
             {
                 return RedirectToAction("GameIndex");
             }
-
+            var userId = HttpContext.Session.GetString("UserId");
+            if (string.IsNullOrEmpty(userId))
+            {
+                return RedirectToAction("Login", "User");
+            }
+            ViewBag.UserId = userId;
             var gameStates = JsonConvert.DeserializeObject<List<GameState>>(gameStateJson);
             var content = new StringContent(JsonConvert.SerializeObject(gameStates), Encoding.UTF8, "application/json");
-            var response = await _apiClient.PostAsync("Game/double", content);
+            var response = await _apiClient.PostAsync($"Game/double/{userId}", null);
+            var currentGameJson = HttpContext.Session.GetString("CurrentGame");
+            Game currentGame = JsonConvert.DeserializeObject<Game>(currentGameJson);
 
             if (response.IsSuccessStatusCode)
             {
                 var updatedGameStateJson = await response.Content.ReadAsStringAsync();
-                HttpContext.Session.SetString("GameState", updatedGameStateJson);
-                gameStates = JsonConvert.DeserializeObject<List<GameState>>(gameStateJson);
+                var updatedGameState = JsonConvert.DeserializeObject<GameState>(updatedGameStateJson);
+
+                var index = gameStates.FindIndex(gs => gs.UserId == updatedGameState.UserId);
+                if (index >= 0)
+                {
+                    gameStates[index] = updatedGameState;
+                }
+                HttpContext.Session.SetString("GameStates", JsonConvert.SerializeObject(gameStates));
             }
             else
             {

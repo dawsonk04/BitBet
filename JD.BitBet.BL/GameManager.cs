@@ -320,12 +320,15 @@ namespace JD.BitBet.BL
                 return state;
             }
 
-            Card card = _deck.Deal();
+            Card card = new Card();
+            _deck.Shuffle();
+            card = _deck.Deal();
+            state.playerHand = await handManager.LoadByIdAsync(state.playerHandId);
+            state.playerHand.Cards = await cardManager.LoadByHandId(state.playerHandId);
             state.playerHand.Cards.Add(card);
             card.HandId = state.playerHandId;
             await cardManager.InsertAsync(card);
             state.playerHandVal = CalculateHandValue(await cardManager.LoadByHandId(state.playerHandId));
-
             state.playerHand.BetAmount *= 2;
 
             return await Stand(state);
