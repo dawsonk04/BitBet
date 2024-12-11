@@ -65,5 +65,21 @@ namespace JD.BitBet.BL
                 throw;
             }
         }
+        public async Task<Wallet> LoadByUserIdAsync(Guid userId)
+        {
+            try
+            {
+                List<tblWallet> row = await base.LoadAsync(e => e.UserId == userId);
+                if (row[0] != null)
+                    return Map<tblWallet, Wallet>(row[0]);
+                else
+                    throw new Exception("No Row");
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
     }
 }

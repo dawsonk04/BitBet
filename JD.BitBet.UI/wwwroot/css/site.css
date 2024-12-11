@@ -123,3 +123,8 @@ body {
 .action-form {
     display: inline-block;
 }
+
+.navbar-nav .nav-link.text-black.fw-bold {
+    font-size: 1.25rem; /* Optional: Adjust size for better visibility */
+    text-align: center;
+}

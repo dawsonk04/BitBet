@@ -124,7 +124,7 @@ namespace JD.BitBet.API.Controllers
             }
         }
         [HttpPost("double/{UserId}")]
-        public async Task<IActionResult> DoublePlayerHand([FromRoute] Guid UserId)
+        public async Task<IActionResult> DoublePlayerHand([FromRoute] Guid UserId) 
         {
             try
             {
