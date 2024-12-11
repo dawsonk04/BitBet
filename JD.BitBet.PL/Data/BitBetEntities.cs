@@ -128,14 +128,14 @@ namespace JD.BitBet.PL.Data
                 Id = walletId[0],
                 WalletAddress = "0xE2dC61497FDD26F9ea285172A41F0b25373f22df",
                 UserId = userId[0],
-                Balance = 0.0
+                Balance = 1000000.0
             });
             modelBuilder.Entity<tblWallet>().HasData(new tblWallet
             {
                 Id = walletId[1],
                 WalletAddress = "0xE2dC61497FDD26F9eaYaBoi5373f22df",
                 UserId = userId[1],
-                Balance = 0.0
+                Balance = 1000000.0
             });
         }
 

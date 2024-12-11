@@ -290,19 +290,19 @@ namespace JD.BitBet.BL
                     state.message = "Dealer busts! Player wins.";
                     await gameStateManager.UpdateAsync(state);
                 }
-                if (state.playerHandVal > state.dealerHandVal)
+                if (state.playerHandVal > state.dealerHandVal && state.playerHandVal <= 21)
                 {
                     state.isGameOver = true;
                     state.message = "Player wins!";
                     await gameStateManager.UpdateAsync(state);
                 }
-                else if (state.playerHandVal < state.dealerHandVal)
+                else if (state.playerHandVal < state.dealerHandVal && state.dealerHandVal <= 21)
                 {
                     state.isGameOver = true;
                     state.message = "Dealer wins!";
                     await gameStateManager.UpdateAsync(state);
                 }
-                else
+                else if(state.dealerHandVal == state.playerHandVal)
                 {
                     state.isGameOver = true;
                     state.message = "Push! It's a tie.";
