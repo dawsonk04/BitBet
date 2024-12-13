@@ -1,0 +1,46 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="JD.BitBet.Maui.GameListPage"
+             Title="Game List">
+
+    <ScrollView>
+        <VerticalStackLayout Spacing="10" Padding="20">
+            <!-- Error Message -->
+            <Label x:Name="ErrorMessage" 
+                   TextColor="Red" 
+                   IsVisible="False" 
+                   HorizontalOptions="Center"/>
+
+            <!-- Games Grid -->
+            <CollectionView x:Name="GamesCollectionView">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Frame BorderColor="LightGray" 
+                               HasShadow="True" 
+                               Margin="0,0,0,10">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+
+                                <Label Text="{Binding Id, StringFormat='Game {0}'}" 
+                                       Grid.Row="0" 
+                                       FontSize="Medium" 
+                                       FontAttributes="Bold"/>
+
+                                <Button Text="Join Game" 
+                                        Grid.Row="1" 
+                                        Clicked="OnJoinGameClicked" 
+                                        CommandParameter="{Binding Id}"
+                                        BackgroundColor="#007bff" 
+                                        TextColor="White"/>
+                            </Grid>
+                        </Frame>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>
