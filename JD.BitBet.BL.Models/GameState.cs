@@ -15,6 +15,7 @@ namespace JD.BitBet.BL.Models
         public Guid dealerHandId { get; set; }
         public bool isPlayerTurn { get; set; }
         public bool isGameOver { get; set; }
+        public double? BetAmount { get; set; }
         public string message { get; set; }
     }
 }

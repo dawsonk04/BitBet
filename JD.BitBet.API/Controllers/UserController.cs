@@ -16,6 +16,7 @@ namespace JD.BitBet.API.Controllers
         private IUserService _userService;
         private readonly ILogger<UserController> logger;
         private readonly DbContextOptions<BitBetEntities> options;
+        UserManager userManager;
 
         public UserController(IUserService userService, ILogger<UserController> logger, DbContextOptions<BitBetEntities> options) : base(logger, options) 
         {
@@ -36,6 +37,18 @@ namespace JD.BitBet.API.Controllers
             }
             logger.LogWarning("Authentication successful for {UserName}", model.Email);
             return Ok(response);
+        }
+        [HttpPut("updateBet/{userId}")]
+        public async Task<IActionResult> UpdateUserBet([FromRoute] Guid UserId, [FromBody] double betAmount)
+        {
+            userManager = new UserManager(options);
+            User user = await userManager.LoadByIdAsync(UserId);
+            if (user == null)
+            {
+                user.BetAmount = betAmount;
+                await userManager.UpdateAsync(user);
+            }
+            return Ok();
         }
     }
 }

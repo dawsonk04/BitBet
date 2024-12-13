@@ -1,4 +1,4 @@
-﻿@using JD.BitBet.BL.Models
+﻿@* @using JD.BitBet.BL.Models
 @model List<JD.BitBet.BL.Models.GameState>
 @{
     ViewBag.Title = "Blackjack Game";
@@ -7,6 +7,12 @@
 }
 
 <h1 class="game-title">Blackjack Game</h1>
+@if(ViewBag.Message != null)
+{
+    <div class="viewbag-message">
+        <p>@ViewBag.Message</p>
+    </div>
+}
 
 @if(ViewBag.GameDetails == null)
 {
@@ -67,23 +73,13 @@ else if (Model != null && Model.Any())
                             <!-- Bet Amount Incrementer -->
                             <div class="bet-amount">
                                 <label for="betAmount">Bet Amount: </label>
-                                <button type="button" class="bet-incrementer" onclick="adjustBet(1)">+1</button>
-                                <button type="button" class="bet-incrementer" onclick="adjustBet(5)">+5</button>
-                                <button type="button" class="bet-incrementer" onclick="adjustBet(10)">+10</button>
-                                <button type="button" class="bet-incrementer" onclick="adjustBet(50)">+50</button>
-                                <button type="button" class="bet-incrementer" onclick="adjustBet(100)">+100</button>
-
+                                <button type="button" class="bet-incrementer" onclick="adjustBet(1)">1</button>
+                                <button type="button" class="bet-incrementer" onclick="adjustBet(5)">5</button>
+                                <button type="button" class="bet-incrementer" onclick="adjustBet(10)">10</button>
+                                <button type="button" class="bet-incrementer" onclick="adjustBet(50)">50</button>
+                                <button type="button" class="bet-incrementer" onclick="adjustBet(100)">100</button>
                                 <input type="number" id="betAmount" name="betAmount" value="0" min="0" step="1" readonly />
                             </div>
-
-                            <script>
-                                let betAmount = 0;
-
-                                function adjustBet(amount) {
-                                    betAmount += amount;
-                                    document.getElementById("betAmount").value = betAmount;
-                                }
-                            </script>
                         }
                     }
                 </div>
@@ -98,4 +94,27 @@ else
             <button type="submit" class="action-button start-button">Start Game</button>
         </form>
     </div>
+    <form action="@Url.Action("Bet", "Game")">
+        <label for="betAmount">Bet Amount: </label>
+        <button type="button" class="bet-incrementer" onclick="adjustBet(1)">1</button>
+        <button type="button" class="bet-incrementer" onclick="adjustBet(5)">5</button>
+        <button type="button" class="bet-incrementer" onclick="adjustBet(10)">10</button>
+        <button type="button" class="bet-incrementer" onclick="adjustBet(50)">50</button>
+        <button type="button" class="bet-incrementer" onclick="adjustBet(100)">100</button>
+
+        <!-- The actual input for bet amount -->
+        <input type="number" id="betAmount" name="betAmount" value="0" min="0" step="1" readonly />
+
+        <button type="submit">Submit Bet</button>
+    </form>
+
 }
+<script>
+function adjustBet(amount) {
+    var betInput = document.getElementById('betAmount');
+    betInput.value = parseInt(betInput.value) + amount; // Add the value to the current bet
+}
+</script> *@
+
+
+

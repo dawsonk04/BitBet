@@ -2,6 +2,7 @@
 using JD.Utility;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using System.Net.Http;
 using System.Text;
 
 namespace JD.BitBet.UI.Controllers
@@ -77,6 +78,12 @@ namespace JD.BitBet.UI.Controllers
                     var userGameState = activeGameStates.FirstOrDefault(gs => gs.UserId.ToString() == userId);
                     HttpContext.Session.SetString("GameState", JsonConvert.SerializeObject(userGameState));
 
+                    if (!activeGameStates.Any())
+                    {
+                        game.isGameOver = true;
+                        HttpContext.Session.SetString("CurrentGame", JsonConvert.SerializeObject(game));
+                        ViewBag.GameDetails = game; 
+                    }
                     var joinResponse = await _apiClient.PostAsync($"Game/join/{gameId}/{userId}", null);
                     if (joinResponse.IsSuccessStatusCode)
                     {
@@ -122,7 +129,6 @@ namespace JD.BitBet.UI.Controllers
                 HttpContext.Session.SetString("CurrentGame", JsonConvert.SerializeObject(currentGame));
                 ViewBag.GameDetails = currentGame;
             }
-
             var response = await _apiClient.PostAsync($"Game/start/{gameId}", null);
             var gameStateJson = await response.Content.ReadAsStringAsync();
 
@@ -263,6 +269,30 @@ namespace JD.BitBet.UI.Controllers
             }
             await checkGameStatus();
             return View("GameIndex", gameStates);
+        }
+        public async Task Bet(int betAmount)
+        {
+            var userId = HttpContext.Session.GetString("UserId");
+            HttpContext.Session.SetInt32("betAmount", betAmount);
+            var response = await _apiClient.PutAsJsonAsync($"User/updateBet/{userId}", betAmount);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var gameStateJson = HttpContext.Session.GetString("GameStates");
+                var gameStates = JsonConvert.DeserializeObject<List<GameState>>(gameStateJson);
+
+                var playerState = gameStates.FirstOrDefault(gs => gs.UserId.ToString() == userId);
+                if (playerState != null)
+                {
+                    HttpContext.Session.SetString("GameStates", JsonConvert.SerializeObject(gameStates));
+                }
+
+                ViewBag.Message = "Bet Placed";
+            }
+            else
+            {
+                ViewBag.Error = "Failed to place bet.";
+            }
         }
         public async Task PerformDealerTurn()
         {

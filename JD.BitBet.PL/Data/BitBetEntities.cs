@@ -174,6 +174,7 @@ namespace JD.BitBet.PL.Data
                 Email = "knudtdaw0000@gmail.com",
                 Password = GetHash("password"),
                 gameId = null,
+                BetAmount = null,
                 CreateDate = new DateTime(1990, 12, 4),
             });
             modelBuilder.Entity<tblUser>().HasData(new tblUser
@@ -182,6 +183,7 @@ namespace JD.BitBet.PL.Data
                 Email = "jbstrange2@gmail.com",
                 Password = GetHash("password"),
                 gameId = null,
+                BetAmount = null,
                 CreateDate = DateTime.Now,
             });
         }
@@ -259,32 +261,25 @@ namespace JD.BitBet.PL.Data
                 entity.Property(e => e.Result)
                     .HasMaxLength(50)
                     .IsUnicode(false);
-                entity.Property(e => e.BetAmount)
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
             });
             modelBuilder.Entity<tblHand>().HasData(new tblHand
             {
                 Id = handId[0],
-                BetAmount = 20.00,
                 Result = 40.00,
             });
             modelBuilder.Entity<tblHand>().HasData(new tblHand
             {
                 Id = handId[1],
-                BetAmount = 20.00,
                 Result = -20.00,
             });
             modelBuilder.Entity<tblHand>().HasData(new tblHand
             {
                 Id = handId[2],
-                BetAmount = 20.00,
                 Result = 40.00,
             });
             modelBuilder.Entity<tblHand>().HasData(new tblHand
             {
                 Id = handId[3],
-                BetAmount = 20.00,
                 Result = -20.00,
             });
         }

@@ -13,6 +13,7 @@ namespace JD.BitBet.PL.Entities
         public string Password { get; set; }
         public Guid? gameId { get; set; }
         public DateTime CreateDate { get; set; }
+        public double? BetAmount { get; set; }
         public virtual tblGame Game { get; set; }
         public virtual ICollection<tblHand> Hands { get; set; }
         public virtual ICollection<tblErrorLog> ErrorLogs { get; set; }

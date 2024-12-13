@@ -23,12 +23,9 @@ namespace JD.BitBet.UI.Controllers
             var httpContent = new StringContent(jsonContent, Encoding.UTF8, "application/json");
 
             var response = await _apiClient.PostAsync("User/Authenticate", httpContent);
-
-            // Log response status and message for debugging
             var responseContent = await response.Content.ReadAsStringAsync();
             if (response.IsSuccessStatusCode)
             {
-                // Deserialize the response content
                 var authenticatedUser = JsonConvert.DeserializeObject<User>(responseContent);
                 if (authenticatedUser != null)
                 {

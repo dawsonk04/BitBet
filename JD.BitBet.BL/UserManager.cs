@@ -86,6 +86,7 @@ namespace JD.BitBet.BL
                                     // Login was successfull
                                     user.Id = userrow.Id;
                                     user.Email = userrow.Email;
+                                    user.BetAmount = userrow.BetAmount;
                                     user.Password = userrow.Password;
                                     return true;
                                 }
@@ -265,6 +266,7 @@ namespace JD.BitBet.BL
                             upDateRow.Email = user.Email;
                             upDateRow.Password = GetHash(user.Password.Trim());
                             upDateRow.gameId = user.gameId;
+                            upDateRow.BetAmount = user.BetAmount;
                             dc.tblUser.Update(upDateRow);
 
                             results = dc.SaveChanges();

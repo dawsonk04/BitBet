@@ -128,3 +128,77 @@ body {
     font-size: 1.25rem; /* Optional: Adjust size for better visibility */
     text-align: center;
 }
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f5f5f5;
+    color: #333;
+}
+
+.game-over {
+    font-size: 1.5em;
+    color: #d9534f;
+    text-align: center;
+    margin-top: 20px;
+}
+
+.action-form {
+    text-align: center;
+    margin: 20px 0;
+}
+
+.action-button {
+    display: inline-block;
+    padding: 10px 20px;
+    margin: 10px;
+    font-size: 1em;
+    color: #fff;
+    background-color: #5cb85c;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+    .action-button:hover {
+        background-color: #4cae4c;
+    }
+
+.leave-button {
+    background-color: #d9534f;
+}
+
+    .leave-button:hover {
+        background-color: #c9302c;
+    }
+
+.bet-amount {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+    gap: 10px;
+}
+
+.bet-incrementer {
+    padding: 5px 10px;
+    font-size: 1em;
+    color: #fff;
+    background-color: #337ab7;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+    .bet-incrementer:hover {
+        background-color: #286090;
+    }
+
+#betAmount {
+    width: 80px;
+    text-align: center;
+    font-size: 1.2em;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #fff;

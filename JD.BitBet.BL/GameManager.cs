@@ -1,13 +1,34 @@
 ﻿using JD.BitBet.BL.Models;
+using Mono.TextTemplating;
 using static JD.BitBet.PL.Entities.tblCard;
 
 namespace JD.BitBet.BL
 {
     public class GameManager : GenericManager<tblGame>
     {
+        public enum GameResult
+        {
+            InProgress,
+            PlayerBlackjack,
+            PlayerBust,
+            PlayerWins,
+            PlayerStand,
+            DealerStand,
+            DealerBlackJack,
+            DealerBust,
+            DealerWins,
+            Push
+        }
+        public enum handAction
+        {
+            Hit, Stand, Double, Split
+        }
+
         public static GameStateManager gameStateManager { get; private set; }
         public static HandManager handManager { get; private set; }
         public static CardManager cardManager { get; private set; }
+        public static WalletManager walletManager { get; private set; }
+        public static UserManager userManager { get; set; }
 
         private static Deck _deck;
 
@@ -18,11 +39,12 @@ namespace JD.BitBet.BL
             gameStateManager = new GameStateManager(logger, options);
             handManager = new HandManager(logger, options);
             cardManager = new CardManager(logger, options);
+            walletManager = new WalletManager(logger,options);
+            userManager = new UserManager(logger, options);
         }
 
         public GameManager(DbContextOptions<BitBetEntities> options) : base(options) { }
         public GameManager() { }
-
         public async Task<Guid> InsertAsync(Game game, bool rollback = false)
         {
             try
@@ -81,19 +103,18 @@ namespace JD.BitBet.BL
         }
         public async Task<List<GameState>> StartNewGame(Game game)
         {
-            List<GameState> states = new List<GameState>();
+
+            List<GameState> states = new List<GameState>();            
             gameStateManager = new GameStateManager(options);
             handManager = new HandManager(options);
             cardManager = new CardManager(options);
 
             _deck = new Deck();
             _deck.Shuffle();
-            GameState State = new GameState();
 
             Hand dealerHand = new Hand
             {
                 Id = Guid.NewGuid(),
-                BetAmount = 0,
                 Result = 0,
                 Cards = new List<Card>()
             };
@@ -101,24 +122,26 @@ namespace JD.BitBet.BL
             Card dealerCard = new Card();
             dealerCard = _deck.Deal();
             dealerCard.HandId = dealerHand.Id;
-            State.dealerHandId = dealerHand.Id;
-            State.dealerHand = dealerHand;
-            State.dealerHand.Cards.Add(dealerCard);
-            State.dealerHandVal = CalculateHandValue(State.dealerHand.Cards);
 
             await handManager.InsertAsync(dealerHand);
             await cardManager.InsertAsync(dealerCard);
 
             foreach (var user in game.Users)
             {
+
+                GameState State = new GameState();
+                State.dealerHandId = dealerHand.Id;
+                State.dealerHand = dealerHand;
+                State.dealerHand.Cards.Add(dealerCard);
+                State.dealerHandVal = CalculateHandValue(State.dealerHand.Cards);
                 State.GameId = game.Id;
                 State.UserId = user.Id;
+                User dbUser = await userManager.LoadByIdAsync(State.UserId);
+                Wallet userWallet = await walletManager.LoadByUserIdAsync(State.UserId);
                 State.Id = Guid.NewGuid();
-
                 Hand playerHand = new Hand
                 {
                     Id = Guid.NewGuid(),
-                    BetAmount = user.betAmount,
                     Result = 0,
                     Cards = new List<Card>()
                 };
@@ -136,8 +159,9 @@ namespace JD.BitBet.BL
 
                 State.playerHand.Cards.Add(playerCard1);
                 State.playerHand.Cards.Add(playerCard2);
-
+                State.BetAmount = dbUser.BetAmount;
                 State.playerHandVal = CalculateHandValue(State.playerHand.Cards);
+                userWallet.Balance -= State.BetAmount;
 
                 if (State.playerHandVal == 21)
                 {
@@ -152,12 +176,12 @@ namespace JD.BitBet.BL
                 await cardManager.InsertAsync(playerCard1);
                 await cardManager.InsertAsync(playerCard2);
                 await gameStateManager.InsertAsync(State);
+                await walletManager.UpdateAsync(userWallet);
                 states.Add(await populateGameState(State));
             }
 
             return states;
         }
-
         public static int CalculateHandValue(List<Card> hand)
         {
             int value = 0;
@@ -178,21 +202,10 @@ namespace JD.BitBet.BL
 
             return value;
         }
-        public enum GameResult
-        {
-            InProgress,
-            PlayerBlackjack,
-            PlayerBust,
-            PlayerWins,
-            PlayerStand,
-            DealerStand,
-            DealerBlackJack,
-            DealerBust,
-            DealerWins,
-            Push
-        }
         public async Task<GameState> populateGameState(GameState state)
         {
+
+            Wallet userWallet = await walletManager.LoadByUserIdAsync(state.UserId);
             GameState dbGamestate = await gameStateManager.LoadByIdAsync(state.Id);
             dbGamestate.dealerHand = await handManager.LoadByIdAsync(state.dealerHandId);
             dbGamestate.playerHand = await handManager.LoadByIdAsync(state.playerHandId);
@@ -209,7 +222,9 @@ namespace JD.BitBet.BL
             }
             else if (dbGamestate.playerHandVal == 21)
             {
+                userWallet.Balance += dbGamestate.BetAmount * 2;
                 dbGamestate.message = "Player hits 21!";
+                dbGamestate.isGameOver = true;
                 await gameStateManager.UpdateAsync(dbGamestate);
             }
             else
@@ -219,11 +234,6 @@ namespace JD.BitBet.BL
             }
             return dbGamestate;
         }
-        public enum handAction
-        {
-            Hit, Stand, Double, Split
-        }
-
         public async Task<GameState> Hit(GameState state)
         {
 
@@ -284,34 +294,44 @@ namespace JD.BitBet.BL
         {
             foreach (GameState state in states)
             {
+                Wallet userWallet = await walletManager.LoadByUserIdAsync(state.UserId);
+                state.playerHand = await handManager.LoadByIdAsync(state.playerHandId);
                 if (state.dealerHandVal > 21)
                 {
                     state.isGameOver = true;
                     state.message = "Dealer busts! Player wins.";
+                    userWallet.Balance += state.BetAmount * 2;
+                    state.playerHand.Result = state.BetAmount * 2;
+                    await walletManager.UpdateAsync(userWallet);
                     await gameStateManager.UpdateAsync(state);
                 }
                 if (state.playerHandVal > state.dealerHandVal && state.playerHandVal <= 21)
                 {
                     state.isGameOver = true;
                     state.message = "Player wins!";
+                    userWallet.Balance += state.BetAmount * 2;
+                    state.playerHand.Result = state.BetAmount * 2;
+                    await walletManager.UpdateAsync(userWallet);
                     await gameStateManager.UpdateAsync(state);
                 }
                 else if (state.playerHandVal < state.dealerHandVal && state.dealerHandVal <= 21)
                 {
                     state.isGameOver = true;
                     state.message = "Dealer wins!";
+                    await walletManager.UpdateAsync(userWallet);
                     await gameStateManager.UpdateAsync(state);
                 }
                 else if(state.dealerHandVal == state.playerHandVal)
                 {
                     state.isGameOver = true;
                     state.message = "Push! It's a tie.";
+                    userWallet.Balance += state.BetAmount;
+                    await walletManager.UpdateAsync(userWallet);
                     await gameStateManager.UpdateAsync(state);
                 }
             }
             return states;
         }
-
         public async Task<GameState> Double(GameState state)
         {
             if (state.isGameOver || !state.isPlayerTurn)
@@ -329,7 +349,7 @@ namespace JD.BitBet.BL
             card.HandId = state.playerHandId;
             await cardManager.InsertAsync(card);
             state.playerHandVal = CalculateHandValue(await cardManager.LoadByHandId(state.playerHandId));
-            state.playerHand.BetAmount *= 2;
+            state.BetAmount *= 2;
 
             return await Stand(state);
         }

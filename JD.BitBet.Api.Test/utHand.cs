@@ -16,7 +16,6 @@ namespace JD.BitBet.Api.Test
         {
             Hand hand = new Hand
             {
-                BetAmount = 1,
                 Result = -1,
             };
             await base.InsertTestAsync<Hand>(hand);
