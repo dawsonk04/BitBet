@@ -137,7 +137,6 @@ namespace JD.BitBet.BL
                 State.GameId = game.Id;
                 State.UserId = user.Id;
                 User dbUser = await userManager.LoadByIdAsync(State.UserId);
-                Wallet userWallet = await walletManager.LoadByUserIdAsync(State.UserId);
                 State.Id = Guid.NewGuid();
                 Hand playerHand = new Hand
                 {
@@ -161,7 +160,6 @@ namespace JD.BitBet.BL
                 State.playerHand.Cards.Add(playerCard2);
                 State.BetAmount = dbUser.BetAmount;
                 State.playerHandVal = CalculateHandValue(State.playerHand.Cards);
-                userWallet.Balance -= State.BetAmount;
 
                 if (State.playerHandVal == 21)
                 {
@@ -176,7 +174,6 @@ namespace JD.BitBet.BL
                 await cardManager.InsertAsync(playerCard1);
                 await cardManager.InsertAsync(playerCard2);
                 await gameStateManager.InsertAsync(State);
-                await walletManager.UpdateAsync(userWallet);
                 states.Add(await populateGameState(State));
             }
 
@@ -294,7 +291,9 @@ namespace JD.BitBet.BL
         {
             foreach (GameState state in states)
             {
+                User user = await userManager.LoadByIdAsync(state.UserId);
                 Wallet userWallet = await walletManager.LoadByUserIdAsync(state.UserId);
+                state.BetAmount = user.BetAmount;
                 state.playerHand = await handManager.LoadByIdAsync(state.playerHandId);
                 if (state.dealerHandVal > 21)
                 {

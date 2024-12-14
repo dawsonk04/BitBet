@@ -17,5 +17,6 @@ namespace JD.BitBet.BL.Models
         public bool isGameOver { get; set; }
         public double? BetAmount { get; set; }
         public string message { get; set; }
+        public bool hasBet { get; set; }
     }
 }

@@ -284,15 +284,17 @@ namespace JD.BitBet.UI.Controllers
                
                 var gameStateJson = HttpContext.Session.GetString("GameStates");
                 var gameStates = JsonConvert.DeserializeObject<List<GameState>>(gameStateJson);
-
-                var playerState = gameStates.FirstOrDefault(gs => gs.UserId.ToString() == userId);
-                if (playerState != null)
+                var playerIndex = gameStates.FindIndex(gs => gs.UserId.ToString() == userId);
+                if (playerIndex != -1)
                 {
+                    gameStates[playerIndex].hasBet = true;
+
                     HttpContext.Session.SetString("GameStates", JsonConvert.SerializeObject(gameStates));
-
-                    return View("GameIndex", gameStates);
+                    if(gameStates.All(g => g.hasBet == state.hasBet))
+                    {
+                        await Start();
+                    }
                 }
-
                 ViewBag.Message = "Bet Placed";
                 return View("GameIndex", gameStates);
             }

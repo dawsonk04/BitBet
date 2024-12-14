@@ -264,7 +264,7 @@ namespace JD.BitBet.BL
                         if (upDateRow != null)
                         {
                             upDateRow.Email = user.Email;
-                            upDateRow.Password = GetHash(user.Password.Trim());
+                            upDateRow.Password = user.Password;
                             upDateRow.gameId = user.gameId;
                             upDateRow.BetAmount = user.BetAmount;
                             dc.tblUser.Update(upDateRow);
