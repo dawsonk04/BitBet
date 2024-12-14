@@ -13,8 +13,7 @@ namespace JD.BitBet.Maui
         public GameListPage()
         {
             InitializeComponent();
-
-            var apiBaseUrl = "https://localhost:7061/";
+            var apiBaseUrl = "https://localhost:7061/api/";
             _client = new ApiClient(apiBaseUrl);
             Games = new ObservableCollection<Game>();
             BindingContext = this;

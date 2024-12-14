@@ -11,7 +11,7 @@ namespace JD.BitBet.Maui
         public MainPage()
         {
             InitializeComponent();
-            var apiBaseUrl = "https://localhost:7061/swagger/index.html";
+            var apiBaseUrl = "https://localhost:7061/api/";
             _client = new ApiClient(apiBaseUrl);
         }
 
