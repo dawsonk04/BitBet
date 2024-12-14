@@ -43,7 +43,7 @@ namespace JD.BitBet.API.Controllers
         {
             userManager = new UserManager(options);
             User user = await userManager.LoadByIdAsync(UserId);
-            if (user == null)
+            if (user != null)
             {
                 user.BetAmount = betAmount;
                 await userManager.UpdateAsync(user);

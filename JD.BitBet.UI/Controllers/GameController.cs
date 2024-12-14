@@ -270,7 +270,7 @@ namespace JD.BitBet.UI.Controllers
             await checkGameStatus();
             return View("GameIndex", gameStates);
         }
-        public async Task Bet(int betAmount)
+        public async Task<IActionResult> Bet(int betAmount)
         {
             var userId = HttpContext.Session.GetString("UserId");
             HttpContext.Session.SetInt32("betAmount", betAmount);
@@ -278,6 +278,10 @@ namespace JD.BitBet.UI.Controllers
 
             if (response.IsSuccessStatusCode)
             {
+                var currentGameJson = HttpContext.Session.GetString("CurrentGame");
+                Game currentGame = JsonConvert.DeserializeObject<Game>(currentGameJson);
+                ViewBag.GameDetails = currentGame;
+               
                 var gameStateJson = HttpContext.Session.GetString("GameStates");
                 var gameStates = JsonConvert.DeserializeObject<List<GameState>>(gameStateJson);
 
@@ -285,13 +289,17 @@ namespace JD.BitBet.UI.Controllers
                 if (playerState != null)
                 {
                     HttpContext.Session.SetString("GameStates", JsonConvert.SerializeObject(gameStates));
+
+                    return View("GameIndex", gameStates);
                 }
 
                 ViewBag.Message = "Bet Placed";
+                return View("GameIndex", gameStates);
             }
             else
             {
                 ViewBag.Error = "Failed to place bet.";
+                return View("GameIndex");
             }
         }
         public async Task PerformDealerTurn()
