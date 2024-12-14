@@ -1,0 +1,33 @@
+﻿<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="JD.BitBet.Maui.GamePage"
+             Title="Blackjack Game">
+    <StackLayout Padding="10">
+        <Label Text="Blackjack Game" FontSize="24" HorizontalOptions="Center" />
+        <Label x:Name="ErrorMessage" TextColor="Red" IsVisible="False" />
+
+        <CollectionView ItemsSource="{Binding GameStates}">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <StackLayout Margin="10" BackgroundColor="#f0f0f0" Padding="10">
+                        <Label Text="Dealer's Hand" FontAttributes="Bold" />
+                        <Label Text="{Binding dealerHandVal}" />
+                        <Label Text="Your Hand" FontAttributes="Bold" />
+                        <Label Text="{Binding playerHandVal}" />
+                        <Label Text="Status: " FontAttributes="Bold" />
+                        <Label Text="{Binding message}" />
+                    </StackLayout>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+        <StackLayout Orientation="Horizontal" HorizontalOptions="Center">
+            <Button Text="Hit" CommandParameter="hit" Clicked="OnActionClicked" />
+            <Button Text="Stand" CommandParameter="stand" Clicked="OnActionClicked" />
+            <Button Text="Double" CommandParameter="double" Clicked="OnActionClicked" />
+        </StackLayout>
+
+        <Button Text="Start New Game" CommandParameter="start" Clicked="OnActionClicked" 
+                IsVisible="{Binding CurrentGame.isGameOver}" HorizontalOptions="Center" />
+    </StackLayout>
+</ContentPage>

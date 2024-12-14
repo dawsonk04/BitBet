@@ -68,7 +68,10 @@ namespace JD.BitBet.Maui
 
                     if (joinResponse.IsSuccessStatusCode)
                     {
-                        await DisplayAlert("Success", "You have successfully joined the game!", "OK");
+                        if (Guid.TryParse(gameId.ToString(), out Guid parsedGameId))
+                        {
+                            await Navigation.PushAsync(new GamePage(parsedGameId));
+                        }
                     }
                     else
                     {
