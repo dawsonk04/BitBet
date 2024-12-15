@@ -1,0 +1,42 @@
+﻿<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="JD.BitBet.Maui.GamePage"
+             x:Name="GamePageIndex"
+             Title="Blackjack Game">
+    <ScrollView>
+        <StackLayout Padding="10">
+            <Label Text="Blackjack Game" FontSize="24" HorizontalOptions="Center" />
+            <Label x:Name="ErrorMessage" TextColor="Red" IsVisible="False" />
+
+            <CollectionView ItemsSource="{Binding GameStates}">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <StackLayout Margin="10" BackgroundColor="Black" Padding="10">
+                            <Label Text="Dealer's Hand" FontAttributes="Bold" />
+                            <Label Text="{Binding dealerHandVal}" />
+                            <Label Text="Your Hand" FontAttributes="Bold" />
+                            <Label Text="{Binding playerHandVal}" />
+                            <Label Text="Status: " FontAttributes="Bold" />
+                            <Label Text="{Binding message}" />
+
+                            <StackLayout Orientation="Horizontal" HorizontalOptions="Center" Spacing="10">
+                                <Button Text="Hit"
+                                        Command="{Binding Source={x:Reference GamePageIndex}, Path=BindingContext.HitCommand}"
+                                        CommandParameter="{Binding}" />
+                                <Button Text="Stand"
+                                        Command="{Binding Source={x:Reference GamePageIndex}, Path=BindingContext.StandCommand}"
+                                        CommandParameter="{Binding}" />
+                                <Button Text="Double"
+                                        Command="{Binding Source={x:Reference GamePageIndex}, Path=BindingContext.DoubleCommand}"
+                                        CommandParameter="{Binding}" />
+                            </StackLayout>
+                        </StackLayout>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+            <Button Text="Start New Game" CommandParameter="start" Clicked="OnActionClicked" 
+                    IsVisible="{Binding CurrentGame.isGameOver}" HorizontalOptions="Center" />
+        </StackLayout>
+    </ScrollView>
+</ContentPage>

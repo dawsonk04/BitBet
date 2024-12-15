@@ -13,8 +13,7 @@ namespace JD.BitBet.Maui
         public GameListPage()
         {
             InitializeComponent();
-
-            var apiBaseUrl = "https://localhost:7061/";
+            var apiBaseUrl = "https://localhost:7061/api/";
             _client = new ApiClient(apiBaseUrl);
             Games = new ObservableCollection<Game>();
             BindingContext = this;
@@ -69,7 +68,10 @@ namespace JD.BitBet.Maui
 
                     if (joinResponse.IsSuccessStatusCode)
                     {
-                        await DisplayAlert("Success", "You have successfully joined the game!", "OK");
+                        if (Guid.TryParse(gameId.ToString(), out Guid parsedGameId))
+                        {
+                            await Navigation.PushAsync(new GamePage(parsedGameId));
+                        }
                     }
                     else
                     {

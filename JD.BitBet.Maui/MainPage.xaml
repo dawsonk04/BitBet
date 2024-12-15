@@ -43,6 +43,7 @@
                            HorizontalOptions="Start" 
                            TextColor="#333"/>
                     <Entry x:Name="EmailEntry"
+                           TextColor="Black"
                            Placeholder="Enter your email"
                            Keyboard="Email"
                            HorizontalOptions="FillAndExpand"/>
@@ -54,6 +55,7 @@
                            HorizontalOptions="Start"
                            TextColor="#333"/>
                     <Entry x:Name="PasswordEntry"
+                           TextColor="Black"
                            Placeholder="Enter your password"
                            IsPassword="True"
                            HorizontalOptions="FillAndExpand"/>

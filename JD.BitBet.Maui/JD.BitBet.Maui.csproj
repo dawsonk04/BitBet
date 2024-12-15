@@ -40,4 +40,10 @@
 		<ProjectReference Include="..\JD.Utility\JD.Utility.csproj" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <MauiXaml Update="GamePage.xaml">
+	    <Generator></Generator>
+	  </MauiXaml>
+	</ItemGroup>
+
 </Project>
