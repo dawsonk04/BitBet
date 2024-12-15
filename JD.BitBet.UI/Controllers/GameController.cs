@@ -1,6 +1,11 @@
-﻿using JD.BitBet.BL.Models;
+﻿using DocumentFormat.OpenXml.Spreadsheet;
+using JD.BitBet.API.Hubs;
+using JD.BitBet.BL.Models;
 using JD.Utility;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
+using Microsoft.AspNetCore.SignalR.Client;
+using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using System.Net.Http;
 using System.Text;
@@ -9,12 +14,16 @@ namespace JD.BitBet.UI.Controllers
 {
     public class GameController : GenericController<Game>
     {
+        string APIAddess = "https://localhost:7061/BlackJackHub";
         private readonly ApiClient _apiClient;
         private GameState state;
+        HubConnection _connection;
+        SignalRConnection _signalRConnection;
+        private static List<string> chatMessages = new List<string>();
+
         public GameController(HttpClient httpClient) : base(httpClient)
         {
             this._apiClient = new ApiClient(httpClient.BaseAddress.AbsoluteUri);
-
         }
         public async Task<IActionResult> GameIndex()
         {
@@ -31,6 +40,7 @@ namespace JD.BitBet.UI.Controllers
 
             return View();
         }
+
         public async Task<IActionResult> GameList()
         {
             var response = await _apiClient.GetAsync("Game/");
@@ -51,6 +61,7 @@ namespace JD.BitBet.UI.Controllers
         {
             try
             {
+                ConnectToChannel();
                 var userId = HttpContext.Session.GetString("UserId");
                 if (string.IsNullOrEmpty(userId))
                 {
@@ -82,11 +93,12 @@ namespace JD.BitBet.UI.Controllers
                     {
                         game.isGameOver = true;
                         HttpContext.Session.SetString("CurrentGame", JsonConvert.SerializeObject(game));
-                        ViewBag.GameDetails = game; 
+                        ViewBag.GameDetails = game;
                     }
                     var joinResponse = await _apiClient.PostAsync($"Game/join/{gameId}/{userId}", null);
                     if (joinResponse.IsSuccessStatusCode)
                     {
+
                         ViewBag.Message = "You have successfully joined the game!";
                         return View("GameIndex", activeGameStates);
                     }
@@ -181,6 +193,7 @@ namespace JD.BitBet.UI.Controllers
                     gameStates[index] = updatedGameState;
                 }
                 HttpContext.Session.SetString("GameStates", JsonConvert.SerializeObject(gameStates));
+
             }
             else
             {
@@ -254,8 +267,8 @@ namespace JD.BitBet.UI.Controllers
                 {
                     gameStates[index] = updatedGameState;
                 }
-
                 HttpContext.Session.SetString("GameStates", JsonConvert.SerializeObject(gameStates));
+
             }
             else
             {
@@ -281,22 +294,18 @@ namespace JD.BitBet.UI.Controllers
                 var currentGameJson = HttpContext.Session.GetString("CurrentGame");
                 Game currentGame = JsonConvert.DeserializeObject<Game>(currentGameJson);
                 ViewBag.GameDetails = currentGame;
-               
-                var gameStateJson = HttpContext.Session.GetString("GameStates");
-                var gameStates = JsonConvert.DeserializeObject<List<GameState>>(gameStateJson);
-                var playerIndex = gameStates.FindIndex(gs => gs.UserId.ToString() == userId);
-                if (playerIndex != -1)
+                var response2 = await _apiClient.GetAsync($"User/getplayers/{currentGame.Id}");
+                if (response2.IsSuccessStatusCode)
                 {
-                    gameStates[playerIndex].hasBet = true;
-
-                    HttpContext.Session.SetString("GameStates", JsonConvert.SerializeObject(gameStates));
-                    if(gameStates.All(g => g.hasBet == state.hasBet))
+                    var responseContent = await response2.Content.ReadAsStringAsync();
+                    List<User> users = JsonConvert.DeserializeObject<List<User>>(responseContent);
+                    if (users.All(g=> g.HasBet == true))
                     {
-                        await Start();
+                        return await Start();
                     }
                 }
                 ViewBag.Message = "Bet Placed";
-                return View("GameIndex", gameStates);
+                return View("GameIndex");
             }
             else
             {
@@ -345,5 +354,69 @@ namespace JD.BitBet.UI.Controllers
             }
             ViewBag.GameDetails = currentGame;
         }
+        public async Task<IActionResult> SendMessage(string message)
+        {
+            var userId = HttpContext.Session.GetString("UserId");
+            if (string.IsNullOrEmpty(userId))
+            {
+                return RedirectToAction("Login", "User");
+            }
+            var chatMessages = HttpContext.Session.GetString("ChatMessages");
+            List<string> messages = new List<string>();
+            if (!string.IsNullOrEmpty(chatMessages))
+            {
+                messages = JsonConvert.DeserializeObject<List<string>>(chatMessages);
+            }
+            messages.Add($"{userId}: {message}");
+            HttpContext.Session.SetString("ChatMessages", JsonConvert.SerializeObject(messages));
+            await _connection.InvokeAsync("SendMessage", userId, message);
+
+            return RedirectToAction("GameIndex");
+        }
+        void ConnectToChannel()
+        {
+            var user = HttpContext.Session.GetString("UserId");
+            string message = DateTime.Now.ToString() + ": Connected...";
+            _signalRConnection = new SignalRConnection(APIAddess);
+            _signalRConnection.Start();
+            _connection = _signalRConnection.HubConnection;
+            _connection.On<string, string>("ReceiveMessage", (s1, s2) => OnSend(s1, s2));
+            _signalRConnection.SendMessageToChannel(user, message);
+        }
+        private void OnSend(string user, string message)
+        {
+            Console.WriteLine($"{user}: {message}");
+            ViewBag.UserMessage = $"{user}: {message}";
+        }
+        public async Task<IActionResult> LeaveGame()
+        {
+
+            var gameStateJson = HttpContext.Session.GetString("GameStates");
+            if (string.IsNullOrEmpty(gameStateJson))
+            {
+                return RedirectToAction("GameIndex");
+            }
+            var gameStates = JsonConvert.DeserializeObject<List<GameState>>(gameStateJson);
+            var userId = HttpContext.Session.GetString("UserId");
+            if (string.IsNullOrEmpty(userId))
+            {
+                return RedirectToAction("Login", "User");
+            }
+            ViewBag.UserId = userId;
+            var response = await _apiClient.PostAsync($"Game/leavegame/{userId}", null);
+            var response2 = await _apiClient.GetAsync("Game/");
+            if (response2.IsSuccessStatusCode)
+            {
+                var gamesJson = await response2.Content.ReadAsStringAsync();
+                var games = JsonConvert.DeserializeObject<List<Game>>(gamesJson);
+                return View("GameList", games);
+            }
+            else
+            {
+                ViewBag.Error = "Unable to fetch games.";
+                return View();
+            }
+        }
+
     }
 }

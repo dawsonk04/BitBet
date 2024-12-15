@@ -175,6 +175,7 @@ namespace JD.BitBet.PL.Data
                 Password = GetHash("password"),
                 gameId = null,
                 BetAmount = null,
+                HasBet = null,
                 CreateDate = new DateTime(1990, 12, 4),
             });
             modelBuilder.Entity<tblUser>().HasData(new tblUser
@@ -184,6 +185,7 @@ namespace JD.BitBet.PL.Data
                 Password = GetHash("password"),
                 gameId = null,
                 BetAmount = null,
+                HasBet = null,
                 CreateDate = DateTime.Now,
             });
         }

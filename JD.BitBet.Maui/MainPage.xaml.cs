@@ -63,5 +63,10 @@ namespace JD.BitBet.Maui
         {
 
         }
+
+        private void Button_Clicked(object sender, EventArgs e)
+        {
+
+        }
     }
 }

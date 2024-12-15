@@ -80,7 +80,6 @@
                         </Label.GestureRecognizers>
                     </Label>
                 </VerticalStackLayout>
-
             </VerticalStackLayout>
         </Frame>
     </Grid>

@@ -7,7 +7,7 @@
     @foreach (var game in Model)
     {
         <div class="col-md-4 mb-4">
-            <div class="card shadow-sm">
+            <div class="shadow-sm">
                 <div class="card-body">
                     <h5 class="card-title">Game @game.Id</h5>
                     <form method="post" action="@Url.Action("JoinGame", "Game", new { gameId = game.Id })">

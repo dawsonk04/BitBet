@@ -5,113 +5,118 @@
     var loggedInUserId = ViewBag.UserId as string;
     var game = ViewBag.GameDetails as Game;
 }
-
-<h1 class="game-title">Blackjack Game</h1>
-@if(ViewBag.Message != null)
+<form asp-action="LeaveGame" method="post" class="action-form">
+    <button type="submit" class="btn btn-danger">Leave Game</button>
+</form>
+@if (ViewBag.Message != null)
 {
-    <div class="viewbag-message">
+    <div class="alert alert-info viewbag-message">
         <p>@ViewBag.Message</p>
     </div>
 }
 
-@if(ViewBag.GameDetails == null)
-{
-    <p class="error-message">Game details null</p>
-
-}
-@if (ViewBag.Error != null)
-{
-    <p class="error-message">@ViewBag.Error</p>
-}
-else if (Model != null && Model.Any())
-{
-    <div class="game-section">
-        <h3 class="section-title">Dealer's Hand</h3>
-        <!-- Display only one dealerHandVal -->
-        <p class="score"><strong>Dealer's Score:</strong> @Model[0].dealerHandVal</p>
-    </div>
-
-    @foreach (var gameState in Model)
+<div class="blackjack-table">
+    @if (ViewBag.GameDetails == null)
     {
-        <!-- Only display content for the logged-in user -->
-            <div class="game-container">
+        <div class="alert alert-danger">
+            <p>Game details are not available.</p>
+        </div>
+    }
+
+    @if (ViewBag.Error != null)
+    {
+        <div class="alert alert-danger">
+            <p>@ViewBag.Error</p>
+        </div>
+    }
+    else if (Model != null && Model.Any())
+    {
+        <div class="dealer-section">
+            <h3 class="section-title">Dealer's Hand</h3>
+            <p class="score"> @Model[0].dealerHandVal</p>
+        </div>
+
+        @foreach (var gameState in Model)
+        {
+            <div class="game-instance">
                 <h2 class="game-status">Current Game Status: @gameState.message</h2>
 
-                <div class="game-section">
+                <div class="player-section">
                     <h3 class="section-title">Your Hand</h3>
-                    <p class="score"><strong>Your Score:</strong> @gameState.playerHandVal</p>
+                    <p class="score">@gameState.playerHandVal</p>
                 </div>
+
                 <div class="action-buttons">
                     @if (gameState.UserId.ToString() == loggedInUserId)
                     {
-                        @if(!gameState.isGameOver)
+                        @if (!gameState.isGameOver)
                         {
                             <form asp-action="Hit" method="post" class="action-form">
-                                <button type="submit" class="action-button hit-button">Hit</button>
+                                <button type="submit" class="btn btn-primary">Hit</button>
                             </form>
 
                             <form asp-action="Stand" method="post" class="action-form">
-                                <button type="submit" class="action-button stand-button">Stand</button>
+                                <button type="submit" class="btn btn-secondary">Stand</button>
                             </form>
 
                             <form asp-action="Double" method="post" class="action-form">
-                                <button type="submit" class="action-button double-button">Double</button>
+                                <button type="submit" class="btn btn-warning">Double</button>
                             </form>
                         }
-                        @if(game.isGameOver){
-                            <p class="game-over">Game over! Click below to start a new game:</p>
 
-                            <form asp-action="Start" method="post" class="action-form">
-                                <button type="submit" class="action-button start-button">Start New Game</button>
-                            </form>
-
-                            <!-- Leave Game Button -->
-                            <form asp-action="LeaveGame" method="post" class="action-form">
-                                <button type="submit" class="action-button leave-button">Leave Game</button>
-                            </form>
-
-                            <!-- Bet Amount Incrementer -->
-                            <div class="bet-amount">
-                                <label for="betAmount">Bet Amount: </label>
-                                <button type="button" class="bet-incrementer" onclick="adjustBet(1)">1</button>
-                                <button type="button" class="bet-incrementer" onclick="adjustBet(5)">5</button>
-                                <button type="button" class="bet-incrementer" onclick="adjustBet(10)">10</button>
-                                <button type="button" class="bet-incrementer" onclick="adjustBet(50)">50</button>
-                                <button type="button" class="bet-incrementer" onclick="adjustBet(100)">100</button>
-                                <input type="number" id="betAmount" name="betAmount" value="0" min="0" step="1" readonly />
+                        @if (game.isGameOver)
+                        {
+                            <div class="game-over-section">
+                                <p class="game-over">Game over! Click below to start a new game:</p>
+                                <div class="welcome-section mb-5">
+                                    <form action="@Url.Action("Bet", "Game")" method="post" class="bet-form mt-4">
+                                        <label for="betAmount">Bet Amount:</label>
+                                        <div class="bet-buttons d-flex gap-2 mt-2">
+                                            <button type="button" class="btn btn-light" onclick="adjustBet(1)">+1</button>
+                                            <button type="button" class="btn btn-light" onclick="adjustBet(5)">+5</button>
+                                            <button type="button" class="btn btn-light" onclick="adjustBet(10)">+10</button>
+                                            <button type="button" class="btn btn-light" onclick="adjustBet(50)">+50</button>
+                                            <button type="button" class="btn btn-light" onclick="adjustBet(100)">+100</button>
+                                        </div>
+                                        <input type="number" required id="betAmount" name="betAmount" class="form-control mt-2" value="0" min="0" step="1" readonly />
+                                        <button type="submit" class="btn btn-primary mt-3">Submit Bet</button>
+                                    </form>
+                                </div>
                             </div>
                         }
                     }
                 </div>
-        </div>
+            </div>
+        }
     }
-}
-else
-{
-    <div class="game-container">
-        <p class="welcome-message">Welcome to Blackjack! Click below to start a new game:</p>
-        <form asp-action="Start" method="post" class="action-form">
-            <button type="submit" class="action-button start-button">Start Game</button>
-        </form>
+    else
+    {
+    <div class="action-buttons">
+
+        <div class="welcome-section mb-5">
+            <p class="welcome-message">Welcome to Blackjack! Click below to start a new game:</p>
+            <form action="@Url.Action("Bet", "Game")" method="post" class="bet-form mt-4">
+                <label for="betAmount">Bet Amount:</label>
+                <div class="bet-buttons d-flex gap-2 mt-2">
+                    <button type="button" class="btn btn-light" onclick="adjustBet(1)">+1</button>
+                    <button type="button" class="btn btn-light" onclick="adjustBet(5)">+5</button>
+                    <button type="button" class="btn btn-light" onclick="adjustBet(10)">+10</button>
+                    <button type="button" class="btn btn-light" onclick="adjustBet(50)">+50</button>
+                    <button type="button" class="btn btn-light" onclick="adjustBet(100)">+100</button>
+                </div>
+                <input type="number" required id="betAmount" name="betAmount" class="form-control mt-2" value="0" min="0" step="1" readonly />
+                <button type="submit"  class="btn btn-primary mt-3">Submit Bet</button>
+            </form>
+        </div>
     </div>
-    <form action="@Url.Action("Bet", "Game")">
-        <label for="betAmount">Bet Amount: </label>
-        <button type="button" class="bet-incrementer" onclick="adjustBet(1)">1</button>
-        <button type="button" class="bet-incrementer" onclick="adjustBet(5)">5</button>
-        <button type="button" class="bet-incrementer" onclick="adjustBet(10)">10</button>
-        <button type="button" class="bet-incrementer" onclick="adjustBet(50)">50</button>
-        <button type="button" class="bet-incrementer" onclick="adjustBet(100)">100</button>
+    }
 
-        <!-- The actual input for bet amount -->
-        <input type="number" id="betAmount" name="betAmount" value="0" min="0" step="1" readonly />
-
-        <button type="submit">Submit Bet</button>
-    </form>
-
-}
+</div>
 <script>
-function adjustBet(amount) {
-    var betInput = document.getElementById('betAmount');
-    betInput.value = parseInt(betInput.value) + amount; // Add the value to the current bet
-}
+    function adjustBet(amount) {
+        const betInput = document.getElementById('betAmount');
+        let currentBet = parseInt(betInput.value) || 0;
+        currentBet = Math.max(0, currentBet + amount);
+        betInput.value = currentBet;
+    }
 </script>

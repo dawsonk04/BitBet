@@ -267,6 +267,7 @@ namespace JD.BitBet.BL
                             upDateRow.Password = user.Password;
                             upDateRow.gameId = user.gameId;
                             upDateRow.BetAmount = user.BetAmount;
+                            upDateRow.HasBet = user.HasBet;
                             dc.tblUser.Update(upDateRow);
 
                             results = dc.SaveChanges();

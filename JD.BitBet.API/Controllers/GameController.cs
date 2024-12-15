@@ -80,7 +80,6 @@ namespace JD.BitBet.API.Controllers
                     game.Users = new List<User>();
                 }
                 await gameManager.UpdateAsync(game);
-                await _hubContext.Clients.Group(gameId.ToString()).SendAsync("UserJoined", user);
 
                 return Ok(game);
             }
@@ -170,6 +169,22 @@ namespace JD.BitBet.API.Controllers
                 gameManager = new GameManager(options);
                 var games = await gameManager.LoadAsync();
                 return Ok(games);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+        [HttpPost("leavegame/{UserId}")]
+        public async Task<IActionResult> playerLeaveGame([FromRoute] Guid UserId)
+        {
+            try
+            {
+                userManager = new UserManager(options);
+                User user = await userManager.LoadByIdAsync(UserId);
+                user.gameId = null;
+                await userManager.UpdateAsync(user); 
+                return Ok();
             }
             catch (Exception ex)
             {

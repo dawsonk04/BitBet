@@ -1,7 +1,19 @@
 using DocumentFormat.OpenXml.Office2016.Drawing.ChartDrawing;
+using JD.BitBet.API.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddSignalR();
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAllOrigins", builder =>
+    {
+        builder.AllowAnyOrigin()
+               .AllowAnyMethod()
+               .AllowAnyHeader();
+    });
+});
 
+// Add other serv
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
@@ -20,18 +32,20 @@ builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("https:/
 builder.Services.AddDistributedMemoryCache();
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
+app.UseCors("AllowAllOrigins");
+
 app.UseRouting();
+app.MapHub<BlackJackHub>("/blackjackhub");
+app.MapControllers();
 
 app.UseAuthorization();
 
@@ -40,5 +54,4 @@ app.UseSession();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
-
 app.Run();

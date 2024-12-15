@@ -272,7 +272,9 @@ namespace JD.BitBet.BL
             while (states[0].dealerHandVal < 17)
             {
                 Card newCard = new Card();
+                _deck.Shuffle();
                 newCard = _deck.Deal();
+
                 newCard.HandId = states[0].dealerHandId;
                 await cardManager.InsertAsync(newCard);
 

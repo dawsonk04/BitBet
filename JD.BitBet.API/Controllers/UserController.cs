@@ -49,10 +49,18 @@ namespace JD.BitBet.API.Controllers
             {
                 user.BetAmount = betAmount;
                 userWallet.Balance -= betAmount;
+                user.HasBet = true;
                 await walletManager.UpdateAsync(userWallet);
                 await userManager.UpdateAsync(user);
             }
             return Ok();
+        }
+        [HttpGet("getPlayers/{gameId}")]
+        public async Task<IActionResult> getPlayersInGame([FromRoute] Guid gameId)
+        {
+            userManager = new UserManager(options);
+            List<User> users = await userManager.LoadByGameAsync(gameId);
+            return Ok(users);
         }
     }
 }
