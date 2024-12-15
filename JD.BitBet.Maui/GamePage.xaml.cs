@@ -2,6 +2,7 @@
 using JD.Utility;
 using Newtonsoft.Json;
 using System.Collections.ObjectModel;
+using System.Windows.Input;
 
 namespace JD.BitBet.Maui
 {
@@ -11,6 +12,10 @@ namespace JD.BitBet.Maui
         public ObservableCollection<GameState> GameStates { get; set; }
         public Game CurrentGame { get; set; }
 
+        public ICommand HitCommand { get; set; }
+        public ICommand StandCommand { get; set; }
+        public ICommand DoubleCommand { get; set; }
+
         public GamePage(Guid gameId)
         {
             InitializeComponent();
@@ -18,7 +23,64 @@ namespace JD.BitBet.Maui
             _client = new ApiClient(apiBaseUrl);
             GameStates = new ObservableCollection<GameState>();
             BindingContext = this;
+
+            HitCommand = new Command<GameState>(PerformHit);
+            StandCommand = new Command<GameState>(PerformStand);
+            DoubleCommand = new Command<GameState>(PerformDouble);
+
             LoadGameState(gameId);
+        }
+
+        private async void PerformHit(GameState gameState)
+        {
+            await PerformActionAsync("hit", gameState);
+        }
+
+        private async void PerformStand(GameState gameState)
+        {
+            await PerformActionAsync("stand", gameState);
+        }
+
+        private async void PerformDouble(GameState gameState)
+        {
+            await PerformActionAsync("double", gameState);
+        }
+
+        private async Task PerformActionAsync(string action, GameState gameState)
+        {
+            if (gameState == null)
+            {
+                await DisplayAlert("Error", "gamestate null", "Ok");
+                return;
+            }
+
+            try
+            {
+                var userId = Preferences.Get("UserId", null);
+                if (string.IsNullOrEmpty(userId))
+                {
+                    await DisplayAlert("Error", "Please log in first", "OK");
+                    return;
+                }
+
+                var endpoint = $"Game/{action}/{userId}";
+
+                var response = await _client.PostAsync(endpoint, null);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    await LoadGameState(CurrentGame.Id);
+                }
+                else
+                {
+                    var errorContent = await response.Content.ReadAsStringAsync();
+                    await DisplayAlert("Error", $"Failed to perform '{action}': {errorContent}", "OK");
+                }
+            }
+            catch (Exception ex)
+            {
+                await DisplayAlert("Error", $"An error occurred: {ex.Message}", "OK");
+            }
         }
 
         private async Task LoadGameState(Guid gameId)
@@ -47,17 +109,14 @@ namespace JD.BitBet.Maui
                 }
                 else
                 {
-                    ErrorMessage.Text = "Unable to fetch game state.";
-                    ErrorMessage.IsVisible = true;
+                    ShowError("Unable to fetch game state.");
                 }
             }
             catch (Exception ex)
             {
-                ErrorMessage.Text = $"Error: {ex.Message}";
-                ErrorMessage.IsVisible = true;
+                ShowError($"Error: {ex.Message}");
             }
         }
-
 
         private async void OnActionClicked(object sender, EventArgs e)
         {
@@ -72,11 +131,14 @@ namespace JD.BitBet.Maui
 
                 try
                 {
-                    var response = await _client.PostAsync($"Game/{action}/{CurrentGame.Id}/{userId}", null);
+                    var endpoint = action == "start"
+                        ? $"Game/{action}/{CurrentGame.Id}"
+                        : $"Game/{action}/{CurrentGame.Id}/{userId}";
+
+                    var response = await _client.PostAsync(endpoint, null);
 
                     if (response.IsSuccessStatusCode)
                     {
-                        // Refresh the game state after the action
                         await LoadGameState(CurrentGame.Id);
                     }
                     else
@@ -92,5 +154,10 @@ namespace JD.BitBet.Maui
             }
         }
 
+        private void ShowError(string message)
+        {
+            ErrorMessage.Text = message;
+            ErrorMessage.IsVisible = true;
+        }
     }
 }
