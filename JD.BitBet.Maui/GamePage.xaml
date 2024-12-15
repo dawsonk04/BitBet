@@ -11,7 +11,7 @@
             <CollectionView ItemsSource="{Binding GameStates}">
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
-                        <StackLayout Margin="10" BackgroundColor="Black" Padding="10">
+                        <StackLayout Margin="10" BackgroundColor="White" Padding="10">
                             <Label Text="Dealer's Hand" FontAttributes="Bold" />
                             <Label Text="{Binding dealerHandVal}" />
                             <Label Text="Your Hand" FontAttributes="Bold" />
@@ -35,8 +35,8 @@
                 </CollectionView.ItemTemplate>
             </CollectionView>
 
-            <Button Text="Start New Game" CommandParameter="start" Clicked="OnActionClicked" 
-                    IsVisible="{Binding CurrentGame.isGameOver}" HorizontalOptions="Center" />
+            <Button x:Name="btnStartGame" Text="Start New Game" CommandParameter="start" Clicked="OnActionClicked" 
+                    IsVisible="False" HorizontalOptions="Center" />
         </StackLayout>
     </ScrollView>
 </ContentPage>

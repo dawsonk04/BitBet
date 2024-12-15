@@ -93,11 +93,13 @@ namespace JD.BitBet.Maui
                 {
                     var responseContent = await response.Content.ReadAsStringAsync();
                     var gameStates = JsonConvert.DeserializeObject<List<GameState>>(responseContent);
-
                     GameStates.Clear();
                     foreach (var state in gameStates)
                     {
-                        GameStates.Add(state);
+                        if (!state.isGameOver)
+                        {
+                            GameStates.Add(state);
+                        }
                     }
 
                     var gameResponse = await _client.GetAsync($"Game/{gameId}");
@@ -105,6 +107,14 @@ namespace JD.BitBet.Maui
                     {
                         var gameContent = await gameResponse.Content.ReadAsStringAsync();
                         CurrentGame = JsonConvert.DeserializeObject<Game>(gameContent);
+                        if(GameStates.Count == 0)
+                        {
+                            CurrentGame.isGameOver = true;
+                        }
+                        if (CurrentGame.isGameOver)
+                        {
+                            btnStartGame.IsVisible = true;
+                        }
                     }
                 }
                 else
