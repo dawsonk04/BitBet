@@ -340,7 +340,13 @@ namespace JD.BitBet.BL
                 state.message = "Invalid action. The game is over or it's not your turn.";
                 return state;
             }
-
+            User user = await userManager.LoadByIdAsync(state.UserId);
+            Wallet userWallet = await walletManager.LoadByUserIdAsync(state.UserId);
+            state.BetAmount = user.BetAmount * 2;
+            user.BetAmount = state.BetAmount;
+            userWallet.Balance -= state.BetAmount;
+            await userManager.UpdateAsync(user);
+            await walletManager.UpdateAsync(userWallet);
             Card card = new Card();
             _deck.Shuffle();
             card = _deck.Deal();

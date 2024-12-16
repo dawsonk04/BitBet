@@ -77,6 +77,7 @@
                                             <button type="button" class="btn btn-light" onclick="adjustBet(10)">+10</button>
                                             <button type="button" class="btn btn-light" onclick="adjustBet(50)">+50</button>
                                             <button type="button" class="btn btn-light" onclick="adjustBet(100)">+100</button>
+                                            <button type="button" class="btn btn-light" onclick="adjustBet(0)">Clear</button>
                                         </div>
                                         <input type="number" required id="betAmount" name="betAmount" class="form-control mt-2" value="0" min="0" step="1" readonly />
                                         <button type="submit" class="btn btn-primary mt-3">Submit Bet</button>
@@ -103,6 +104,7 @@
                     <button type="button" class="btn btn-light" onclick="adjustBet(10)">+10</button>
                     <button type="button" class="btn btn-light" onclick="adjustBet(50)">+50</button>
                     <button type="button" class="btn btn-light" onclick="adjustBet(100)">+100</button>
+                    <button type="button" class="btn btn-light" onclick="adjustBet(0)">Clear</button>
                 </div>
                 <input type="number" required id="betAmount" name="betAmount" class="form-control mt-2" value="0" min="0" step="1" readonly />
                 <button type="submit"  class="btn btn-primary mt-3">Submit Bet</button>
@@ -118,5 +120,8 @@
         let currentBet = parseInt(betInput.value) || 0;
         currentBet = Math.max(0, currentBet + amount);
         betInput.value = currentBet;
+        if(amount == 0){
+            betInput.value = 0;
+        }
     }
 </script>

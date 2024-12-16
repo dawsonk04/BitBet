@@ -2,41 +2,115 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="JD.BitBet.Maui.GamePage"
              x:Name="GamePageIndex"
-             Title="Blackjack Game">
+             Title="Blackjack Game"
+             BackgroundColor="#2c3e50">
     <ScrollView>
-        <StackLayout Padding="10">
-            <Label Text="Blackjack Game" FontSize="24" HorizontalOptions="Center" />
-            <Label x:Name="ErrorMessage" TextColor="Red" IsVisible="False" />
-            
+        <StackLayout Padding="20" Spacing="20">
+            <Label Text="Blackjack Game" 
+                   FontSize="32" 
+                   FontAttributes="Bold"
+                   HorizontalOptions="Center" 
+                   TextColor="#ecf0f1" />
+
+            <Label x:Name="ErrorMessage" 
+                   TextColor="#e74c3c" 
+                   FontAttributes="Bold"
+                   FontSize="16" 
+                   HorizontalOptions="Center" 
+                   IsVisible="False" />
+
             <CollectionView ItemsSource="{Binding GameStates}">
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
-                        <StackLayout Margin="10" BackgroundColor="Black" Padding="10">
-                            <Label Text="Dealer's Hand" FontAttributes="Bold" />
-                            <Label Text="{Binding dealerHandVal}" />
-                            <Label Text="Your Hand" FontAttributes="Bold" />
-                            <Label Text="{Binding playerHandVal}" />
-                            <Label Text="Status: " FontAttributes="Bold" />
-                            <Label Text="{Binding message}" />
+                        <Frame BackgroundColor="#34495e" 
+                               CornerRadius="10" 
+                               Padding="15" 
+                               Margin="10">
+                            <StackLayout Spacing="10" HorizontalOptions="Center">
+                                <Label Text="Dealer's Hand" 
+                                       FontAttributes="Bold" 
+                                       FontSize="18" 
+                                       TextColor="#ecf0f1" 
+                                       HorizontalOptions="Center" />
+                                <Label Text="{Binding dealerHandVal}" 
+                                       FontSize="16" 
+                                       TextColor="#bdc3c7" 
+                                       HorizontalOptions="Center" />
 
-                            <StackLayout Orientation="Horizontal" HorizontalOptions="Center" Spacing="10">
-                                <Button Text="Hit"
-                                        Command="{Binding Source={x:Reference GamePageIndex}, Path=BindingContext.HitCommand}"
-                                        CommandParameter="{Binding}" />
-                                <Button Text="Stand"
-                                        Command="{Binding Source={x:Reference GamePageIndex}, Path=BindingContext.StandCommand}"
-                                        CommandParameter="{Binding}" />
-                                <Button Text="Double"
-                                        Command="{Binding Source={x:Reference GamePageIndex}, Path=BindingContext.DoubleCommand}"
-                                        CommandParameter="{Binding}" />
+                                <Label Text="Your Hand" 
+                                       FontAttributes="Bold" 
+                                       FontSize="18" 
+                                       TextColor="#ecf0f1" 
+                                       HorizontalOptions="Center" />
+                                <Label Text="{Binding playerHandVal}" 
+                                       FontSize="16" 
+                                       TextColor="#bdc3c7" 
+                                       HorizontalOptions="Center" />
+
+                                <Label Text="Status: " 
+                                       FontAttributes="Bold" 
+                                       FontSize="18" 
+                                       TextColor="#ecf0f1" 
+                                       HorizontalOptions="Center" />
+                                <Label Text="{Binding message}" 
+                                       FontSize="16" 
+                                       TextColor="#f1c40f" 
+                                       HorizontalOptions="Center" />
+
+                                <StackLayout Orientation="Horizontal" 
+                                             HorizontalOptions="Center" 
+                                             Spacing="20">
+                                    <Button Text="Hit"
+                                            BackgroundColor="#27ae60" 
+                                            TextColor="White"
+                                            Command="{Binding Source={x:Reference GamePageIndex}, Path=BindingContext.HitCommand}"
+                                            CommandParameter="{Binding}" 
+                                            CornerRadius="5" />
+
+                                    <Button Text="Stand"
+                                            BackgroundColor="#2980b9" 
+                                            TextColor="White"
+                                            Command="{Binding Source={x:Reference GamePageIndex}, Path=BindingContext.StandCommand}"
+                                            CommandParameter="{Binding}" 
+                                            CornerRadius="5" />
+
+                                    <Button Text="Double"
+                                            BackgroundColor="#e67e22" 
+                                            TextColor="White"
+                                            Command="{Binding Source={x:Reference GamePageIndex}, Path=BindingContext.DoubleCommand}"
+                                            CommandParameter="{Binding}" 
+                                            CornerRadius="5" />
+                                </StackLayout>
                             </StackLayout>
-                        </StackLayout>
+                        </Frame>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
             </CollectionView>
+            <Button x:Name="btnStartGame" 
+                    Text="Start New Game" 
+                    CommandParameter="start" 
+                    Clicked="OnActionClicked" 
+                    BackgroundColor="#e74c3c" 
+                    TextColor="White"
+                    FontAttributes="Bold"
+                    FontSize="18"
+                    CornerRadius="10"
+                    IsVisible="False" 
+                    HorizontalOptions="Center" 
+                    WidthRequest="200" />
 
-            <Button x:Name="btnStartGame" Text="Start New Game" CommandParameter="start" Clicked="OnActionClicked" 
-                    IsVisible="False" HorizontalOptions="Center" />
+            <Button x:Name="btnLeaveGame" 
+                    Text="Leave Game" 
+                    CommandParameter="leavegame" 
+                    Clicked="btnLeaveGame_Clicked" 
+                    BackgroundColor="#e74c3c" 
+                    TextColor="White"
+                    FontAttributes="Bold"
+                    FontSize="18"
+                    CornerRadius="10"
+                    IsVisible="true" 
+                    HorizontalOptions="Center" 
+                    WidthRequest="200" />
         </StackLayout>
     </ScrollView>
 </ContentPage>

@@ -69,6 +69,8 @@ namespace JD.BitBet.Maui
             await PerformActionAsync("double", gameState);
             if (CurrentGame.isGameOver)
             {
+                var response1 = await _client.PostAsync($"Game/dealerTurn/{gameState.dealerHandId}", null);
+                var responseContent1 = await response1.Content.ReadAsStringAsync();
                 var response = await _client.GetAsync($"GameState/{gameState.Id}");
                 if (response.IsSuccessStatusCode)
                 {
@@ -207,6 +209,16 @@ namespace JD.BitBet.Maui
         {
             ErrorMessage.Text = message;
             ErrorMessage.IsVisible = true;
+        }
+
+        private async void btnLeaveGame_Clicked(object sender, EventArgs e)
+        {
+            if (sender is Button button && button.CommandParameter is string action)
+            {
+                var userId = Preferences.Get("UserId", null);
+                var response = await _client.PostAsync($"Game/leavegame/{userId}", null);
+                await Navigation.PushAsync(new GameListPage());
+            }
         }
     }
 }

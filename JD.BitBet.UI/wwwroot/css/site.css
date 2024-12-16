@@ -18,8 +18,6 @@ body {
     padding: 20px;
     margin-bottom: 60px;
 }
-
-/* Focus Styles */
 .btn:focus,
 .btn:active:focus,
 .btn-link.nav-link:focus,
@@ -28,7 +26,6 @@ body {
     box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
 }
 
-/* Error Message */
 .error-message {
     color: red;
     text-align: center;
@@ -36,22 +33,18 @@ body {
 }
 
 
-/* Title */
 .game-title {
     text-align: center;
     font-size: 2.5em;
     color: #333;
 }
 
-/* Section Titles */
 .section-title {
     text-align: center;
     font-size: 1.2em;
     margin-bottom: 10px;
     color: #555;
 }
-
-/* Scores */
 .score {
     text-align: center;
     font-size: 1em;
@@ -59,7 +52,6 @@ body {
     color:yellow
 }
 
-/* Game Status */
 .game-status {
     text-align: center;
     font-size: 1.5em;
@@ -67,7 +59,6 @@ body {
     color: #555;
 }
 
-/* Welcome & Game Over Messages */
 .welcome-message,
 .game-over {
     text-align: center;
@@ -81,17 +72,16 @@ body {
     color: #d9534f;
 }
 
-/* Buttons */
 .action-buttons {
     display: flex;
-    justify-content: center; /* Center the buttons horizontally */
-    align-items: center; /* Center the buttons vertically if needed */
-    gap: 10px; /* Add spacing between buttons */
-    margin: 0; /* Remove unnecessary margins */
-    position: absolute; /* Fix position to bottom if needed */
-    bottom: 20px; /* Position from bottom of the container */
-    left: 50%; /* Align center horizontally */
-    transform: translateX(-50%); /* Ensure perfect centering */
+    justify-content: center; 
+    align-items: center;
+    gap: 10px; 
+    margin: 0; 
+    position: absolute; 
+    bottom: 20px; 
+    left: 50%; 
+    transform: translateX(-50%); 
     width: 100%;
 }
 
@@ -111,11 +101,11 @@ body {
 }
 
 .hit-button {
-    background-color: #28a745; /* Green */
+    background-color: #27ae60; /* Green */
 }
 
 .stand-button {
-    background-color: #007bff; /* Blue */
+    background-color: #2980b9; /* Blue */
 }
 
 .start-button {
@@ -130,13 +120,11 @@ body {
         background-color: #c9302c;
     }
 
-/* Forms */
 .action-form {
     text-align: center;
     margin-top:auto
 }
 
-/* Bet Amount */
 .bet-amount {
     display: flex;
     justify-content: center;
@@ -169,23 +157,22 @@ body {
     border-radius: 5px;
     background-color: #fff;
 }
-/* Fixed Blackjack Table */
 .blackjack-table {
-    position: fixed; /* Fix the table in one spot */
-    top: 50%; /* Center vertically */
-    left: 50%; /* Center horizontally */
-    transform: translate(-50%, -50%); /* Adjust for exact centering */
-    width: 1330px; /* Fixed width */
-    height: 800px; /* Fixed height */
+    position: fixed; 
+    top: 50%;
+    left: 50%; 
+    transform: translate(-50%, -50%);
+    width: 1330px; 
+    height: 800px; 
     background: url('/Imgs/game_table.png') no-repeat center center;
-    background-size: contain; /* Ensure it scales within fixed dimensions */
+    background-size: contain; 
     border: 2px solid #333;
     border-radius: 15px;
-    overflow: hidden; /* Prevent overflow */
-    z-index: 10; /* Ensure it's on top of other elements */
+    overflow: hidden;
+    z-index: 10;
 }
 
-/* Card styling */
+
 .card {
     position: absolute;
     width: 60px;
@@ -201,15 +188,13 @@ body {
     box-shadow: 2px 4px 8px rgba(0, 0, 0, 0.4);
 }
 
-    /* Dealer's cards */
     .card.dealer {
-        top: 15%; /* Fixed dealer card position */
+        top: 15%; 
         left: 45%;
     }
 
-    /* Player's cards */
     .card.player {
-        bottom: 15%; /* Player's cards fixed near bottom */
+        bottom: 15%; 
         left: 20%;
     }
 
@@ -225,11 +210,10 @@ body {
         left: 44%;
     }
 
-/* Prevent table resizing */
 body {
     margin: 0;
     padding: 0;
-    overflow: hidden; /* Disable scrolling */
+    overflow: hidden; 
 }
 .dealer-section{
     margin-top:60px

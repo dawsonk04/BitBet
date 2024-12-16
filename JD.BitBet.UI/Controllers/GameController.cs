@@ -231,6 +231,12 @@ namespace JD.BitBet.UI.Controllers
                 {
                     gameStates[index] = updatedGameState;
                 }
+                if (gameStates.All(e => e.isGameOver == true))
+                {
+                    await PerformDealerTurn();
+                    var gameStatescontent = HttpContext.Session.GetString("GameStates");
+                    gameStates = JsonConvert.DeserializeObject<List<GameState>>(gameStatescontent);
+                }
                 HttpContext.Session.SetString("GameStates", JsonConvert.SerializeObject(gameStates));
             }
             else
