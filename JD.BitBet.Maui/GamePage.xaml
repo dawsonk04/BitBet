@@ -7,11 +7,11 @@
         <StackLayout Padding="10">
             <Label Text="Blackjack Game" FontSize="24" HorizontalOptions="Center" />
             <Label x:Name="ErrorMessage" TextColor="Red" IsVisible="False" />
-
+            
             <CollectionView ItemsSource="{Binding GameStates}">
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
-                        <StackLayout Margin="10" BackgroundColor="White" Padding="10">
+                        <StackLayout Margin="10" BackgroundColor="Black" Padding="10">
                             <Label Text="Dealer's Hand" FontAttributes="Bold" />
                             <Label Text="{Binding dealerHandVal}" />
                             <Label Text="Your Hand" FontAttributes="Bold" />

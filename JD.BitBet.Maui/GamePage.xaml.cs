@@ -107,7 +107,7 @@ namespace JD.BitBet.Maui
                     {
                         var gameContent = await gameResponse.Content.ReadAsStringAsync();
                         CurrentGame = JsonConvert.DeserializeObject<Game>(gameContent);
-                        if(GameStates.Count == 0)
+                        if (GameStates.Count == 0)
                         {
                             CurrentGame.isGameOver = true;
                         }
@@ -136,6 +136,12 @@ namespace JD.BitBet.Maui
                 if (string.IsNullOrEmpty(userId))
                 {
                     await DisplayAlert("Error", "Please log in first", "OK");
+                    return;
+                }
+
+                if (action == "start" && CurrentGame != null && !CurrentGame.isGameOver)
+                {
+                    await DisplayAlert("Error", "You are already in a game cannot start another one sorry. Finish this game", "OK");
                     return;
                 }
 
