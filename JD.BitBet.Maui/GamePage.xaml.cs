@@ -34,16 +34,46 @@ namespace JD.BitBet.Maui
         private async void PerformHit(GameState gameState)
         {
             await PerformActionAsync("hit", gameState);
+            if (CurrentGame.isGameOver)
+            {
+                var response = await _client.GetAsync($"GameState/{gameState.Id}");
+                if (response.IsSuccessStatusCode)
+                {
+                    var responseContent = await response.Content.ReadAsStringAsync();
+                    var gameStates = JsonConvert.DeserializeObject<GameState>(responseContent);
+                    await DisplayAlert("Finished Game", $"The Game is over {gameStates.message}", "OK");
+                }
+            }
         }
 
         private async void PerformStand(GameState gameState)
         {
             await PerformActionAsync("stand", gameState);
+            if (CurrentGame.isGameOver)
+            {
+                var response = await _client.GetAsync($"GameState/{gameState.Id}");
+                if (response.IsSuccessStatusCode)
+                {
+                    var responseContent = await response.Content.ReadAsStringAsync();
+                    var gameStates = JsonConvert.DeserializeObject<GameState>(responseContent);
+                    await DisplayAlert("Finished Game", $"The Game is over {gameStates.message}", "OK");
+                }
+            }
         }
 
         private async void PerformDouble(GameState gameState)
         {
             await PerformActionAsync("double", gameState);
+            if (CurrentGame.isGameOver)
+            {
+                var response = await _client.GetAsync($"GameState/{gameState.Id}");
+                if (response.IsSuccessStatusCode)
+                {
+                    var responseContent = await response.Content.ReadAsStringAsync();
+                    var gameStates = JsonConvert.DeserializeObject<GameState>(responseContent);
+                    await DisplayAlert("Finished Game", $"The Game is over {gameStates.message}", "OK");
+                }
+            }
         }
 
         private async Task PerformActionAsync(string action, GameState gameState)
