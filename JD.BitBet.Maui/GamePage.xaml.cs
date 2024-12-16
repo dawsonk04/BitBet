@@ -35,12 +35,12 @@ namespace JD.BitBet.Maui
         {
             await PerformActionAsync("hit", gameState);
             if (CurrentGame.isGameOver)
-            {
-                var response = await _client.GetAsync($"GameState/{gameState.Id}");
-                if (response.IsSuccessStatusCode)
+            { 
+                var response2 = await _client.GetAsync($"GameState/{gameState.Id}");
+                if (response2.IsSuccessStatusCode)
                 {
-                    var responseContent = await response.Content.ReadAsStringAsync();
-                    var gameStates = JsonConvert.DeserializeObject<GameState>(responseContent);
+                    var responseContent2 = await response2.Content.ReadAsStringAsync();
+                    var gameStates = JsonConvert.DeserializeObject<GameState>(responseContent2);
                     await DisplayAlert("Finished Game", $"The Game is over {gameStates.message}", "OK");
                 }
             }
@@ -51,6 +51,9 @@ namespace JD.BitBet.Maui
             await PerformActionAsync("stand", gameState);
             if (CurrentGame.isGameOver)
             {
+                var response1 = await _client.PostAsync($"Game/dealerTurn/{gameState.dealerHandId}", null);
+                var responseContent1 = await response1.Content.ReadAsStringAsync();
+
                 var response = await _client.GetAsync($"GameState/{gameState.Id}");
                 if (response.IsSuccessStatusCode)
                 {
