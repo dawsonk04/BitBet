@@ -1,29 +1,50 @@
 ﻿using JD.BitBet.BL.Models;
+using Mono.TextTemplating;
 using static JD.BitBet.PL.Entities.tblCard;
 
 namespace JD.BitBet.BL
 {
     public class GameManager : GenericManager<tblGame>
     {
-        public static GameState State { get; private set; }
+        public enum GameResult
+        {
+            InProgress,
+            PlayerBlackjack,
+            PlayerBust,
+            PlayerWins,
+            PlayerStand,
+            DealerStand,
+            DealerBlackJack,
+            DealerBust,
+            DealerWins,
+            Push
+        }
+        public enum handAction
+        {
+            Hit, Stand, Double, Split
+        }
+
         public static GameStateManager gameStateManager { get; private set; }
         public static HandManager handManager { get; private set; }
         public static CardManager cardManager { get; private set; }
+        public static WalletManager walletManager { get; private set; }
+        public static UserManager userManager { get; set; }
 
         private static Deck _deck;
 
         private const string NOTFOUND_message = "Row does not exist";
         public GameManager(ILogger logger, DbContextOptions<BitBetEntities> options) : base(options, logger)
         {
-            State = new GameState();
+            _deck = new Deck();
             gameStateManager = new GameStateManager(logger, options);
             handManager = new HandManager(logger, options);
             cardManager = new CardManager(logger, options);
+            walletManager = new WalletManager(logger,options);
+            userManager = new UserManager(logger, options);
         }
 
         public GameManager(DbContextOptions<BitBetEntities> options) : base(options) { }
         public GameManager() { }
-
         public async Task<Guid> InsertAsync(Game game, bool rollback = false)
         {
             try
@@ -80,99 +101,84 @@ namespace JD.BitBet.BL
                 throw;
             }
         }
-        //public static void StartNewGame1()
-        //{
-        //    _deck = new Deck();
-        //    _playerHand = new List<Card>();
-        //    _dealerHand = new List<Card>();
-        //    _deck.Shuffle();
-        //    _playerHand.Add(_deck.Deal());
-        //    _playerHand.Add(_deck.Deal());
-        //    _dealerHand.Add(_deck.Deal());
-        //    _dealerHand.Add(_deck.Deal());
-        //}
-        public async Task<GameState> StartNewGame()
+        public async Task<List<GameState>> StartNewGame(Game game)
         {
-            State = new GameState();
+
+            List<GameState> states = new List<GameState>();            
             gameStateManager = new GameStateManager(options);
             handManager = new HandManager(options);
             cardManager = new CardManager(options);
 
-            State.Id = Guid.NewGuid();
-            // Create Player and Dealer Hands
-            Hand playerHand = new Hand
-            {
-                Id = Guid.NewGuid(),
-                BetAmount = 10,
-                Result = 0,
-                Cards = new List<Card>()
-            };
+            _deck = new Deck();
+            _deck.Shuffle();
 
             Hand dealerHand = new Hand
             {
                 Id = Guid.NewGuid(),
-                BetAmount = 0,
                 Result = 0,
                 Cards = new List<Card>()
             };
-            State.playerHands = new List<Hand>();
-            // Assign to State
-            State.playerHand = playerHand;
-            State.playerHands.Add(playerHand);
-            State.dealerHand = dealerHand;
-            State.playerHandId = playerHand.Id;
-            State.dealerHandId = dealerHand.Id;
-            State.isGameOver = false;
-            State.isPlayerTurn = true;
 
-            // Initialize Deck
-            _deck = new Deck();
-            _deck.Shuffle();
-
-            // Deal Cards
-            Card playerCard1 = _deck.Deal();
-            Card playerCard2 = _deck.Deal();
-            Card dealerCard1 = _deck.Deal();
-            Card dealerCard2 = _deck.Deal();
-
-            // Assign Hand IDs
-            playerCard1.HandId = playerHand.Id;
-            playerCard2.HandId = playerHand.Id;
-            dealerCard1.HandId = dealerHand.Id;
-            dealerCard2.HandId = dealerHand.Id;
-
-            // Add Cards to State
-            State.playerHand.Cards.Add(playerCard1);
-            State.playerHand.Cards.Add(playerCard2);
-            State.dealerHand.Cards.Add(dealerCard1);
-            State.dealerHand.Cards.Add(dealerCard2);
-
-            // Calculate Hand Values
-            State.playerHandVal = CalculateHandValue(State.playerHand.Cards);
-            State.dealerHandVal = CalculateHandValue(State.dealerHand.Cards);
-            // Check for Blackjack
-            if (State.playerHandVal == 21)
-            {
-                State.message = "Blackjack! Player wins.";
-                State.isGameOver = true;
-            }
-            else
-            {
-                State.message = "Game Initialized";
-            }
+            Card dealerCard = new Card();
+            dealerCard = _deck.Deal();
+            dealerCard.HandId = dealerHand.Id;
 
             await handManager.InsertAsync(dealerHand);
-            await handManager.InsertAsync(playerHand);
-            await cardManager.InsertAsync(playerCard1);
-            await cardManager.InsertAsync(playerCard2);
-            await cardManager.InsertAsync(dealerCard1);
-            await cardManager.InsertAsync(dealerCard2);
-            await gameStateManager.InsertAsync(State);
+            await cardManager.InsertAsync(dealerCard);
 
-            // Save Game State
-            return await populateGameState(State);
+            foreach (var user in game.Users)
+            {
+
+                GameState State = new GameState();
+                State.dealerHandId = dealerHand.Id;
+                State.dealerHand = dealerHand;
+                State.dealerHand.Cards.Add(dealerCard);
+                State.dealerHandVal = CalculateHandValue(State.dealerHand.Cards);
+                State.GameId = game.Id;
+                State.UserId = user.Id;
+                User dbUser = await userManager.LoadByIdAsync(State.UserId);
+                State.Id = Guid.NewGuid();
+                Hand playerHand = new Hand
+                {
+                    Id = Guid.NewGuid(),
+                    Result = 0,
+                    Cards = new List<Card>()
+                };
+
+                State.playerHand = playerHand;
+                State.playerHandId = playerHand.Id;
+                State.isGameOver = false;
+                State.isPlayerTurn = true;
+
+                Card playerCard1 = _deck.Deal();
+                Card playerCard2 = _deck.Deal();
+
+                playerCard1.HandId = playerHand.Id;
+                playerCard2.HandId = playerHand.Id;
+
+                State.playerHand.Cards.Add(playerCard1);
+                State.playerHand.Cards.Add(playerCard2);
+                State.BetAmount = dbUser.BetAmount;
+                State.playerHandVal = CalculateHandValue(State.playerHand.Cards);
+
+                if (State.playerHandVal == 21)
+                {
+                    State.message = "Blackjack! Player wins.";
+                    State.isGameOver = true;
+                }
+                else
+                {
+                    State.message = "Game Initialized";
+                }
+                await handManager.InsertAsync(playerHand);
+                await cardManager.InsertAsync(playerCard1);
+                await cardManager.InsertAsync(playerCard2);
+                await gameStateManager.InsertAsync(State);
+                states.Add(await populateGameState(State));
+            }
+
+            return states;
         }
-
         public static int CalculateHandValue(List<Card> hand)
         {
             int value = 0;
@@ -193,136 +199,140 @@ namespace JD.BitBet.BL
 
             return value;
         }
-        public enum GameResult
-        {
-            InProgress,
-            PlayerBlackjack,
-            PlayerBust,
-            PlayerWins,
-            PlayerStand,
-            DealerStand,
-            DealerBlackJack,
-            DealerBust,
-            DealerWins,
-            Push
-        }
         public async Task<GameState> populateGameState(GameState state)
         {
+
+            Wallet userWallet = await walletManager.LoadByUserIdAsync(state.UserId);
             GameState dbGamestate = await gameStateManager.LoadByIdAsync(state.Id);
             dbGamestate.dealerHand = await handManager.LoadByIdAsync(state.dealerHandId);
             dbGamestate.playerHand = await handManager.LoadByIdAsync(state.playerHandId);
             dbGamestate.playerHand.Cards = await cardManager.LoadByHandId(state.playerHandId);
             dbGamestate.dealerHand.Cards = await cardManager.LoadByHandId(state.dealerHandId);
-            dbGamestate.playerHands = new List<Hand>();
-
-            int counter = 0;
-            foreach (var hand in state.playerHands)
-            {
-                dbGamestate.playerHands.Add(await handManager.LoadByIdAsync(hand.Id));
-
-                foreach (var card in state.playerHands[counter].Cards)
-                    dbGamestate.playerHands[counter].Cards = await cardManager.LoadByHandId(hand.Id);
-                counter++;
-            }
             dbGamestate.playerHandVal = CalculateHandValue(await cardManager.LoadByHandId(state.playerHandId));
+            await gameStateManager.UpdateAsync(dbGamestate);
 
             if (dbGamestate.playerHandVal > 21)
             {
                 dbGamestate.isGameOver = true;
                 dbGamestate.message = "Player busts! Dealer wins.";
+                await gameStateManager.UpdateAsync(dbGamestate);
             }
             else if (dbGamestate.playerHandVal == 21)
             {
+                userWallet.Balance += dbGamestate.BetAmount * 2;
                 dbGamestate.message = "Player hits 21!";
+                dbGamestate.isGameOver = true;
+                await gameStateManager.UpdateAsync(dbGamestate);
             }
             else
             {
                 dbGamestate.message = "Player hits.";
+                await gameStateManager.UpdateAsync(dbGamestate);
             }
             return dbGamestate;
         }
-        public enum handAction
-        {
-            Hit, Stand, Double, Split
-        }
-
         public async Task<GameState> Hit(GameState state)
         {
+
             if (state.isGameOver || !state.isPlayerTurn)
             {
                 state.message = "Invalid action. The game is over or it's not your turn.";
+                await gameStateManager.UpdateAsync(state);
                 return state;
             }
 
-            Card newCard = _deck.Deal();
+            Card newCard = new Card();
+            _deck.Shuffle();
+            newCard = _deck.Deal();
             newCard.Id = Guid.NewGuid();
             newCard.HandId = state.playerHandId;
+            state.playerHand = await handManager.LoadByIdAsync(state.playerHandId);
+            state.playerHand.Cards = await cardManager.LoadByHandId(state.playerHandId);
             state.playerHand.Cards.Add(newCard);
-
             await cardManager.InsertAsync(newCard);
-            await gameStateManager.UpdateAsync(state);
-
             return await populateGameState(state);
         }
         public async Task<GameState> Stand(GameState state)
         {
             if (state.isGameOver || !state.isPlayerTurn)
             {
-                State.message = "Invalid action. The game is over or it's not your turn.";
+                state.message = "Invalid action. The game is over or it's not your turn.";
+                await gameStateManager.UpdateAsync(state);
                 return state;
             }
+            state.isGameOver = true;
+            state.isPlayerTurn = false;
+            await gameStateManager.UpdateAsync(state);
 
-            State.isPlayerTurn = false;
-            return await PerformDealerTurn(state);
+            return await populateGameState(state);
         }
 
-        public async Task<GameState> PerformDealerTurn(GameState state)
+        public async Task<List<GameState>> PerformDealerTurn(List<GameState> states)
         {
-            state.message = "Dealer's turn.";
-
-            while (state.dealerHandVal < 17)
+            while (states[0].dealerHandVal < 17)
             {
-                Card card = _deck.Deal();
-                state.dealerHand.Cards.Add(card);
-                card.HandId = state.dealerHandId;
-                await cardManager.InsertAsync(card);
-                state.dealerHandVal = CalculateHandValue(await cardManager.LoadByHandId(state.dealerHandId));
+                Card newCard = new Card();
+                _deck.Shuffle();
+                newCard = _deck.Deal();
+
+                newCard.HandId = states[0].dealerHandId;
+                await cardManager.InsertAsync(newCard);
+
+                foreach (GameState state in states)
+                {
+                    state.dealerHand = await handManager.LoadByIdAsync(state.dealerHandId);
+                    state.dealerHand.Cards = await cardManager.LoadByHandId(state.dealerHandId);
+                    state.dealerHandVal = CalculateHandValue(await cardManager.LoadByHandId(state.dealerHandId));
+                    state.message = "Dealer's turn.";
+                }
             }
-            return await DetermineWinner(state);
+            return await DetermineWinner(states);
         }
 
-        public async Task<GameState> DetermineWinner(GameState state)
+        public async Task<List<GameState>> DetermineWinner(List<GameState> states)
         {
-            if (state.dealerHandVal > 21)
+            foreach (GameState state in states)
             {
-                state.isGameOver = true;
-                state.message = "Dealer busts! Player wins.";
-                await gameStateManager.UpdateAsync(state);
-                return state;
+                User user = await userManager.LoadByIdAsync(state.UserId);
+                Wallet userWallet = await walletManager.LoadByUserIdAsync(state.UserId);
+                state.BetAmount = user.BetAmount;
+                state.playerHand = await handManager.LoadByIdAsync(state.playerHandId);
+                if (state.dealerHandVal > 21)
+                {
+                    state.isGameOver = true;
+                    state.message = "Dealer busts! Player wins.";
+                    userWallet.Balance += state.BetAmount * 2;
+                    state.playerHand.Result = state.BetAmount * 2;
+                    await walletManager.UpdateAsync(userWallet);
+                    await gameStateManager.UpdateAsync(state);
+                }
+                if (state.playerHandVal > state.dealerHandVal && state.playerHandVal <= 21)
+                {
+                    state.isGameOver = true;
+                    state.message = "Player wins!";
+                    userWallet.Balance += state.BetAmount * 2;
+                    state.playerHand.Result = state.BetAmount * 2;
+                    await walletManager.UpdateAsync(userWallet);
+                    await gameStateManager.UpdateAsync(state);
+                }
+                else if (state.playerHandVal < state.dealerHandVal && state.dealerHandVal <= 21)
+                {
+                    state.isGameOver = true;
+                    state.message = "Dealer wins!";
+                    await walletManager.UpdateAsync(userWallet);
+                    await gameStateManager.UpdateAsync(state);
+                }
+                else if(state.dealerHandVal == state.playerHandVal)
+                {
+                    state.isGameOver = true;
+                    state.message = "Push! It's a tie.";
+                    userWallet.Balance += state.BetAmount;
+                    await walletManager.UpdateAsync(userWallet);
+                    await gameStateManager.UpdateAsync(state);
+                }
             }
-            if (state.playerHandVal > state.dealerHandVal)
-            {
-                state.isGameOver = true;
-                state.message = "Player wins!";
-                await gameStateManager.UpdateAsync(state);
-                return state;
-            }
-            else if (state.playerHandVal < state.dealerHandVal)
-            {
-                state.isGameOver = true;
-                state.message = "Dealer wins!";
-                await gameStateManager.UpdateAsync(state);
-                return state;
-            }
-            else
-            {
-                state.isGameOver = true;
-                state.message = "Push! It's a tie.";
-                await gameStateManager.UpdateAsync(state);
-                return state;
-            }
+            return states;
         }
-
         public async Task<GameState> Double(GameState state)
         {
             if (state.isGameOver || !state.isPlayerTurn)
@@ -330,15 +340,23 @@ namespace JD.BitBet.BL
                 state.message = "Invalid action. The game is over or it's not your turn.";
                 return state;
             }
-
-
-            Card card = _deck.Deal();
+            User user = await userManager.LoadByIdAsync(state.UserId);
+            Wallet userWallet = await walletManager.LoadByUserIdAsync(state.UserId);
+            state.BetAmount = user.BetAmount * 2;
+            user.BetAmount = state.BetAmount;
+            userWallet.Balance -= state.BetAmount;
+            await userManager.UpdateAsync(user);
+            await walletManager.UpdateAsync(userWallet);
+            Card card = new Card();
+            _deck.Shuffle();
+            card = _deck.Deal();
+            state.playerHand = await handManager.LoadByIdAsync(state.playerHandId);
+            state.playerHand.Cards = await cardManager.LoadByHandId(state.playerHandId);
             state.playerHand.Cards.Add(card);
             card.HandId = state.playerHandId;
             await cardManager.InsertAsync(card);
             state.playerHandVal = CalculateHandValue(await cardManager.LoadByHandId(state.playerHandId));
-
-            state.playerHand.BetAmount *= 2;
+            state.BetAmount *= 2;
 
             return await Stand(state);
         }

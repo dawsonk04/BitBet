@@ -1,6 +1,17 @@
-﻿@using Microsoft.AspNetCore.Http;
+﻿@using JD.BitBet.BL.Models
+@using Microsoft.AspNetCore.Http;
 @{
-    bool isLoggedIn = false;
+    var userId = HttpContextAccessor.HttpContext?.Session.GetString("UserId");
+    bool isLoggedIn;
+    if (userId != null)
+    {
+        isLoggedIn = true;
+    }
+    else
+    {
+        isLoggedIn = false;
+    }
+    var userWallet = ViewBag.UserWallet as Wallet;
 }
 @inject IHttpContextAccessor HttpContextAccessor
 <!DOCTYPE html>
@@ -14,24 +25,22 @@
     <link rel="stylesheet" href="~/JD.BitBet.UI.styles.css" asp-append-version="true" />
 </head>
 <body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav">
-                        <li class="nav-item">
-                            @{
-                                var userManager = new JD.BitBet.BL.UserManager();
-                                userManager.Seed();
-                                var email = HttpContextAccessor.HttpContext?.Session.GetString("email");
-                            }
-                            <a class="nav-link text-light">@email</a>
-                        </li>
-                    </ul>
+    @if (isLoggedIn)
+    {
+        <header>
+            <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+                <div class="container-fluid">
+                    <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                        <ul class="navbar-nav mx-auto">
+                            <li class="nav-item">
+                                @await Component.InvokeAsync("Wallet")
+                            </li>
+                        </ul>
+                    </div>
                 </div>
-            </div>
-        </nav>
-    </header>
+            </nav>
+        </header>
+    }
     <div class="container">
         <main role="main" class="pb-3">
             @RenderBody()

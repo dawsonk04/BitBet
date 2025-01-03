@@ -10,7 +10,30 @@ namespace JD.BitBet.API.Controllers
     [ApiController]
     public class WalletController : GenericController<Wallet, WalletManager, BitBetEntities>
     {
+        UserManager userManager;
+        WalletManager walletManager;
         public WalletController(ILogger<WalletController> logger, DbContextOptions<BitBetEntities> options) : base(logger, options) { }
 
-    }
+        [HttpGet("user/{UserId}")]
+        public async Task<IActionResult> LoadCurrentGame([FromRoute] Guid UserId)
+        {
+            try
+            {
+                walletManager = new WalletManager(options);
+                Wallet wallet = await walletManager.LoadByUserIdAsync(UserId);
+                if (wallet != null)
+                {
+                    return Ok(wallet);
+                }
+                else
+                {
+                    return Ok();
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+     }
 }

@@ -40,10 +40,10 @@ namespace JD.BitBet.PL.Data
         {
             base.OnModelCreating(modelBuilder);
 
+            CreateGames(modelBuilder);
             CreateUsers(modelBuilder);
             CreateWallets(modelBuilder);
             CreateTransactions(modelBuilder);
-            CreateGames(modelBuilder);
             CreateHands(modelBuilder);
             CreateErrors(modelBuilder);
             CreateCards(modelBuilder);
@@ -68,7 +68,6 @@ namespace JD.BitBet.PL.Data
                 entity.Property(e => e.dealerHandVal)
                     .HasMaxLength(50)
                     .IsUnicode(false);
-
                 entity.HasOne(e => e.playerHand)
                   .WithMany()
                   .HasForeignKey(e => e.playerHandId)
@@ -77,11 +76,18 @@ namespace JD.BitBet.PL.Data
                     .WithMany()
                     .HasForeignKey(e => e.dealerHandId)
                     .OnDelete(DeleteBehavior.NoAction);
+                entity.HasOne(e => e.game)
+                  .WithMany(p => p.GameStates)
+                  .HasForeignKey(d => d.GameId)
+                  .OnDelete(DeleteBehavior.ClientSetNull)
+                  .HasConstraintName("FK_tblGameState_GameId");
 
             });
             modelBuilder.Entity<tblGameState>().HasData(new tblGameState
             {
                 Id = gameStateId[0],
+                UserId = userId[0],
+                GameId = gameId[0],
                 isGameOver = true,
                 isPlayerTurn = true,
                 dealerHandId = handId[0],
@@ -122,14 +128,14 @@ namespace JD.BitBet.PL.Data
                 Id = walletId[0],
                 WalletAddress = "0xE2dC61497FDD26F9ea285172A41F0b25373f22df",
                 UserId = userId[0],
-                Balance = 0.0
+                Balance = 1000000.0
             });
             modelBuilder.Entity<tblWallet>().HasData(new tblWallet
             {
                 Id = walletId[1],
                 WalletAddress = "0xE2dC61497FDD26F9eaYaBoi5373f22df",
                 UserId = userId[1],
-                Balance = 0.0
+                Balance = 1000000.0
             });
         }
 
@@ -155,6 +161,11 @@ namespace JD.BitBet.PL.Data
                 entity.Property(e => e.CreateDate)
                    .HasMaxLength(50)
                    .IsUnicode(false);
+                entity.HasOne(e => e.Game)
+                  .WithMany(p => p.Users)
+                  .HasForeignKey(d => d.gameId)
+                  .OnDelete(DeleteBehavior.ClientSetNull)
+                  .HasConstraintName("FK_tblUser_GameId");
             });
 
             modelBuilder.Entity<tblUser>().HasData(new tblUser
@@ -162,6 +173,9 @@ namespace JD.BitBet.PL.Data
                 Id = userId[0],
                 Email = "knudtdaw0000@gmail.com",
                 Password = GetHash("password"),
+                gameId = null,
+                BetAmount = null,
+                HasBet = null,
                 CreateDate = new DateTime(1990, 12, 4),
             });
             modelBuilder.Entity<tblUser>().HasData(new tblUser
@@ -169,6 +183,9 @@ namespace JD.BitBet.PL.Data
                 Id = userId[1],
                 Email = "jbstrange2@gmail.com",
                 Password = GetHash("password"),
+                gameId = null,
+                BetAmount = null,
+                HasBet = null,
                 CreateDate = DateTime.Now,
             });
         }
@@ -242,46 +259,29 @@ namespace JD.BitBet.PL.Data
                 entity.HasKey(e => e.Id).HasName("Pk__tblHand_Id");
 
                 entity.ToTable("tblHand");
-
                 entity.Property(e => e.Id).ValueGeneratedNever();
                 entity.Property(e => e.Result)
                     .HasMaxLength(50)
                     .IsUnicode(false);
-                entity.Property(e => e.BetAmount)
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
-                //entity.HasOne(e => e.user)
-                //     .WithMany(p => p.Hands)
-                //     .HasForeignKey(d => d.UserId)
-                //     .OnDelete(DeleteBehavior.Cascade)
-                //     .HasConstraintName("FK_tblHand_UserId");
             });
             modelBuilder.Entity<tblHand>().HasData(new tblHand
             {
                 Id = handId[0],
-                BetAmount = 20.00,
-                //UserId = userId[0],
                 Result = 40.00,
             });
             modelBuilder.Entity<tblHand>().HasData(new tblHand
             {
                 Id = handId[1],
-                BetAmount = 20.00,
-               // UserId = userId[0],
                 Result = -20.00,
             });
             modelBuilder.Entity<tblHand>().HasData(new tblHand
             {
                 Id = handId[2],
-                BetAmount = 20.00,
-                //UserId = userId[0],
                 Result = 40.00,
             });
             modelBuilder.Entity<tblHand>().HasData(new tblHand
             {
                 Id = handId[3],
-                BetAmount = 20.00,
-                //UserId = userId[0],
                 Result = -20.00,
             });
         }
@@ -302,23 +302,16 @@ namespace JD.BitBet.PL.Data
                 entity.Property(e => e.GameResult)
                     .HasMaxLength(50)
                     .IsUnicode(false);
-                entity.HasOne(e => e.User)
-                    .WithMany(p => p.Games)
-                    .HasForeignKey(d => d.UserId)
-                    .OnDelete(DeleteBehavior.Cascade)
-                    .HasConstraintName("FK_tblGame_UserId");
             });
             modelBuilder.Entity<tblGame>().HasData(new tblGame
             {
                 Id = gameId[0],
                 GameResult = 200.00,
-                UserId = userId[0],
             });
             modelBuilder.Entity<tblGame>().HasData(new tblGame
             {
                 Id = gameId[1],
                 GameResult = 200.00,
-                UserId = userId[0],
             });
         }
 

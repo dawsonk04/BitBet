@@ -1,11 +1,7 @@
-﻿using DocumentFormat.OpenXml.Spreadsheet;
-using JD.BitBet.BL;
-using JD.BitBet.BL.Models;
-using JD.BitBet.UI.Extensions;
+﻿using JD.BitBet.BL.Models;
 using JD.Utility;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using System.Net;
 using System.Text;
 
 namespace JD.BitBet.UI.Controllers
@@ -27,16 +23,14 @@ namespace JD.BitBet.UI.Controllers
             var httpContent = new StringContent(jsonContent, Encoding.UTF8, "application/json");
 
             var response = await _apiClient.PostAsync("User/Authenticate", httpContent);
-
-            // Log response status and message for debugging
             var responseContent = await response.Content.ReadAsStringAsync();
             if (response.IsSuccessStatusCode)
             {
-                // Deserialize the response content
                 var authenticatedUser = JsonConvert.DeserializeObject<User>(responseContent);
                 if (authenticatedUser != null)
                 {
-                    return RedirectToAction("GameIndex", "Game"); // Redirect to the game index
+                    HttpContext.Session.SetString("UserId", authenticatedUser.Id.ToString());
+                    return RedirectToAction("GameList", "Game");
                 }
                 Console.WriteLine("Error: Unable to parse user details.");
             }
@@ -44,7 +38,7 @@ namespace JD.BitBet.UI.Controllers
             {
                 Console.WriteLine($"Login failed. {response.StatusCode}: {responseContent}");
             }
-            return View(user); // Return the login view if model state is invalid or login failed
+            return View(user);
         }
     }
 }

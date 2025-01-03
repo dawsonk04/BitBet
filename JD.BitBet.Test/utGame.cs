@@ -19,7 +19,6 @@ namespace JD.BitBet.PL.Test
             int rowsAffected = InsertTest(new tblGame
             {
                 Id = Guid.NewGuid(),
-                UserId = base.LoadTest().FirstOrDefault().UserId,
                 GameResult = 20
             });
 

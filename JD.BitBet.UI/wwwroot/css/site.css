@@ -1,75 +1,57 @@
 html {
-  font-size: 14px;
+    font-size: 2px;
+    position: relative;
+    min-height: 100%;
 }
 
 @media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
+    html {
+        font-size: 16px;
+    }
 }
 
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
-}
-
-html {
-  position: relative;
-  min-height: 100%;
-}
-
-body {
-  margin-bottom: 60px;
-}
-/* General Styles */
 body {
     font-family: Arial, sans-serif;
-    background-color: #f4f4f9;
+    background-color: #f5f5f5;
     color: #333;
     margin: 0;
     padding: 20px;
+    margin-bottom: 60px;
+}
+.btn:focus,
+.btn:active:focus,
+.btn-link.nav-link:focus,
+.form-control:focus,
+.form-check-input:focus {
+    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
 }
 
-/* Title */
-.game-title {
-    text-align: center;
-    font-size: 2.5em;
-    color: #333;
-}
-
-/* Error Message */
 .error-message {
     color: red;
     text-align: center;
     font-weight: bold;
 }
 
-/* Game Container */
-.game-container {
-    max-width: 600px;
-    margin: 0 auto;
-    background-color: #fff;
-    padding: 20px;
-    border: 1px solid #ddd;
-    border-radius: 10px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+.game-title {
+    text-align: center;
+    font-size: 2.5em;
+    color: #333;
 }
 
-/* Section Titles */
 .section-title {
     text-align: center;
     font-size: 1.2em;
     margin-bottom: 10px;
     color: #555;
 }
-
-/* Scores */
 .score {
     text-align: center;
     font-size: 1em;
     margin: 10px 0;
+    color:yellow
 }
 
-/* Game Status */
 .game-status {
     text-align: center;
     font-size: 1.5em;
@@ -77,7 +59,6 @@ body {
     color: #555;
 }
 
-/* Welcome Message */
 .welcome-message,
 .game-over {
     text-align: center;
@@ -86,10 +67,22 @@ body {
     color: #777;
 }
 
-/* Buttons */
+.game-over {
+    font-size: 1.5em;
+    color: #d9534f;
+}
+
 .action-buttons {
-    text-align: center;
-    margin-top: 20px;
+    display: flex;
+    justify-content: center; 
+    align-items: center;
+    gap: 10px; 
+    margin: 0; 
+    position: absolute; 
+    bottom: 20px; 
+    left: 50%; 
+    transform: translateX(-50%); 
+    width: 100%;
 }
 
 .action-button {
@@ -103,23 +96,133 @@ body {
     transition: background-color 0.3s;
 }
 
-    .action-button:hover {
-        opacity: 0.9;
-    }
+.action-button:hover {
+    opacity: 0.9;
+}
 
 .hit-button {
-    background-color: #28a745; /* Green */
+    background-color: #27ae60; /* Green */
 }
 
 .stand-button {
-    background-color: #007bff; /* Blue */
+    background-color: #2980b9; /* Blue */
 }
 
 .start-button {
     background-color: #dc3545; /* Red */
 }
 
-/* Forms */
+.leave-button {
+    background-color: #d9534f; /* Red */
+}
+
+    .leave-button:hover {
+        background-color: #c9302c;
+    }
+
 .action-form {
-    display: inline-block;
+    text-align: center;
+    margin-top:auto
+}
+
+.bet-amount {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+    gap: 10px;
+}
+
+.bet-incrementer {
+    padding: 5px 10px;
+    font-size: 1em;
+    color: #fff;
+    background-color: #337ab7;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.bet-incrementer:hover {
+    background-color: #286090;
+}
+
+#betAmount {
+    width: 80px;
+    text-align: center;
+    font-size: 1.2em;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #fff;
+}
+.blackjack-table {
+    position: fixed; 
+    top: 50%;
+    left: 50%; 
+    transform: translate(-50%, -50%);
+    width: 1330px; 
+    height: 800px; 
+    background: url('/Imgs/game_table.png') no-repeat center center;
+    background-size: contain; 
+    border: 2px solid #333;
+    border-radius: 15px;
+    overflow: hidden;
+    z-index: 10;
+}
+
+
+.card {
+    position: absolute;
+    width: 60px;
+    height: 90px;
+    background-color: white;
+    color: black;
+    border: 1px solid #333;
+    border-radius: 8px;
+    text-align: center;
+    line-height: 90px;
+    font-size: 18px;
+    font-weight: bold;
+    box-shadow: 2px 4px 8px rgba(0, 0, 0, 0.4);
+}
+
+    .card.dealer {
+        top: 15%; 
+        left: 45%;
+    }
+
+    .card.player {
+        bottom: 15%; 
+        left: 20%;
+    }
+
+    .card:nth-child(2) {
+        left: 28%;
+    }
+
+    .card:nth-child(3) {
+        left: 36%;
+    }
+
+    .card:nth-child(4) {
+        left: 44%;
+    }
+
+body {
+    margin: 0;
+    padding: 0;
+    overflow: hidden; 
+}
+.dealer-section{
+    margin-top:60px
+}
+.score{
+    margin-top:50px;
+}
+.player-section{
+}
+.game-status{
+    margin-top:250px
 }

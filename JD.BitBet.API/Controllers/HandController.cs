@@ -14,11 +14,4 @@ namespace JD.BitBet.API.Controllers
         public HandController(ILogger<HandController> logger, DbContextOptions<BitBetEntities> options) : base(logger, options) { }
     }
 
-    //[HttpPost]
-    //[Route("hit")]
-    //public async Task<ActionResult> Hit(int handId)
-    //{
-        
-    //}
-
 }

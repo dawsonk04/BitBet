@@ -1,0 +1,12 @@
+﻿@if (Model != null)
+{
+    <span class="nav-link text-black fw-bold">
+        Wallet Balance: @Model.Balance.ToString("C")
+    </span>
+}
+else
+{
+    <span class="nav-link text-black fw-bold">
+        Wallet: Not Available
+    </span>
+}
